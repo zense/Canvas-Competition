@@ -9,17 +9,52 @@
 <script>
 
     // Declare all global variables here
+    var center_x;
+    var center_y;
+    var radius;
+    var hour_hand_length;
+    var minute_hand_length;
+    var second_hand_length;
 
     // Declare custom functions here
+    function setup() {
+        center_x = canvas.width/2;
+        center_y = canvas.height/2;
+
+        radius = canvas.height * 0.2;
+        hour_hand_length = radius * 0.6;
+        minute_hand_length = radius * 0.75;
+        second_hand_length = radius * 0.9;
+    }
+
+    function drawHand(x, y, l, angle) {
+        canvas.drawLine(x, 
+                        y, 
+                        x + l * Math.cos(angle), 
+                        y + l * Math.sin(angle));
+    }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-      
+
+        canvas.drawCircle(center_x, center_y, radius);
+        var currentTime = new Date();
+        var hours = currentTime.getHours() % 12;
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+
+        var hour_hand_angle = (hours + minutes / 60.0) * (2 * Math.PI / 12) - Math.PI/2;
+        var minute_hand_angle = (minutes + seconds / 60.0) * (2 * Math.PI / 60) - Math.PI/2;
+        var second_hand_angle = seconds * (2 * Math.PI / 60) - Math.PI/2;
+        drawHand(center_x, center_y, hour_hand_length, hour_hand_angle);
+        drawHand(center_x, center_y, minute_hand_length, minute_hand_angle);
+        drawHand(center_x, center_y, second_hand_length, second_hand_angle);        
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
