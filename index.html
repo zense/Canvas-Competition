@@ -28,10 +28,9 @@
     }
 
     function drawHand(x, y, l, angle) {
-        canvas.drawLine(x, 
-                        y, 
-                        x + l * Math.cos(angle), 
-                        y + l * Math.sin(angle));
+        var x2 = x + l * Math.cos(angle);
+        var y2 = y + l * Math.sin(angle);
+        canvas.drawLine(x, y, x2, y2);
     }
 
     // Function while will be called repeatedly 
