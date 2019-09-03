@@ -1,0 +1,62 @@
+<html>
+
+<body onload="canvas.setup()">
+    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+
+    // Declare all global variables here
+
+    // Declare custom functions here
+
+    // Function while will be called repeatedly 
+    function main() {
+        canvas.clear();
+      
+    }
+
+    // Override functions here; 
+    canvas.mainFunction = main;
+
+    var timeStep = 50;
+    canvas.startMain(timeStep);
+
+/*
+    Helpful Canvas Variables
+    canvas.height // Height
+    canvas.width // Width
+    canvas.mouseX // Current Position of mouse x coordinate
+    canvas.mouseY // Current Position of mouse y coordinate
+    canvas.mouseDown // Boolean to check if mouse is pressed down
+    canvas.mouseDownX // Last Position of mouse press x coordinate
+    canvas.mouseDownY // Last Position of mouse press y coordinate
+*/
+
+
+/*
+    Helpful Canvas Functions
+    canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
+    canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
+    canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
+    canvas.clear() // Clears the canvas
+    canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
+*/
+
+/*
+    Optionally Override the following functions
+    canvas.mouseDownCallback() // Called when mouse is pressed
+    canvas.mouseUpCallback() // Called when mouse is released
+    canvas.mouseMoveCallback() // Called when mouse is moved
+    canvas.keyDownCallback() // Called when key is pressed
+    canvas.keyUpCallback() // Called when mouse is released
+    canvas.keyUpCallback() // Called when mouse is released
+    canvas.mainFunctin() // Called when mouse is released
+*/
+    
+</script>
+
+
+
