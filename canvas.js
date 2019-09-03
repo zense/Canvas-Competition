@@ -26,6 +26,7 @@
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
         canvas.clear() // Clears the canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
+        canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
 
 
     Optionally Override the following functions
@@ -89,6 +90,12 @@ canvas.drawRectangle = function(x, y, width, height) {
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
     this.ctx.stroke();
+}
+
+// Draws <message> at (x, y) 
+canvas.drawText = function(x, y, message, fontSize = 30) {
+    this.ctx.font = fontSize + "px Arial";
+    this.ctx.fillText(message, x, y);
 }
 
 // Clear canvase
