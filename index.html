@@ -9,19 +9,50 @@
 <script>
 
     // Declare all global variables here
+    var center_x;
+    var center_y;
+    var radius;
+    var hand_1;
+    var hand_2;
+    var hand_3;
+    var i;
 
     // Declare custom functions here
+    function setup() {
+        center_x = canvas.width/2;
+        center_y = canvas.height/3;
+        radius = canvas.height * 0.02;
+        hand_1 = canvas.height * 0.3;
+        hand_2 = canvas.height * 0.3;
+        hand_3 = canvas.height * 0.3;
+        i=0;
+    }
+
+    function drawHand(x, y, l, angle) {
+        var x2 = x + l * Math.cos(angle);
+        var y2 = y + l * Math.sin(angle);
+        canvas.drawLine(x, y, x2, y2);
+    }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-        
-    }
-
+        canvas.drawCircle(center_x, center_y, radius);
+        var hand_1_ang = (i / 60.0) * (2 * Math.PI) - Math.PI/2;
+        var hand_2_ang = hand_1_ang + 2*Math.PI/3;
+        var hand_3_ang = hand_2_ang + 2*Math.PI/3;
+        drawHand(center_x, center_y, hand_1, hand_1_ang);
+        drawHand(center_x, center_y, hand_2, hand_2_ang);
+        drawHand(center_x, center_y, hand_3, hand_3_ang);
+        drawHand(center_x-radius, center_y, canvas.height*0.5, Math.PI/2);
+        drawHand(center_x+radius, center_y, canvas.height*0.5, Math.PI/2);
+        drawHand(center_x-radius, center_y+(canvas.height*0.5), 2*radius, 0);
+        i=i+0.2;
+    }           
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    canvas.setupFunction = setup;
+    var timeStep = 10;
     canvas.startMain(timeStep);
 
 
