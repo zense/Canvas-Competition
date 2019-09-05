@@ -25,6 +25,12 @@
     Helpful Canvas Functions
         canvas.setDrawMode(mode)   // Set the drawMode variable to "stroke" or "fill"
         canvas.setColor(color)  // Set the color of the shape(s) to the given color. Default color is black(#000000)
+                                // Value can be any one of these types: 
+                                //    1. "red"
+                                //    2. "#F54680"
+                                //    3. "rgb(100,100,100)"
+                                //    4. "rgba(100,100,101,0.3)"
+
         canvas.setLineThickness(width)  // Set the thickness of the lines while in "fill draw mode". Default value is 1.
 
         canvas.draw()   //  Draws the various shapes according to the drawing mode.
