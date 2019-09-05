@@ -1,6 +1,7 @@
 /*
     Developed for Zense Hackathon
-    Author - Satvik Ramaprasad
+    Author - Satvik Ramaprasad,
+             Shubhayu Das
 
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
 
@@ -77,20 +78,17 @@ canvas.setup = function () {
     this.setupFunction();
 }
 
-// @author Shubhayu Das
 // Set the drawing mode to solid fill or border stroke
 canvas.setDrawMode = function(mode = "stroke") {
     this.drawMode = (mode === "fill")? "fill" : "stroke";
 };
 
-// @author Shubhayu Das
 // Set the color of the shape(s) for drawing
 canvas.setColor = function(color) {
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
 };
 
-// @author Shubhayu Das
 // Sets the thickness of the line of the shapes in strokes
 canvas.setLineThickness = function(width = 1) {
     this.ctx.lineWidth = width;
