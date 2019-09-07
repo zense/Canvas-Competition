@@ -7,26 +7,67 @@
 
 </html>
 <script>
-
     // Declare all global variables here
-
+    var head_x
+    var head_y
+    var radius
+    var body
+    var leg_main
+    var leg_extend
+    var hand_main
+    var hand_extend
+    var amount = 0;
+    var bool = 1;
     // Declare custom functions here
-
+    function setup()
+    {
+        head_x = canvas.width/2;
+        head_y = canvas.height/4;
+        radius = canvas.height*0.06;
+        body = canvas.height*0.275;
+        leg_main = canvas.height*0.15;
+        leg_extend = leg_main*0.9;
+        hand_main = canvas.height*0.12;
+        hand_extend = hand_main*0.8
+    }
+    function drawSegment(x, y, l, angle) {
+        var x2 = x + l * Math.cos(angle);
+        var y2 = y + l * Math.sin(angle);
+        canvas.drawLine(x, y, x2, y2);
+        return [x2,y2];
+    }
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
+        var new_point;
+        update_head_y = head_y-amount*canvas.height*0.003;
+        //head and body
+        canvas.drawCircle(head_x,update_head_y,radius);
+        drawSegment(head_x,update_head_y+radius,body,Math.PI/2);
+        //hands
+        new_point = drawSegment(head_x,update_head_y+radius+body/3,hand_main,Math.PI/6-amount*Math.PI/45);
+        drawSegment(new_point[0],new_point[1],hand_extend,35*Math.PI/18-amount*Math.PI/45);
+        new_point = drawSegment(head_x,update_head_y+radius+body/3,hand_main,5*Math.PI/6+amount*Math.PI/45);
+        drawSegment(new_point[0],new_point[1],hand_extend,19*Math.PI/18+amount*Math.PI/45);
+        //legs
+        new_point = drawSegment(head_x,update_head_y+radius+body,leg_main,8*Math.PI/18-amount*Math.PI/120);
+        drawSegment(new_point[0],new_point[1],leg_extend,Math.PI/2+amount*Math.PI/240);
+        new_point = drawSegment(head_x,update_head_y+radius+body,leg_main,7*Math.PI/12+amount*Math.PI/120);
+        drawSegment(new_point[0],new_point[1],leg_extend,Math.PI/2-amount*Math.PI/240);
         
+        if(amount == 10)
+            bool = 0;
+        else if(amount == 0)
+            bool = 1;
+        if(bool ==  1)
+            amount++;
+        else
+            amount--;
     }
-
     // Override functions here; 
     canvas.mainFunction = main;
-
+    canvas.setupFunction = setup;
     var timeStep = 50;
     canvas.startMain(timeStep);
-
-
     
 </script>
-
-
-
