@@ -236,10 +236,14 @@ canvas.drawImg=function(imgPath,x,y,width=-1,height=-1){
     img.src = imgPath;
     if(width!=-1&&height!=-1)
     {
-        this.ctx.drawImage(img,x, y,width,height);
+        img.onload = ()=>{
+            this.ctx.drawImage(img,x, y,width,height);
+        };
     }
     else{
-        this.ctx.drawImage(img,x, y);
+        img.onload =()=>{
+            this.ctx.drawImage(img,x, y);
+        };
     }
   }
 
