@@ -1,37 +1,34 @@
-#Simple Key controller car animation
+# Simple Key controller car animation
 
---------------------------
+---
+
 #### Explanation to me code
 
 This is small example of what you can try with the code given to you. I've demonstrated a few concepts, namely:
+
 1. How to take in and use inputs from the keyboard
 2. Introducing user-controller motion
 3. Implementing a slider
 
-*Sounds like I'm using too many big words? Don't worry, I'm explaining everything below.*
-
+_Sounds like I'm using too many big words? Don't worry, I'm explaining everything below._
 
 #### How to take inputs from the keyboard?
 
 The `canvas.js` file given to you has some code written in it to enable the use of the keyboard.
 
-While you need not bother about how that was done, you need to know a little about them. You can detect when a key was __pressed__ and when it was __released__.
+While you need not bother about how that was done, you need to know a little about them. You can detect when a key was **pressed** and when it was **released**.
 
-Ok... nice to know that, but how do I *use* it?? 🤔
+Ok... nice to know that, but how do I _use_ it?? 🤔
 
-You will have to define a function with a very *specific* name to use this feature. Here's the code to do it:
+You will have to define a function with a very _specific_ name to use this feature. Here's the code to do it:
 
-` 
-canvas.keyDownCallback = function(e) {	
-		// Do something here
-	};
-`
+`canvas.keyDownCallback = function(e) { // Do something here };`
 
-Ok, so the code above has to be written exactly  like that. The only thing that you can change is what is *inside* the function.
+Ok, so the code above has to be written exactly like that. The only thing that you can change is what is _inside_ the function.
 
 `e.which` is a way to get the code of the key pressed. Each key on your keyboard has its own unique code. You can find out a key's code by going to [this](https://keycode.info/) website and pressing the desired key. It will show you all the information you need.
 
-So once you know which key was pressed, you can perform a particular piece of code. 
+So once you know which key was pressed, you can perform a particular piece of code.
 
 #### User controlled motion
 
@@ -43,14 +40,13 @@ So if the car in this program was at (100, 100), the next time it is drawn, I mo
 
 To find the code for this, refer to the `drawCar()` function in my code (line number 84).
 
-I add `velocity` to the current position of the car to move it to the right. To move to the left, I subtract `velocity`. 
+I add `velocity` to the current position of the car to move it to the right. To move to the left, I subtract `velocity`.
 
-Similarly to move __up__ I will have to __subtract__ some positive number, while to move __down__, I will __add__ some positive number.
-
+Similarly to move **up** I will have to **subtract** some positive number, while to move **down**, I will **add** some positive number.
 
 #### Implementing a slider
 
-This is something slightly different from the previous ones. It takes in inputs from the *mouse*.
+This is something slightly different from the previous ones. It takes in inputs from the _mouse_.
 
 A slider usually contains a line on the background a circular shape that you can drag on the line.
 
