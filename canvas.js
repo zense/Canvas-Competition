@@ -1,6 +1,7 @@
 /*
     Developed for Zense Hackathon
-    Author - Satvik Ramaprasad
+    Author - Satvik Ramaprasad,
+             Shubhayu Das
 
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
 
@@ -19,8 +20,20 @@
         canvas.mouseDown // Boolean to check if mouse is pressed down
         canvas.mouseDownX // Last Position of mouse press x coordinate
         canvas.mouseDownY // Last Position of mouse press y coordinate
+        canvas.drawMode  // Fill in a shape or just draw the border
 
     Helpful Canvas Functions
+        canvas.setDrawMode(mode)   // Set the drawMode variable to "stroke" or "fill"
+        canvas.setColor(color)  // Set the color of the shape(s) to the given color. Default color is black(#000000)
+                                // Value can be any one of these types: 
+                                //    1. "red"
+                                //    2. "#F54680"
+                                //    3. "rgb(100,100,100)"
+                                //    4. "rgba(100,100,101,0.3)"
+
+        canvas.setLineThickness(width)  // Set the thickness of the lines while in "fill draw mode". Default value is 1.
+
+        canvas.draw()   //  Draws the various shapes according to the drawing mode.
         canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
@@ -51,6 +64,7 @@ canvas = {
     mouseDownX: 0,
     mouseDownY: 0,
     keysDown: {},
+    drawMode: "stroke",
 }
 
 // Canvas Setup function
@@ -70,26 +84,51 @@ canvas.setup = function () {
     this.setupFunction();
 }
 
+// Set the drawing mode to solid fill or border stroke
+canvas.setDrawMode = function(mode = "stroke") {
+    this.drawMode = (mode === "fill")? "fill" : "stroke";
+};
+
+// Set the color of the shape(s) for drawing
+canvas.setColor = function(color) {
+    this.ctx.fillStyle = color;
+    this.ctx.strokeStyle = color;
+};
+
+// Sets the thickness of the line of the shapes in strokes
+canvas.setLineThickness = function(width = 1) {
+    this.ctx.lineWidth = width;
+};
+
+// Draws the shape according to the drawMode(solid fill or border stroke style)
+canvas.draw = function() {
+    if(this.drawMode === "stroke"){
+        this.ctx.stroke();
+    } else {
+        this.ctx.fill();
+    }
+}
+
 // Draws line from (x1, y1) to (x2, y2)
 canvas.drawLine = function(x1, y1, x2, y2) {
     this.ctx.beginPath();
     this.ctx.moveTo(x1, y1);
     this.ctx.lineTo(x2, y2);
-    this.ctx.stroke();
+    this.draw();
 }
 
 // Draws circle with center (x, y) and radius r
 canvas.drawCircle = function(x1, y1, r) {
     this.ctx.beginPath();
     this.ctx.arc(x1, y1, r, 0, 2 * Math.PI);
-    this.ctx.stroke();
+    this.draw();
 }
 
 // Draws rectangle with top left corner as (x, y) and of dimensions width * height
 canvas.drawRectangle = function(x, y, width, height) {
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
-    this.ctx.stroke();
+    this.draw();
 }
 
 // Draws <message> at (x, y) 
