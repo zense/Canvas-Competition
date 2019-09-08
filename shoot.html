@@ -1,0 +1,59 @@
+<html>
+
+<body onload="canvas.setup()">
+    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+
+    // Declare all global variables here
+    var center_x;
+    var center_y;
+    var radius;
+    var x;
+    var y;
+    var pi;
+    var i;
+
+    // Declare custom functions here
+    function setup() {
+        center_x = canvas.width/2;
+        center_y = canvas.height/2;
+        radius = canvas.height * 0.02;
+        x = canvas.mouseX;
+        y = canvas.mouseY;
+        pi = Math.PI;
+        i=0;
+    }
+
+    function drawHand(x, y, l, angle) {
+        var x2 = x + l * Math.cos(angle);
+        var y2 = y + l * Math.sin(angle);
+        canvas.drawLine(x, y, x2, y2);
+    }
+
+    // Function while will be called repeatedly 
+    function main() {
+        canvas.clear();
+        canvas.drawRectangle(canvas.width/6, canvas.height/5, 4*canvas.width/6 , 3*canvas.height/5);
+        canvas.drawCircle(center_x, center_y, radius);
+        if(x!=0 || y!=0)
+        {
+        canvas.drawText(center_x*0.78,center_y/2,x+" "+y+" "+canvas.mouseX+" "+canvas.mouseY,fontSize = 60);
+        }
+    }           
+    // Override functions here; 
+    canvas.mainFunction = main;
+    canvas.setupFunction = setup;
+    var timeStep = 10;
+    canvas.startMain(timeStep);
+    // canvas.mouseDownCallback=function() {
+    //     x=canvas.mouseX;
+    //     y=canvas.mouseY;
+    // }
+
+
+    
+</script>

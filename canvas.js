@@ -174,7 +174,7 @@ canvas.keyUpCallback = function (e) {
 
 // Called when mouse is pressed
 canvas.mouseDownCallback = function () {
-    console.log("Dummy mouseDownCallback - Override canvas.mouseDownCallback");
+    console.log(this.mouseX+"Dummy mouseDownCallback - Override canvas.mouseDownCallback");
 }
 
 // Called when mouse is released
