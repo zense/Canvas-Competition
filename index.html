@@ -1,32 +1,189 @@
 <html>
-
-<body onload="canvas.setup()">
-    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <script src="./canvas.js"></script>
-</body>
-
+	<body onload="canvas.setup()">
+		<canvas
+			id="canvasArea"
+			style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"
+		></canvas>
+		<script src="./canvas.js"></script>
+	</body>
 </html>
+
 <script>
+	// Declare all global variables here
 
-    // Declare all global variables here
+	//  This is the initial position of the car
+	let carPosition = 100;
 
-    // Declare custom functions here
+	//  The minimum velocity of the car is fixed(Hence the "const" which stands for constant)
+	const velocity = 5;
+	//  Setting the width of the slider bar
+	const sliderWidth = 100;
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
-    }
+	//  scalingFactor is a measure of how much the slider has moved. It can range from 1 to 1.8 here.
+	//  sliderInitialX is the initial X coordinate of the slider circle. It changes as you drag it around
+	let sliderInitialX = 0,
+		scalingFactor = 1;
 
-    // Override functions here; 
-    canvas.mainFunction = main;
+	// Declare custom functions here
+	function slider(posX, posY, label) {
+		//  Describing the properties of the slider circle, like its radius and position on the screen
+		const sliderCircle = {
+			radius: 10,
+			x: posX + 10 + sliderInitialX,
+			y: posY + 5,
+		};
 
-    var timeStep = 50;
-    canvas.startMain(timeStep);
+		//  Putting in the slider heading
+		canvas.drawText(posX, posY - 20, label, (fontsize = 20));
 
+		//  Drawing the slider rails over which the circle moves
+		canvas.setDrawMode("fill");
+		canvas.setColor("rgba(100,100,100,0.5)");
+		canvas.drawRectangle(posX, posY, sliderWidth, 10);
 
-    
+		//  Setting a separate color for the circle to improve it's visibility
+		canvas.setColor("black");
+
+		//  Making sure to move the slider when the mouse is clicked over it
+		//  Also make sure that the slider circle can't be dragged all over the screen!
+		//  It should only move within the given region
+
+		if (
+			canvas.mouseDown &&
+			(canvas.mouseY <= sliderCircle.y + sliderCircle.radius &&
+				canvas.mouseY >= sliderCircle.y - sliderCircle.radius)
+		) {
+			if (
+				canvas.mouseX < sliderCircle.x &&
+				sliderCircle.x > posX + sliderCircle.radius
+			) {
+				sliderInitialX -= 5;
+			} else if (
+				canvas.mouseX > sliderCircle.x &&
+				sliderCircle.x < posX + sliderWidth - sliderCircle.radius
+			) {
+				sliderInitialX += 5;
+			}
+		}
+
+		//  This is the slider circle that you can drag around
+		canvas.drawCircle(sliderCircle.x, sliderCircle.y, sliderCircle.radius);
+
+		//  Calculating how much the slider has been dragged, relative to the length of the slider
+		scalingFactor = 1 + sliderInitialX / sliderWidth;
+
+		//  Display how much the slider has been dragged for convenience's sake
+		canvas.drawText(
+			posX,
+			posY + 40,
+			"Velocity: " + (velocity * scalingFactor).toString(),
+			(fontsize = 19)
+		);
+	}
+
+	// Function while will be called repeatedly
+	function drawCar(startX) {
+		//  Define the properties of the car
+		const carBody = {
+			length: 0.1 * canvas.width,
+			height: 0.08 * canvas.height,
+		};
+
+		//  Define the standard properties of the wheels
+		//  Similar to the slider circle above
+		//  Each wheel can have a unique radius too!
+		const wheel = {
+			radius: 15,
+			backWheelPosition: {
+				x: startX + 0.2 * carBody.length,
+				y: 0.8 * canvas.height - 15,
+			},
+			frontWheelPosition: {
+				x: startX + 0.8 * carBody.length,
+				y: 0.8 * canvas.height - 15,
+			},
+		};
+
+		//  Drawing the ugly car body
+		//  Perhaps you can try to make it look better!
+		canvas.setDrawMode("fill");
+		canvas.setColor("red");
+
+		canvas.drawRectangle(
+			startX,
+			0.8 * canvas.height - carBody.height - wheel.radius,
+			carBody.length,
+			carBody.height
+		);
+		canvas.drawRectangle(
+			startX + 0.2 * carBody.length,
+			0.8 * canvas.height - 1.499 * carBody.height - wheel.radius,
+			0.6 * carBody.length,
+			0.55 * carBody.height
+		);
+
+		//  Now drawing the two separate wheels
+		canvas.setDrawMode();
+		canvas.setLineThickness(3);
+		canvas.setColor("black");
+
+		canvas.drawCircle(
+			wheel.backWheelPosition.x,
+			wheel.backWheelPosition.y,
+			wheel.radius
+		);
+		canvas.drawCircle(
+			wheel.frontWheelPosition.x,
+			wheel.frontWheelPosition.y,
+			wheel.radius
+		);
+	}
+
+	function main() {
+		canvas.clear();
+
+		//  Drawing the simplistic "ground". With the "drawImage" function, you can put in something that looks better
+		canvas.setDrawMode("fill");
+		canvas.setColor("green");
+		canvas.drawRectangle(
+			0,
+			0.8 * canvas.height,
+			canvas.width,
+			0.2 * canvas.height
+		);
+
+		//  Drawing the sun, because why not? That's what we did when we were 5 years old
+		canvas.setColor("yellow");
+		canvas.drawCircle(0.9 * canvas.width, 0.1 * canvas.height, 50);
+
+		//  Calling the function to draw the car
+		//  Notice how I have split a long code into sensible-length functions
+		//  Doesn't mean you do write a thousand functions
+		drawCar(carPosition);
+
+		//  Yep the slider gets its own function!
+		//  There are calculations to be done here.
+		slider(0.1 * canvas.width, 0.1 * canvas.height, "Acceleration");
+	}
+
+	// Override functions here;
+	canvas.mainFunction = main;
+
+	//  I am basically providing my OWN implementation of the function.
+	//  This is called overriding the internal implementation
+
+	canvas.keyDownCallback = function(e) {
+		//  Key number 37 is the left arrow, 39 is right arrow
+		//  Simply Google these things
+
+		if (e.which === 37) {
+			carPosition -= velocity * scalingFactor;
+		} else if (e.which === 39) {
+			carPosition += velocity * scalingFactor;
+		}
+	};
+
+	//  Kind of setting the FPS
+	var timeStep = 50;
+	canvas.startMain(timeStep);
 </script>
-
-
-
