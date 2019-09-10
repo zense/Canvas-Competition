@@ -15,12 +15,12 @@
     var boxSideLength;
     var x;
     var y;
-    var boxlist=[];
+    var boxlist=[]; // will store the positions of all the boxes center
     var radius;
     var click;
     var i;
-    var isOccupied=[];
-    var turn;
+    var isOccupied=[];  // list of places that are occupied , initlized in setupVariable
+    var turn;  // true is cross and false is circle
 
 
     // Declare custom functions here
@@ -37,7 +37,7 @@
 
         for(i=0;i<9;i++)
         {
-            isOccupied[i] = [false,false];
+            isOccupied[i] = [false,turn];   // format [is anything present or not , what is present ]
         }
     }
     function drawHash()
@@ -58,6 +58,7 @@
     {
         canvas.drawCircle(boxlist[n][0],boxlist[n][1],radius);
     }
+    // sets the board in current place
     function setboard()
     {
         for(i=0;i<9;i++)
