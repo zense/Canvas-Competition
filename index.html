@@ -9,17 +9,103 @@
 <script>
 
     // Declare all global variables here
+    var boxNo;
+    var mouseX;
+    var mouseY;
+    var boxSideLength;
+    var x;
+    var y;
+    var boxlist=[];
+    var radius;
+    var click;
+    var i;
+    var isOccupied=[];
+    var turn;
+
 
     // Declare custom functions here
+    function setupVariables()
+    {
+        turn = false;
+        click = false;
+        i=0;
+        boxSideLength = canvas.height*0.2;
+        x = canvas.width/2;
+        y = canvas.height/2;
+        boxlist=[[x-boxSideLength,y-boxSideLength] , [x,y-boxSideLength] , [x+boxSideLength,y-boxSideLength] , [x-boxSideLength,y] , [x,y] , [x+boxSideLength,y] , [x-boxSideLength,y+boxSideLength] , [x,y+boxSideLength] , [x+boxSideLength,y+boxSideLength] ];
+        radius = boxSideLength*0.85*.5;
+
+        for(i=0;i<9;i++)
+        {
+            isOccupied[i] = [false,false];
+        }
+    }
+    function drawHash()
+    {
+        canvas.drawLine(x-boxSideLength/2 , y-boxSideLength*(3/2) , x-boxSideLength/2 , y+boxSideLength*(3/2));
+        canvas.drawLine(x+boxSideLength/2 , y-boxSideLength*(3/2) , x+boxSideLength/2 , y+boxSideLength*(3/2));
+        canvas.drawLine(x-boxSideLength*(3/2) , y-boxSideLength/2 , x+boxSideLength*(3/2) , y-boxSideLength/2);
+        canvas.drawLine(x-boxSideLength*(3/2) , y+boxSideLength/2 , x+boxSideLength*(3/2) , y+boxSideLength/2);
+    }
+
+    function cross(n)
+    {
+        canvas.drawLine(boxlist[n][0] - radius , boxlist[n][1] - radius , boxlist[n][0] + radius , boxlist[n][1] + radius);
+        canvas.drawLine(boxlist[n][0] - radius , boxlist[n][1] + radius , boxlist[n][0] + radius , boxlist[n][1] - radius);
+    }
+
+    function circleZero(n)
+    {
+        canvas.drawCircle(boxlist[n][0],boxlist[n][1],radius);
+    }
+    function setboard()
+    {
+        for(i=0;i<9;i++)
+        {
+            if(isOccupied[i][0])
+            {
+                if(isOccupied[i][1])
+                {
+                    cross(i);
+                }
+                else
+                {
+                    circleZero(i);
+                }
+            }
+        }
+    }
+
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
+        drawHash();
+        click = canvas.mouseDown;
+        if (click)
+        {
+            for(i=0;i<9;i++)
+            {
+                if(canvas.mouseDownX > boxlist[i][0] - boxSideLength/2 && canvas.mouseDownX < boxlist[i][0] + boxSideLength/2 && canvas.mouseDownY > boxlist[i][1] - boxSideLength/2 && canvas.mouseDownY < boxlist[i][1] + boxSideLength/2 )
+                {
+                    boxNo = i;
+                    break;
+                }
+            }
+            if(isOccupied[boxNo][0] == false)
+            {
+                isOccupied[boxNo] = [true,turn];
+                turn = ~turn;
+            }
+            
+        }
+        setboard();
         
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.setupFunction = setupVariables;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
