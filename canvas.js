@@ -203,7 +203,7 @@ canvas.setupFunction = function() {
 
 // Called when key is pressed
 canvas.keyDownCallback = function (e) {
-    console.log("Dummy KeyDownCallback - Override canvas.KeyDownCallback");
+    console.log(e.code+"Dummy KeyDownCallback - Override canvas.KeyDownCallback");
 }
 
 // Called when key is released
@@ -213,7 +213,7 @@ canvas.keyUpCallback = function (e) {
 
 // Called when mouse is pressed
 canvas.mouseDownCallback = function () {
-    console.log(this.mouseX+"Dummy mouseDownCallback - Override canvas.mouseDownCallback");
+    console.log("Dummy mouseDownCallback - Override canvas.mouseDownCallback");
 }
 
 // Called when mouse is released
