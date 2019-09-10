@@ -1,32 +1,140 @@
+<!--
+    Author : Prajwal Agarwal
+-->
+
+<!DOCTYPE html>
 <html>
-
-<body onload="canvas.setup()">
-    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <script src="./canvas.js"></script>
-</body>
-
+    <body onload = "canvas.setup()" bgcolor="#000000">
+        <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        <script src="./canvas.js"></script>
+    </body>
 </html>
-<script>
 
-    // Declare all global variables here
+<script>    
+    
+    var center_x;
+    var center_y;
+    var posx;
+    var posy;
+    var theta;
+    var radiusX1;
+    var radiusX2;
+    var radiusY;
+    var pathColor;
+    var count;
+    var earthx;
+    var earthy;
+    var moon_x;
+    var moon_y;
+    var timeStep = 1;
+    var circleRadius;
+    var deltarx1;
 
-    // Declare custom functions here
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
+    function setup(){
+        center_x = canvas.width/2-400;
+        center_y = canvas.height/2+100;
+        earthx = center_x-120;
+        earthy = center_y;
+        moon_x = canvas.width/2 + 400;
+        moon_y = canvas.height/2 + 100;
+        theta = 0;
+        radiusX1 = 200;
+        radiusX2 = 250;
+        radiusY = 150;
+        pathColor = '#8da899';
+        count = 0;
+        circleRadius = 2;
+        deltarx1 = 15.0;
     }
 
-    // Override functions here; 
+    //Returns Random Colors
+    function getRndColor() {
+        var r = 255*Math.random()|0,
+        g = 255*Math.random()|0,
+        b = 255*Math.random()|0;
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+
+    function drawEllipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, fill = "stroke", color){
+        canvas.setDrawMode(fill);
+        canvas.setColor(color);
+        canvas.drawEllipse(x, y, radiusX, radiusY, angle, startAngle, endAngle);
+    }
+
+    //Converts Polar to Cartesian Coordinates
+    function getposx(a){
+        return a*(Math.sin((theta*Math.PI)/180.0))+center_x;
+    }
+    function getposy(b){
+        return b*(Math.cos((theta*Math.PI)/180.0))+center_y;
+    }
+
+    //Drawing Text
+    function drawText(x,y,message,fontSize,color){
+        canvas.setColor(color);
+        canvas.drawText(x,y,message,fontSize);
+    }
+
+    //Main Loop
+    function main(){
+        drawText(100,100,"Slingshooting A Satellite",50,'#fc6f03');
+
+        drawEllipse(earthx, earthy, 100, 100, 0, 0, 360, "fill", '#3e8dcf');
+        drawEllipse(moon_x, moon_y, 50, 50, 0, 0, 360, "fill", '#8da899');
+        drawText(earthx-20, earthy, "Earth", 20, "#fc0384");
+        drawText(moon_x-20, moon_y+5, "Moon", 20, "#fc0384");
+        
+        theta ++;
+        
+        if(theta == 360){
+                theta = 0;
+                if(count<5){
+                    radiusX1 += deltarx1;
+                }
+                if(count<8)
+                count++;
+                pathColor = getRndColor();
+        }
+
+        //Revolution around Moon
+        if(count==6 && theta>90){
+            count = 7;
+            radiusX1 = 200;
+            radiusX2 = 200;
+            center_x = moon_x;
+            center_y = moon_y;
+            radiusY = 100;
+        }
+
+        //Decreasing Radius of Satellite around Moon
+        if(theta%360 == 0 && count>6){
+            radiusX1 -= 5;
+            radiusX2 -= 5;
+            radiusY -= 3;
+            radiusX1 = Math.max(radiusX1,200);
+            radiusX2 = Math.max(radiusX2,150);
+            radiusY = Math.max(radiusY,90);
+        }
+
+        //Shooting the Satellite
+        if(count == 5){
+            count = 6;
+            radiusX1 = 1000;
+        }
+
+        //Drawing Image
+        if(theta <= 180){
+            /*Draws a Circle since major axis is equal to Minor Axis */
+            drawEllipse(getposx(radiusX1), getposy(radiusY), circleRadius, circleRadius, 0, 0, 360,"fill",pathColor);
+        }else{
+            drawEllipse(getposx(radiusX2), getposy(radiusY), circleRadius, circleRadius, 0, 0, 360,"fill",pathColor);
+        }
+
+    }
+
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    canvas.setupFunction = setup;
     canvas.startMain(timeStep);
-
-
+    
     
 </script>
-
-
-
