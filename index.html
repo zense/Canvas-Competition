@@ -8,20 +8,102 @@
 </html>
 <script>
 
-    // Declare all global variables here
-
+    var center_x;
+    var center_y;
+    var v1_x; //cordinates of 1st vector 
+    var v1_y;
+    var v2_x; //cordinates of 2nd vector
+    var v2_y;
+    var res_x; //coordinates of resultant vector
+    var res_y;
+    var mg1; //magnitude of vector
+    var mg2;
+    var mgr; //magnitude of resultant vector
+    var r;
+    var scale;
+    
     // Declare custom functions here
+    function setup() {
+        mid_x = canvas.width/2;
+        mid_y = canvas.height/2;
+        center_x=0;
+        center_y=0;
+        scale=40;
+        v1_x=4;
+        v1_y=0;
+        v2_x=0;
+        v2_y=3;
+        r=canvas.height*0.02;
+        mg1=Math.sqrt((v1_x-center_x)*(v1_x-center_x)+(v1_y-center_y)*(v1_y-center_y));
+        mg2=Math.sqrt((v2_x-center_x)*(v2_x-center_x)+(v2_y-center_y)*(v2_y-center_y));
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
     }
 
+    function calculate_resultant(){
+        res_x=v1_x+v2_x-center_x;
+        res_y=v1_y+v2_y-center_y;
+        mg1=Math.sqrt((v1_x-center_x)*(v1_x-center_x)+(v1_y-center_y)*(v1_y-center_y));
+        mg2=Math.sqrt((v2_x-center_x)*(v2_x-center_x)+(v2_y-center_y)*(v2_y-center_y));
+        mgr=Math.sqrt((res_x-center_x)*(res_x-center_x)+(res_y-center_y)*(res_y-center_y));
+    }
+    function draw_arrow(x1,y1,x2,y2,colour,th,r1=r){
+        canvas.setLineThickness(th);
+        canvas.setColor(colour);
+        canvas.drawLine(mid_x+(scale*x1),mid_y-(scale*y1),mid_x+(scale*x2),mid_y-(scale*y2));
+        canvas.drawCircle(mid_x+(scale*x2),mid_y-(scale*y2),r1);
+    }
+    function print_text(x,y,message,colour="rgb(0,0,0)",size=15){
+        canvas.setColor(colour);
+        canvas.drawText(x,y,message,size);
+    }
+
+
+    // Function while will be called repeatedly 
+
+    function main() {
+        canvas.clear();
+        canvas.setColor("rgb(0,0,0)");
+        canvas.setLineThickness(1);
+        canvas.drawLine(mid_x,0,mid_x,canvas.height);
+        canvas.drawLine(0,mid_y,canvas.width,mid_y);
+
+        print_text(canvas.width*0.335,canvas.height*0.1,"VECTOR ADDITION","rgb(100,50,15)",50);
+
+
+        calculate_resultant();
+
+        draw_arrow(center_x,center_y,v1_x,v1_y,"rgb(255,0,0)",3);
+        print_text(mid_x+scale*((v1_x+center_x)/2),mid_y-scale*((v1_y+center_y)/2),"v1="+mg1.toFixed(2),"rgb(150,0,0)");
+
+        draw_arrow(center_x,center_y,v2_x,v2_y,"rgb(0,255,0)",3);
+        print_text(mid_x+scale*((v2_x+center_x)/3),mid_y-scale*((v2_y+center_y)/3),"v2="+mg2.toFixed(2),"rgb(0,150,0)");
+
+        draw_arrow(center_x,center_y,res_x,res_y,"rgb(0,0,255)",4,r*0.5);
+        print_text(mid_x+scale*((res_x+center_x)*3/4),mid_y-scale*((res_y+center_y)/2),mgr.toFixed(2),"rgb(0,0,150)");
+
+        draw_arrow(v1_x,v1_y,res_x,res_y,"rgb(0,0,0)",0.5,0);
+        draw_arrow(v2_x,v2_y,res_x,res_y,"rgb(0,0,0)",0.5,0);
+
+        if(canvas.mouseX<mid_x+scale*v1_x+r && canvas.mouseX>mid_x+scale*v1_x-r && canvas.mouseY>mid_y-scale*v1_y-r && canvas.mouseY<mid_y-scale*v1_y+r){
+            if(canvas.mouseDown==true){
+                v1_x=(canvas.mouseX-mid_x)/scale;
+                v1_y=(mid_y-canvas.mouseY)/scale;
+            }
+        }
+        if(canvas.mouseX<mid_x+scale*v2_x+r && canvas.mouseX>mid_x+scale*v2_x-r && canvas.mouseY>mid_y-scale*v2_y-r && canvas.mouseY<mid_y-scale*v2_y+r){
+            if(canvas.mouseDown==true){
+                v2_x=(canvas.mouseX-mid_x)/scale;
+                v2_y=(mid_y-canvas.mouseY)/scale;
+            }
+        }
+
+
+
+    }
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    canvas.setupFunction = setup;
+    var timeStep = 0.5;
     canvas.startMain(timeStep);
 
 
