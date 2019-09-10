@@ -21,6 +21,8 @@
     var mgr; //magnitude of resultant vector
     var r;
     var scale;
+    var flag1;
+    var flag2;
     
     // Declare custom functions here
     function setup() {
@@ -36,6 +38,7 @@
         r=canvas.height*0.02;
         mg1=Math.sqrt((v1_x-center_x)*(v1_x-center_x)+(v1_y-center_y)*(v1_y-center_y));
         mg2=Math.sqrt((v2_x-center_x)*(v2_x-center_x)+(v2_y-center_y)*(v2_y-center_y));
+        flag1=0;flag2=0;
 
     }
 
@@ -86,19 +89,29 @@
 
         if(canvas.mouseX<mid_x+scale*v1_x+r && canvas.mouseX>mid_x+scale*v1_x-r && canvas.mouseY>mid_y-scale*v1_y-r && canvas.mouseY<mid_y-scale*v1_y+r){
             if(canvas.mouseDown==true){
-                v1_x=(canvas.mouseX-mid_x)/scale;
-                v1_y=(mid_y-canvas.mouseY)/scale;
+                flag1=1;
             }
+        }
+        if(canvas.mouseDown==true && flag1==1){
+            v1_x=(canvas.mouseX-mid_x)/scale;
+            v1_y=(mid_y-canvas.mouseY)/scale;
+        }
+        if(canvas.mouseDown==false){
+            flag1=0;
         }
         if(canvas.mouseX<mid_x+scale*v2_x+r && canvas.mouseX>mid_x+scale*v2_x-r && canvas.mouseY>mid_y-scale*v2_y-r && canvas.mouseY<mid_y-scale*v2_y+r){
             if(canvas.mouseDown==true){
-                v2_x=(canvas.mouseX-mid_x)/scale;
-                v2_y=(mid_y-canvas.mouseY)/scale;
+                flag2=1;
             }
         }
-
-
-
+        if(canvas.mouseDown==true && flag2==1){
+            v2_x=(canvas.mouseX-mid_x)/scale;
+            v2_y=(mid_y-canvas.mouseY)/scale;
+        }
+        if(canvas.mouseDown==false){
+            flag2=0;
+        }
+        
     }
     // Override functions here; 
     canvas.mainFunction = main;
