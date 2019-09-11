@@ -1,7 +1,8 @@
 /*
     Developed for Zense Hackathon
     Author - Satvik Ramaprasad,
-             Shubhayu Das
+             Shubhayu Das,
+             Rohit Katlaa
 
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
 
@@ -40,6 +41,8 @@
         canvas.clear() // Clears the canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
+        
+        canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
 
 
     Optionally Override the following functions
@@ -226,3 +229,20 @@ canvas.mouseMoveCallback = function (e) {
     // console.log("Dummy mouseMoveCallback - Override canvas.mouseMoveCallback");
 }
 
+
+// This function is used to display any image on the canvas
+canvas.drawImg=function(imgPath,x,y,width=-1,height=-1){
+    var img = new Image;
+    img.src = imgPath;
+    if(width!=-1&&height!=-1)
+    {
+        img.onload = ()=>{
+            this.ctx.drawImage(img,x, y,width,height);
+        };
+    }
+    else{
+        img.onload =()=>{
+            this.ctx.drawImage(img,x, y);
+        };
+    }
+}
