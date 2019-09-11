@@ -9,15 +9,101 @@
 <script>
 
     // Declare all global variables here
-
+    var p = false;
+    var x_vel = -15;
+    var y_vel = 12;
+    
+    var tempx = 400;
+    var tempy = 300;
+    var flag = 0;
+    var flag2 = 0;
     // Declare custom functions here
-
+    function player(y_pos) {
+            canvas.drawRectangle(0,y_pos,35,150);
+    }
+    function ballUpdate(width,height,hitbox_y,)
+    {
+        if(tempx>width)
+            {
+                x_vel = x_vel * -1;
+            }
+            if(tempx < 40)
+            {
+                if(tempy>hitbox_y && tempy<hitbox_y+150)
+                    x_vel = x_vel * -1;
+                else if(tempx<0)
+                {
+                    flag++;
+                    if(flag>35)
+                        flag = 0;
+                }
+            }
+            if(tempy>height || tempy < 0)
+            {
+                y_vel = y_vel * -1;
+            }
+            tempx += x_vel;
+            tempy += y_vel;
+    }
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-        
-    }
+        var determine = Math.floor((Math.random() * 10) + 1);
+        if(flag == 0)
+        {
+            tempx = canvas.width/2;
+            tempy = canvas.height/2;
+            flag = 1;
+        }
+        if(!p)
+        {
+            canvas.drawText(canvas.width/2 - 300, canvas.height/2 - 50,"Normal Game", fontSize = 100);
+            canvas.mouseDown = 1;
+            canvas.drawRectangle(canvas.width/2 - 50,canvas.height/20 + 350,100,35);
+            //canvas.drawText(100,100,canvas.mouseDownY, fontSize = 100);
+            //canvas.drawText(100,200,canvas.mouseDownX, fontSize = 100);
+            if(canvas.mouseDownX>632 && canvas.mouseDownX<732 && canvas.mouseDownY>385 && canvas.mouseDownY<420)
+            {
+                canvas.setDrawMode("fill");
+                canvas.setColor("green");
+                canvas.drawRectangle(canvas.width/2 - 50,canvas.height/20 + 350,100,35);
+                canvas.setColor("black");
+                p = true;
+            }   
+            canvas.drawText(canvas.width/2 - 20,canvas.height/20 + 375,"Start", fontSize = 20);    
+            canvas.mouseDownX = 0;
+            canvas.mouseDownY = 0;
+            canvas.setDrawMode("stroke");
+            //canvas.drawText(20,20,p, fontSize = 20);
+        }
+        else
+        {
+            //player and ball
+            canvas.clear();
+            player(canvas.mouseY);
+            canvas.drawText(20,20,tempx, fontSize = 20);
+            canvas.drawText(40,20,tempy, fontSize = 20);
+            canvas.drawCircle(tempx,tempy,10);
+            ballUpdate(canvas.width,canvas.height,canvas.mouseY);
+            //end
 
+            // //enemy AI
+            // if(determine%2 == 0 && flag2!=1)
+            //     canvas.drawRectangle(canvas.width-35,tempy,35,150);
+            // else
+            //     {
+            //     var temp = 20;
+            //     while(temp <= determine*4)
+            //     {
+            //         canvas.clear()
+            //         canvas.drawRectangle(canvas.width-35,tempy + temp,35,150);
+            //         player(canvas.mouseY);
+            //         ballUpdate(canvas.width,canvas.height,canvas.mouseY);
+            //         temp += 1;
+            //     }
+            // }
+        }
+    
+    }
     // Override functions here; 
     canvas.mainFunction = main;
 
