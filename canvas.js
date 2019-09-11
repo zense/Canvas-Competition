@@ -2,7 +2,7 @@
     Developed for Zense Hackathon
     Author - Satvik Ramaprasad,
              Shubhayu Das,
-             Rohit Katlaa,
+             Rohit Katlaa
 
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
 
