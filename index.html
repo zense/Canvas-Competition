@@ -7,26 +7,102 @@
 
 </html>
 <script>
-
+    //Author- Arpitha Malavalli
     // Declare all global variables here
+    var center_x;
+    var center_y;
+    var radius;
+    var angle;
+    var x1;
+    var x2;
+    var y1;
+    var y2;
+    var p;
+    var m;
 
-    // Declare custom functions here
+    //Initialising some global variables .Overriding the setupFunction
+    function setup() {
+        center_x = canvas.width/2;
+        center_y = canvas.height/2;
+        p=0;
+        radius = canvas.height * 0.2;
+        angle=Math.PI;
+    }
+    //draw one radius
+    function drawRadius2(x, y, l, a) {
 
-    // Function while will be called repeatedly 
+        x2 = x - l * Math.cos(a);
+        y2 = y - l * Math.sin(a);
+        canvas.drawLine(x, y, x2, y2);
+    }
+    //draw second radius depending on angle between them a-angle
+    function drawRadius(x, y, l, a) {
+        x1 = x - l * Math.cos(a);
+        y1 = y - l * Math.sin(a);
+        canvas.drawLine(x, y, x1, y1);
+    }
+    //draws chord formed between the two radii
+    function drawChord()
+    {
+      if(x2!=x1){
+         m=(y2-y1)/(x2-x1); //slope of chord
+      }
+      else
+        {
+          m=-1/Math.tan(Math.PI/4);
+        }
+        var l1=canvas.width*0.3*Math.cos(Math.atan(m));
+        var l2=canvas.width*0.3*Math.sin(Math.atan(m));
+        //draws line according to parametric equation
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+        canvas.setLineThickness(2);
+        canvas.drawLine((x1-l1),(y1-l2),(x1+l1),(y1+l2));
+        canvas.setColor("red");
+        canvas.setLineThickness(3);
+        canvas.drawLine(x1,y1,x2,y2);
+        canvas.setLineThickness(2);
+        canvas.setColor("black");
+      }
+
+    // Function while will be called repeatedly
     function main() {
         canvas.clear();
-        
+        canvas.drawText(canvas.width/7,7*canvas.height/8,"To show that the Tangent and Diameter are limiting cases of a chord",30);
+        canvas.setColor("blue");
+        canvas.drawText(3*canvas.width/4,canvas.height/8,"slope: "+(-m),20);
+        canvas.setColor("black");
+        canvas.drawCircle(center_x, center_y, radius);
+        drawRadius(center_x,center_y,radius,Math.PI/4);
+        drawRadius2(center_x,center_y,radius,(Math.PI/4+angle));
+        drawChord()
+        if(p==0)
+        {
+        if(angle>0)
+        {angle=angle-(Math.PI/180);}
+        else {
+          p=1;
+        }
+        }
+        else
+        {
+          if(angle<Math.PI)
+          {
+            angle=angle+(Math.PI/180);
+          }
+          else {
+            p=0;
+          }
+        }
     }
 
-    // Override functions here; 
+    // Override functions here;
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
 
 
-    
+
 </script>
-
-
-
