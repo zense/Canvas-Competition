@@ -9,24 +9,157 @@
 <script>
 
     // Declare all global variables here
+    var player_pos_x;
+    var player_pos_y;
+    var vehicle1_posx;
+    var vehicle2_posx;
+    var vehicle3_posx;
+    var vehicle_l;                //Vehicle length
+    var vehicle_h                 //Vehicle breadth
 
     // Declare custom functions here
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
+    //Global variables cant be initialised above.Setup function must be overriden with custom function that initialises our global variables.
+    function setup() {
+      player_pos_x=canvas.width/2;
+      player_pos_y=canvas.height*0.9;
+      vehicle1_posx=canvas.width*0.4;
+      vehicle2_posx=canvas.width*0;
+      vehicle3_posx=canvas.width*0.4;
+      vehicle_l=0.2*canvas.height;
+      vehicle_h=0.16*canvas.height;
     }
 
-    // Override functions here; 
+    //Draw the three roads. Basically drawing three huge rectangles!
+    function draw_path(){
+      canvas.setDrawMode("fill");
+      canvas.setColor("rgb(71, 209, 73)");     //Got these from rgb color picker ;)
+      canvas.drawRectangle(0,canvas.height*0.2,canvas.width,canvas.height*0.2);
+      canvas.setColor("rgb(199, 135, 76)");
+      canvas.drawRectangle(0,canvas.height*0.4,canvas.width,canvas.height*0.2);
+      canvas.setColor("rgb(68, 117, 115)");
+      canvas.drawRectangle(0,canvas.height*0.6,canvas.width,canvas.height*0.2);
+
+    }
+
+    function draw_markings_on_path()   //Efforts to make the road look more like a road.
+    {
+      canvas.setColor("rgb(181, 235, 182)");
+      canvas.drawRectangle(canvas.width*0.05,canvas.height*0.28,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.45,canvas.height*0.28,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.85,canvas.height*0.28,canvas.width*0.15,canvas.height*0.04);
+      canvas.setColor("rgb(232, 223, 167)");
+      canvas.drawRectangle(canvas.width*0.05,canvas.height*0.48,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.45,canvas.height*0.48,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.85,canvas.height*0.48,canvas.width*0.15,canvas.height*0.04);
+      canvas.setColor("rgb(211, 221, 224)");
+      canvas.drawRectangle(canvas.width*0.05,canvas.height*0.68,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.45,canvas.height*0.68,canvas.width*0.15,canvas.height*0.04);
+      canvas.drawRectangle(canvas.width*0.85,canvas.height*0.68,canvas.width*0.15,canvas.height*0.04);
+
+    }
+
+    function vehicles()
+    {
+      canvas.setDrawMode("fill");
+      canvas.setColor("rgb(16, 3, 43)");
+      canvas.drawRectangle(vehicle3_posx,0.22*canvas.height,vehicle_l,vehicle_h);
+      canvas.drawRectangle(vehicle2_posx,0.42*canvas.height,vehicle_l,vehicle_h);
+      canvas.drawRectangle(vehicle1_posx,0.62*canvas.height,vehicle_l,vehicle_h);
+
+    }
+
+    function update_vehicle_pos()
+    {
+        vehicle3_posx+=(canvas.width*0.04); //Every frame x_coordinate will change by canvas.width*0.04.
+        if(vehicle3_posx>=canvas.width)
+        {
+          vehicle3_posx=canvas.width*0; // When the vehicle goes out of the screen. It should start coming from the left again.This line takes care of that.
+        }
+
+        vehicle2_posx+=(canvas.width*0.01);
+        if(vehicle2_posx>=canvas.width)
+        {
+          vehicle2_posx=canvas.width*0;
+        }
+
+        vehicle1_posx+=(canvas.width*0.01);
+        if(vehicle1_posx>=canvas.width)
+        {
+          vehicle1_posx=canvas.width*0;
+        }
+
+    }
+
+    function reset()      //Brings player back to his original position.
+    {
+      player_pos_x=canvas.width/2;
+      player_pos_y=canvas.height*0.9;
+      vehicle1_posx=canvas.width*0.4;
+      vehicle2_posx=canvas.width*0;
+      vehicle3_posx=canvas.width*0.4;
+      canvas.drawText(0.2*canvas.width,0.04*canvas.height,"Start Again");
+
+    }
+
+    function point_lies_inside_vehicle(vehicle_x,vehicle_y,pos_x,pos_y)  //This function helps to check if the player has collided with the vehicle. verifies if coordinates of player are inside the rectangle or not. Just math!
+    {
+      if(pos_x>= vehicle_x && pos_x<= vehicle_x+vehicle_l && pos_y >=vehicle_y && pos_y <= vehicle_h+vehicle_y)
+      {
+        return 1;
+      }
+      else {
+        return 0;
+      }
+    }
+
+    // Function while will be called repeatedly
+    function main() {
+        canvas.clear();
+        canvas.setDrawMode("fill");
+        draw_path();
+        draw_markings_on_path();
+        vehicles();
+        update_vehicle_pos();
+        canvas.setColor("black");
+        canvas.drawCircle(player_pos_x,player_pos_y,30);       //Drawing the player(here a black circle)
+        canvas.drawText(0.3*canvas.width,0.08*canvas.height,"CROSS THE ROADS WITHOUT GETTING HIT TO WIN!");
+
+        //Reset if the player goes out of the screen(Canvas)
+        if(player_pos_x<=0*canvas.width || player_pos_x>=canvas.width || player_pos_y>=canvas.height || player_pos_y<=0*canvas.height)
+        {
+          reset();
+        }
+
+        //If player collides with any of the three vehicles, then reset!
+        if(point_lies_inside_vehicle(vehicle3_posx,0.22*canvas.height,player_pos_x,player_pos_y) || point_lies_inside_vehicle(vehicle2_posx,0.42*canvas.height,player_pos_x,player_pos_y) || point_lies_inside_vehicle(vehicle1_posx,0.62*canvas.height,player_pos_x,player_pos_y))
+        {
+          reset();
+        }
+
+
+    }
+
+    // Override functions here;
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
+
+    canvas.keyDownCallback = function(e) {
+  		if (e.which === 37) {
+  			player_pos_x-=0.01*canvas.width;
+  		} else if (e.which === 39) {
+        player_pos_x+=0.01*canvas.width;
+  		}
+      else if(e.which==38)
+      {
+        player_pos_y-=0.01*canvas.width;
+      }
+      else if(e.which==40)
+      {
+        player_pos_y+=0.01*canvas.width;
+      }
+  	};
 
     var timeStep = 50;
     canvas.startMain(timeStep);
 
-
-    
 </script>
-
-
-
