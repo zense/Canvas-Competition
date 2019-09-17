@@ -1,74 +1,224 @@
 <html>
 
-<body onload="canvas.setup()">
+<body onload="canvas.setup();globalInitialize();">
     <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
-    //Work by Karthik Sama
+
     // Declare all global variables here
-    var head_x
-    var head_y
-    var radius
-    var body
-    var leg_main
-    var leg_extend
-    var hand_main
-    var hand_extend
-    var amount = 0;
-    var bool = 1;
-    // Declare custom functions here
-    function setup()
+    var start = 0;
+    var shift = 0;
+    var gap;
+    var state = 0;
+    var divider = [];
+    var width;
+    var height;
+    var player_car; 
+    var opp_car = []; //array to hold obstracle objects
+    var gameover = 0; //state of game
+    var score = 0; //variable that keeps chak of score, score = no. of obstracles passed.
+    // To initialize the height and width dependent variables adter canvas loads
+    function globalInitialize()
     {
-        head_x = canvas.width/2;
-        head_y = canvas.height/4;
-        radius = canvas.height*0.06;
-        body = canvas.height*0.275;
-        leg_main = canvas.height*0.15;
-        leg_extend = leg_main*0.9;
-        hand_main = canvas.height*0.12;
-        hand_extend = hand_main*0.8
+        // alert(width)
+        width = canvas.width;
+        height = canvas.height;
+        divider.push(new Divider(width/2-width/128,-3*(height/18),height/128));
+        divider.push(new Divider(width/2-width/128,2*(height/18),height/128));
+        divider.push(new Divider(width/2-width/128,7*(height/18),height/128));
+        divider.push(new Divider(width/2-width/128,12*(height/18),height/128));
+        divider.push(new Divider(width/2-width/128,17*(height/18),height/128));
+        player_car = new Car(width/2-3*width/32,5*height/6,height/32,-height/64,"#1E90FF","#00BFFF");
+        opp_car.push(new Car(width/2-3*width/32,0,-height/6,height/64,"#8B008B","#EE82EE"));
+        gap = 5*height/6;
     }
-    function drawSegment(x, y, l, angle) {
-        var x2 = x + l * Math.cos(angle);
-        var y2 = y + l * Math.sin(angle);
-        canvas.drawLine(x, y, x2, y2);
-        return [x2,y2];
+    // Declare custom functions here
+    // To handle white rectangles of divider
+    class Divider {
+        constructor(x_cord,y_cord,speed){
+            this.x_cord = x_cord;
+            this.y_cord = y_cord;
+            this.stop = 0;
+            this.speed = speed;
+        }
+        move() {
+            if(this.stop == 0)
+            {
+                if(this.y_cord < height)
+                    this.y_cord = this.y_cord+ this.speed;
+                else
+                    this.y_cord = -(7*height/18);    
+            }
+            canvas.setDrawMode("fill")
+            canvas.setColor("white");
+            canvas.drawRectangle(this.x_cord,this.y_cord,width/64,4*(height/18));
+        }
+        set_speed(speed)
+        {
+            this.speed = speed;
+        }
+        hault(boolean)
+        {
+            if(boolean == 1)
+                this.stop = 1;
+            else
+                this.stop = 0;
+        }
     }
-    // Function while will be called repeatedly 
+    //Car instance to capsulate it's dimensions and methods.
+    class Car {
+        constructor(x_cord,y_cord,speedx,speedy,color1,color2) {
+            this.x_cord = x_cord;
+            this.y_cord = y_cord;
+            this.stop = 0;
+            this.speedx = speedx;
+            this.speedy = speedy;
+            this.color1 = color1;
+            this.color2 = color2;
+            this.cross = 0;
+        }
+        move_y() {
+            if(this.stop == 0)
+            {
+                if(this.y_cord < 3*height/2)
+                    this.y_cord = this.y_cord + this.speedy;
+            }
+            canvas.setDrawMode("fill")
+            canvas.setColor(this.color1);
+            canvas.drawRectangle(this.x_cord,this.y_cord,width/16,height/6);
+            canvas.setColor(this.color2);
+            canvas.drawRectangle(this.x_cord+width/64,this.y_cord+height/24,width/32,height/12);
+            canvas.setColor("black")
+            canvas.drawRectangle(this.x_cord-width/256,this.y_cord+height/48,width/128,height/24,height/180);
+            canvas.drawRectangle(this.x_cord-width/256,this.y_cord+5*height/48,width/128,height/24,height/180);
+            canvas.drawRectangle(this.x_cord+width/16-width/256,this.y_cord+height/48,width/128,height/24,height/180);
+            canvas.drawRectangle(this.x_cord+width/16-width/256,this.y_cord+5*height/48,width/128,height/24,height/180);
+        }
+        move_x(dir)
+        {
+            if(gameover == 0)
+            {
+                if(dir == 0 && this.x_cord - this.speedx > 3*width/8)
+                    this.x_cord = this.x_cord - this.speedx;
+                else if(dir == 1 && this.x_cord + width/16 + this.speedx < 5*width/8)
+                    this.x_cord = this.x_cord + this.speedx;
+            }
+        }
+        set_speed(speed)
+        {
+            this.speed = speed;
+        }
+        hault(boolean)
+        {
+            if(boolean == 1)
+                this.stop = 1;
+            else
+                this.stop = 0;
+        }
+        y_pos()
+        {
+            return this.y_cord;
+        }
+        check_crossed()
+        {
+            return this.cross;
+        }
+        set_crossed()
+        {
+            this.cross = 1;
+        }
+        clash(oppCar)
+        {
+            if((this.y_cord <= oppCar.y_cord + height/6 && this.y_cord >= oppCar.y_cord) || (this.y_cord  <= oppCar.y_cord  && this.y_cord + height/6 >= oppCar.y_cord))
+            {
+                if((this.x_cord >= oppCar.x_cord && this.x_cord <= oppCar.x_cord + width/16) || (this.x_cord + width/16 >= oppCar.x_cord && this.x_cord <= oppCar.x_cord))
+                    return true;
+            }
+            return false;
+        }
+    }
     function main() {
         canvas.clear();
-        var new_point;
-        update_head_y = head_y-amount*canvas.height*0.003;
-        //head and body
-        canvas.drawCircle(head_x,update_head_y,radius);
-        drawSegment(head_x,update_head_y+radius,body,Math.PI/2);
-        //hands
-        new_point = drawSegment(head_x,update_head_y+radius+body/3,hand_main,Math.PI/6-amount*Math.PI/45);
-        drawSegment(new_point[0],new_point[1],hand_extend,35*Math.PI/18-amount*Math.PI/45);
-        new_point = drawSegment(head_x,update_head_y+radius+body/3,hand_main,5*Math.PI/6+amount*Math.PI/45);
-        drawSegment(new_point[0],new_point[1],hand_extend,19*Math.PI/18+amount*Math.PI/45);
-        //legs
-        new_point = drawSegment(head_x,update_head_y+radius+body,leg_main,8*Math.PI/18-amount*Math.PI/120);
-        drawSegment(new_point[0],new_point[1],leg_extend,Math.PI/2+amount*Math.PI/240);
-        new_point = drawSegment(head_x,update_head_y+radius+body,leg_main,7*Math.PI/12+amount*Math.PI/120);
-        drawSegment(new_point[0],new_point[1],leg_extend,Math.PI/2-amount*Math.PI/240);
-        
-        if(amount == 10)
-            bool = 0;
-        else if(amount == 0)
-            bool = 1;
-        if(bool ==  1)
-            amount++;
+        canvas.setDrawMode("fill");
+        canvas.setColor("green");
+        canvas.drawRectangle(0,0,width,height);
+        canvas.setColor("grey");
+        canvas.drawRectangle(width/2-width/8,0,width/4,height);
+        canvas.setColor("white");
+        canvas.drawText(width/8-width/128,7*height/16-height/32,"Traffic",height/8);
+        canvas.drawText(width/8+width/128,9*height/16-height/32,"Rush",height/8);
+        canvas.drawText(width/32,20*height/32,"Use left and right arrow keys to move avoid collision",height/32);
+        canvas.drawText(24*width/32,height/2-height/16,"Score",3*height/32);
+        canvas.drawText(51*width/64,height/2+height/16,score,height/8);
+        //before obstracles start to begin move the player car ahead
+        if(player_car.y_pos() > 7*height/12)
+        {
+            for (var i = 0; i < 5 ; i++)
+                divider[i].hault(1);
+            player_car.hault(0);
+            for (var i = 0; i < 5 ; i++)
+                divider[i].move();
+        }
+        //once obstracles start move the divider and put player car static
         else
-            amount--;
+        {
+            for(var i = 0 ; i < opp_car.length ; i++)
+            {
+                if(player_car.clash(opp_car[i]))
+                {
+                    gameover = 1;
+                    break;
+                }
+            }
+            for (var i = 0; i < 5; i++)
+                divider[i].hault(gameover);
+            for (var i = 0; i < opp_car.length; i++)
+                opp_car[i].hault(gameover);
+            player_car.hault(1);
+            for (var i = 0; i < 5 ; i++)
+                divider[i].move();
+            for(var i = 0 ; i < opp_car.length; i++)
+            {
+                if(opp_car[i].y_pos() > height)
+                    opp_car.shift();
+            }     
+            for (var i = 0; i < opp_car.length; i++)
+            {
+                if(opp_car[i].y_pos() > 7*height/12 + height/6 && opp_car[i].check_crossed() == 0)
+                {
+                    opp_car[i].set_crossed();
+                    score++;
+                }
+                opp_car[i].move_y();
+            }
+            if(opp_car.length == 0 || opp_car[opp_car.length-1].y_pos() >= gap)
+            {
+                var random_x = Math.floor(Math.random()*8)+2;
+                opp_car.push(new Car(3*width/8+random_x*(width/64),-height/6,0,height/64+height/2048*score,"#8B008B","#EE82EE"));
+                gap = gap-height/512;
+            }
+            if(gameover == 1)
+            {
+                canvas.setColor('red');
+                canvas.setDrawMode('fill');
+                canvas.drawText(width/2-width/16,height/2-height/32,"Game Over",height/16)
+            }
+        }
+        player_car.move_y();
     }
     // Override functions here; 
     canvas.mainFunction = main;
-    canvas.setupFunction = setup;
+    //for left an right motion of car
+	canvas.keyDownCallback = function(e) {
+		if (e.which == 37) {
+			player_car.move_x(0);
+		} else if (e.which === 39) {
+            player_car.move_x(1);
+		}
+	};
     var timeStep = 50;
     canvas.startMain(timeStep);
-    
 </script>
