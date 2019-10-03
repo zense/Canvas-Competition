@@ -90,27 +90,27 @@
         //Mercury
         merOrb = Orbit(40);
         merP = Planet(merOrb, 0.20*sunR, merT, "#676767");
-        merT += 1;    
+        merT += 0.1;    
         
         //Venus
         venOrb = Orbit(60);
         venP = Planet(venOrb, 0.45*sunR, venT, "#d7b95e");
-        venT += 0.8;
+        venT += 0.078;
 
         //Earth
         earOrb = Orbit(80);
         earP = Planet(earOrb, 0.47*sunR, earT, "#0077be");
-        earT += 0.7;
+        earT += 0.066;
 
         //Mars
         marOrb = Orbit(100);
         marP = Planet(marOrb, 0.30*sunR, marT, "#934838");
-        marT += 0.4;
+        marT += 0.053;
 
         //Jupiter
         jupOrb = Orbit(140);
         jupP = Planet(jupOrb, 0.47*sunR, jupT, "#e36e4b");
-        jupT += 0.09;
+        jupT += 0.029;
 
         //Saturn 
         satOrb = Orbit(190);
@@ -121,17 +121,17 @@
         canvas.setDrawMode("stroke");
         canvas.setColor("#C5ABAB");
         canvas.drawCircle(canvas.width/2 + ringX, canvas.height/2 + ringY, 0.9*sunR);
-        satT += 0.06;
+        satT += 0.021;
 
         //Uranus
         uraOrb = Orbit(260);
         uraP = Planet(uraOrb, 0.47*sunR, uraT, "#73ACAC");
-        uraT += 0.04;
+        uraT += 0.015;
 
         //Neptune
         nepOrb = Orbit(360);
         nepP = Planet(nepOrb, 0.47*sunR, nepT, "#6495ed");
-        nepT += 0.009;
+        nepT += 0.01;
 
         //If you want to try something on this, try adding moons to planets lol
     }
