@@ -42,6 +42,7 @@
     }
     function drawHash()
     {
+        canvas.setColor("black");
         canvas.drawLine(x-boxSideLength/2 , y-boxSideLength*(3/2) , x-boxSideLength/2 , y+boxSideLength*(3/2));
         canvas.drawLine(x+boxSideLength/2 , y-boxSideLength*(3/2) , x+boxSideLength/2 , y+boxSideLength*(3/2));
         canvas.drawLine(x-boxSideLength*(3/2) , y-boxSideLength/2 , x+boxSideLength*(3/2) , y-boxSideLength/2);
@@ -50,12 +51,14 @@
 
     function cross(n)
     {
+        canvas.setColor("red");
         canvas.drawLine(boxlist[n][0] - radius , boxlist[n][1] - radius , boxlist[n][0] + radius , boxlist[n][1] + radius);
         canvas.drawLine(boxlist[n][0] - radius , boxlist[n][1] + radius , boxlist[n][0] + radius , boxlist[n][1] - radius);
     }
 
     function circleZero(n)
     {
+        canvas.setColor("green");
         canvas.drawCircle(boxlist[n][0],boxlist[n][1],radius);
     }
     // sets the board in current place
