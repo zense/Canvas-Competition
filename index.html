@@ -1,32 +1,146 @@
 <html>
-
-<body onload="canvas.setup()">
-    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <script src="./canvas.js"></script>
-</body>
-
+    <body onload="canvas.setup()">
+        <canvas id="canvasArea"
+        style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        <script src="./canvas.js"></script>
+    </body>
 </html>
+
 <script>
+    //A simple solar-system model
+    //AUTHOR: Sai Rithwik M (@DaKeiser)
+    //Time of revolution, planet sizes, orbit radii are NOT ACCORDING TO SCALE
+    //Made the orbits using circles but once the ellipse feature comes the orbits could be updated along with time of revolution at different points along orbit
 
     // Declare all global variables here
 
+    //Radius of sun is taken here so that we can write other planet radii in terms of Sun's radii(Eg: line90)
+    const sunR = 17;
+    //Revolution time of planets 
+    var merT;
+    var venT;
+    var earT;
+    var marT;
+    var jupT;
+    var satT;
+    var uraT;
+    var nepT;
+
+
     // Declare custom functions here
 
-    // Function while will be called repeatedly 
+    function setup() 
+    {
+        merT = 0 ;
+        venT = 0 ;
+        earT = 0 ;
+        marT = 0 ;
+        jupT = 0 ;
+        satT = 0 ;
+        uraT = 0 ;
+        nepT = 0 ;
+    }
+
+    //RETURNS *radius* of the orbit so that it can be used in the *planet* function
+    //Creating a basic template for Orbit and Planet so that they can be used again and again without needing to tyoe the entire code for each planet
+    //This is called Object Oriented Programming
+    
+    //Orbit takes in the radius 
+    //And yeah it returns the radius too :P, so that it can be used in the next function
+    var Orbit = function orbit(radius)
+    {
+        r = radius;
+        //Refer canvas.js to understand what the bottom 3 functions do
+        canvas.setDrawMode("stroke");
+        canvas.setColor("#5a5a5a");
+        canvas.drawCircle(canvas.width/2, canvas.height/2, radius);
+        return r;
+    }
+
+    //pOrbit = takes in the radius of it's orbit so that revolution can be done around the orbit
+    var Planet = function planet(pOrbit, pRadius, time, color)
+    {
+        orbitR = pOrbit; //orbit's radius
+        var centreX = orbitR * Math.cos(time * (Math.PI / 180)); //rcos(theta)
+        var centreY = orbitR * Math.sin(time * (Math.PI / 180)); //rsin(theta)
+        //Refer canvas.js to understand what the bottom 3 functions do
+        canvas.setDrawMode("fill");
+        canvas.setColor(color);
+        canvas.drawCircle(canvas.width/2 + centreX, canvas.height/2 + centreY, pRadius);
+    }
+
     function main() {
         canvas.clear();
+
+        //setBG
+        canvas.setDrawMode("fill");
+        canvas.setColor("#000000");
+        canvas.drawRectangle(0, 0, canvas.width, canvas.height)
+
+        //Sun
+        canvas.setDrawMode("fill");
+        canvas.setColor("#FDB813");
+        canvas.drawCircle(canvas.width/2, canvas.height/2, sunR);
+
+        //Terminology for planets and their orbits
+        //planetOrb = creates an circular orbit using the function *orbit* as defined above
+        //planetP = creates a planet with appropriate dimensions as specified in the function *planet* above
+        //planetT = revolution period for the planet
+
+        //Mercury
+        merOrb = Orbit(40);
+        merP = Planet(merOrb, 0.20*sunR, merT, "#676767");
+        merT += 0.1;    
         
+        //Venus
+        venOrb = Orbit(60);
+        venP = Planet(venOrb, 0.45*sunR, venT, "#d7b95e");
+        venT += 0.078;
+
+        //Earth
+        earOrb = Orbit(80);
+        earP = Planet(earOrb, 0.47*sunR, earT, "#0077be");
+        earT += 0.066;
+
+        //Mars
+        marOrb = Orbit(100);
+        marP = Planet(marOrb, 0.30*sunR, marT, "#934838");
+        marT += 0.053;
+
+        //Jupiter
+        jupOrb = Orbit(140);
+        jupP = Planet(jupOrb, 0.47*sunR, jupT, "#e36e4b");
+        jupT += 0.029;
+
+        //Saturn 
+        satOrb = Orbit(190);
+        satP = Planet(satOrb, 0.47*sunR, satT, "#C5AB6E");
+        //Saturn Rings XD
+        ringX = satOrb * Math.cos(satT * (Math.PI / 180)); //rcos(theta)
+        ringY = satOrb * Math.sin(satT * (Math.PI / 180)); //rsin(theta)
+        canvas.setDrawMode("stroke");
+        canvas.setColor("#C5ABAB");
+        canvas.drawCircle(canvas.width/2 + ringX, canvas.height/2 + ringY, 0.9*sunR);
+        satT += 0.021;
+
+        //Uranus
+        uraOrb = Orbit(260);
+        uraP = Planet(uraOrb, 0.47*sunR, uraT, "#73ACAC");
+        uraT += 0.015;
+
+        //Neptune
+        nepOrb = Orbit(360);
+        nepP = Planet(nepOrb, 0.47*sunR, nepT, "#6495ed");
+        nepT += 0.01;
+
+        //If you want to try something on this, try adding moons to planets lol
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
 
-    var timeStep = 50;
+    var timeStep = 1;
     canvas.startMain(timeStep);
-
-
     
 </script>
-
-
-
