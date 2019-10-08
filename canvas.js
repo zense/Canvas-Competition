@@ -2,17 +2,14 @@
     Developed for Zense Hackathon
     Author - Satvik Ramaprasad,
              Shubhayu Das,
+             Prajwal Agarwal.
              Rohit Katlaa
-
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
-
     Instructions for users
     1) You need not understand the code here to be able to use it. 
     2) Understanding the API below should be enough
     3) See examples to get started
-
     API Documentation
-
     Helpful Canvas Variables
         canvas.height // Height
         canvas.width // Width
@@ -22,7 +19,6 @@
         canvas.mouseDownX // Last Position of mouse press x coordinate
         canvas.mouseDownY // Last Position of mouse press y coordinate
         canvas.drawMode  // Fill in a shape or just draw the border
-
     Helpful Canvas Functions
         canvas.setDrawMode(mode)   // Set the drawMode variable to "stroke" or "fill"
         canvas.setColor(color)  // Set the color of the shape(s) to the given color. Default color is black(#000000)
@@ -31,20 +27,17 @@
                                 //    2. "#F54680"
                                 //    3. "rgb(100,100,100)"
                                 //    4. "rgba(100,100,101,0.3)"
-
         canvas.setLineThickness(width)  // Set the thickness of the lines while in "fill draw mode". Default value is 1.
-
         canvas.draw()   //  Draws the various shapes according to the drawing mode.
         canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
+        canvas.drawEllipse(x, y, a, b, angle, startAngle, endAngle) // Draws an Ellipse with center(x,y) with major axis = a, minor axis = b at an angle theta given the startAngle And Endangle
         canvas.clear() // Clears the canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
         
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
-
-
     Optionally Override the following functions
         canvas.mouseDownCallback() // Called when mouse is pressed
         canvas.mouseUpCallback() // Called when mouse is released
@@ -53,7 +46,6 @@
         canvas.keyUpCallback() // Called when mouse is released
         canvas.keyUpCallback() // Called when mouse is released
         canvas.mainFunctin() // Called when mouse is released
-
 */
 
 // Canvas State Variables
@@ -134,11 +126,21 @@ canvas.drawRectangle = function(x, y, width, height) {
     this.draw();
 }
 
+//Draws Ellipse 
+canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
+    endAngle = (endAngle/180.0)*Math.PI;
+    this.ctx.beginPath();
+    this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
+    this.draw();
+    this.ctx.closePath();
+}
+
 // Draws <message> at (x, y) 
 canvas.drawText = function(x, y, message, fontSize = 30) {
     this.ctx.font = fontSize + "px Arial";
     this.ctx.fillText(message, x, y);
 }
+
 
 // Clear canvase
 canvas.clear = function() {
@@ -226,7 +228,7 @@ canvas.mouseUpCallback = function () {
 
 // Called when mouse is moved
 canvas.mouseMoveCallback = function (e) {
-    // console.log("Dummy mouseMoveCallback - Override canvas.mouseMoveCallback");
+    console.log("Dummy mouseMoveCallback - Override canvas.mouseMoveCallback");
 }
 
 
