@@ -39,9 +39,9 @@
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
         canvas.clear() // Clears the canvas
+	canvas.update()  // updates the screen with changes made on canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
-        
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
 
 
@@ -52,7 +52,7 @@
         canvas.keyDownCallback() // Called when key is pressed
         canvas.keyUpCallback() // Called when mouse is released
         canvas.keyUpCallback() // Called when mouse is released
-        canvas.mainFunctin() // Called when mouse is released
+        canvas.mainFunction() // Called when mouse is released
 
 */
 
@@ -61,6 +61,7 @@ canvas = {
     ctx: undefined,
     height: undefined,
     width: undefined,
+    buffers: [],
     mouseX: 0,
     mouseY: 0,
     mouseDown: false,
@@ -68,17 +69,23 @@ canvas = {
     mouseDownY: 0,
     keysDown: {},
     drawMode: "stroke",
+    activeBuffer: 1,
 }
 
 // Canvas Setup function
 canvas.setup = function () {
     // extract canvas object and set attributes correctly
-    this.ctx = document.getElementById("canvasArea").getContext("2d");
+    
+    this.buffers.push(document.getElementById("canvasArea1").getContext("2d"));
+    this.buffers.push(document.getElementById("canvasArea2").getContext("2d"));
+    this.ctx = this.buffers[this.activeBuffer];
     this.height = window.innerHeight;
     this.width = window.innerWidth;
 
-    document.getElementById("canvasArea").width = this.width;
-    document.getElementById("canvasArea").height = this.height;
+    document.getElementById("canvasArea1").width = this.width;
+    document.getElementById("canvasArea1").height = this.height;
+    document.getElementById("canvasArea2").width = this.width;
+    document.getElementById("canvasArea2").height = this.height;
 
     // Start listeners
     this.startListeners();
@@ -94,13 +101,20 @@ canvas.setDrawMode = function(mode = "stroke") {
 
 // Set the color of the shape(s) for drawing
 canvas.setColor = function(color) {
-    this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = color;
+    
+    this.buffers[1].fillStyle = color;
+    this.buffers[2].fillStyle = color;
+    this.buffers[1].strokeStyle = color;
+    this.buffers[2].strokeStyle = color;
+
 };
 
 // Sets the thickness of the line of the shapes in strokes
 canvas.setLineThickness = function(width = 1) {
-    this.ctx.lineWidth = width;
+
+    this.buffers[1].lineWidth = width;
+    this.buffers[2].lineWidth = width;
+    
 };
 
 // Draws the shape according to the drawMode(solid fill or border stroke style)
@@ -140,9 +154,24 @@ canvas.drawText = function(x, y, message, fontSize = 30) {
     this.ctx.fillText(message, x, y);
 }
 
-// Clear canvase
+// Clear canvas
 canvas.clear = function() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    this.buffers[1].clearRect(0, 0, this.width, this.height);
+    this.buffers[2].clearRect(0, 0, this.width, this.height);
+    
+}
+
+//update the canvas to display changes made.
+canvas.update = function(){
+
+    this.buffers[1 - this.activeBuffer].canvas.style.visibility = 'hidden';
+    this.buffers[this.activeBuffer].canvas.style.visibility = 'visible';
+    this.activeBuffer = 1 - this.activeBuffer;
+
+    this.buffers[this.activeBuffer].clearRect(0, 0, this.width, this.height);    
+    this.ctx = this.buffers[this.activeBuffer];
+
 }
 
 // Function which will setup calling of canvas.mainFunction every <timeStep> milliseconds
