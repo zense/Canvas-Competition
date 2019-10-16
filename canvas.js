@@ -50,9 +50,8 @@
         canvas.mouseUpCallback() // Called when mouse is released
         canvas.mouseMoveCallback() // Called when mouse is moved
         canvas.keyDownCallback() // Called when key is pressed
-        canvas.keyUpCallback() // Called when mouse is released
-        canvas.keyUpCallback() // Called when mouse is released
-        canvas.mainFunction() // Called when mouse is released
+        canvas.keyUpCallback() // Called when key is released
+        canvas.mainFunction() // Main function which is called every <timeStep> milliseconds when canvas.startMain() is called
 
 */
 
