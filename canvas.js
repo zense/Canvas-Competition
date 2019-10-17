@@ -39,9 +39,10 @@
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
         canvas.clear() // Clears the canvas
-	canvas.update()  // updates the screen with changes made on canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
+        canvas.ActivateDoubleBuffer() //call in setup to use double buffering in your program.
+        canvas.update()  // updates the screen with changes made on canvas(use only with double buffering).
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
 
 
@@ -50,8 +51,9 @@
         canvas.mouseUpCallback() // Called when mouse is released
         canvas.mouseMoveCallback() // Called when mouse is moved
         canvas.keyDownCallback() // Called when key is pressed
-        canvas.keyUpCallback() // Called when key is released
-        canvas.mainFunction() // Main function which is called every <timeStep> milliseconds when canvas.startMain() is called
+        canvas.keyUpCallback() // Called when mouse is released
+        canvas.keyUpCallback() // Called when mouse is released
+        canvas.mainFunction() // Called when mouse is released
 
 */
 
@@ -68,7 +70,7 @@ canvas = {
     mouseDownY: 0,
     keysDown: {},
     drawMode: "stroke",
-    activeBuffer: 1,
+    activeBuffer: 0,
 }
 
 // Canvas Setup function
@@ -93,6 +95,12 @@ canvas.setup = function () {
     this.setupFunction();
 }
 
+//call in setup to use double buffering in your program
+canvas.activateDoubleBuffer = function()
+{
+    activeBuffer = 1;
+}
+
 // Set the drawing mode to solid fill or border stroke
 canvas.setDrawMode = function(mode = "stroke") {
     this.drawMode = (mode === "fill")? "fill" : "stroke";
@@ -102,9 +110,9 @@ canvas.setDrawMode = function(mode = "stroke") {
 canvas.setColor = function(color) {
     
     this.buffers[1].fillStyle = color;
-    this.buffers[2].fillStyle = color;
+    this.buffers[0].fillStyle = color;
     this.buffers[1].strokeStyle = color;
-    this.buffers[2].strokeStyle = color;
+    this.buffers[0].strokeStyle = color;
 
 };
 
@@ -112,7 +120,7 @@ canvas.setColor = function(color) {
 canvas.setLineThickness = function(width = 1) {
 
     this.buffers[1].lineWidth = width;
-    this.buffers[2].lineWidth = width;
+    this.buffers[0].lineWidth = width;
     
 };
 
@@ -157,11 +165,11 @@ canvas.drawText = function(x, y, message, fontSize = 30) {
 canvas.clear = function() {
 
     this.buffers[1].clearRect(0, 0, this.width, this.height);
-    this.buffers[2].clearRect(0, 0, this.width, this.height);
+    this.buffers[0].clearRect(0, 0, this.width, this.height);
     
 }
 
-//update the canvas to display changes made.
+//update the canvas to display changes made( use only with double buffering).
 canvas.update = function(){
 
     this.buffers[1 - this.activeBuffer].canvas.style.visibility = 'hidden';
