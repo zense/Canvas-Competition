@@ -62,7 +62,6 @@ canvas = {
     ctx: undefined,
     height: undefined,
     width: undefined,
-    buffers: [],
     mouseX: 0,
     mouseY: 0,
     mouseDown: false,
@@ -70,6 +69,7 @@ canvas = {
     mouseDownY: 0,
     keysDown: {},
     drawMode: "stroke",
+    buffers: [],
     activeBuffer: 0,
 }
 
