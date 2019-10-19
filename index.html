@@ -1,3 +1,7 @@
+<!--
+    Author : Hrithik Sharma
+-->
+
 <html>
 
 <body onload="canvas.setup()">
@@ -8,20 +12,125 @@
 </html>
 <script>
 
-    // Declare all global variables here
 
-    // Declare custom functions here
+    var c_x;  //center of axis
+    var c_y;
+    var r;      //radius 
+    var scale;      // scalling factor of the axis
+    var mid_x;      // mid point of canvas
+    var mid_y;
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
+    // initialise the variable
+    function setup() {
+        mid_x = canvas.width/2;
+        mid_y = canvas.height/2;
+        c_x=0;
+        c_y=0;
+        scale=40;
+        r=canvas.height*0.02;
     }
 
+    //draws the arrow for vectors of given thickness colour and between the given coordinates
+    function draw_arrow(x1,y1,x2,y2,colour,th,r1=r){
+        canvas.setLineThickness(th);
+        canvas.setColor(colour);
+        canvas.drawLine(mid_x+(scale*x1),mid_y-(scale*y1),mid_x+(scale*x2),mid_y-(scale*y2));
+        canvas.drawCircle(mid_x+(scale*x2),mid_y-(scale*y2),r1);
+    }
+    //prints text at given position  and in given colour and size
+    function print_text(x,y,message,colour="rgb(0,0,0)",size=15){
+        canvas.setColor(colour);
+        canvas.drawText(x,y,message,size);
+    }
+    // class to construct vector
+    class vector{
+        //constructor initialises the values of vector object
+        constructor(x,y){
+            this.x=x; //x coordinate of vector
+            this.y=y; //y coordinate of vector
+            this.len=Math.sqrt((this.x-c_x)*(this.x-c_x)+(this.y-c_y)*(this.y-c_y)); //magnitude of vector
+            this.flag=0; //checks if the current vector is being updated
+        }
+        //draws a vector and print its magnitude
+        draw_vector(colour1,colour2,thickness,radius=r){
+            draw_arrow(c_x,c_y,this.x,this.y,colour1,thickness,radius);
+            print_text(mid_x+scale*((this.x+c_x)/2),mid_y-scale*((this.y+c_y)/2),this.len.toFixed(2),colour2);
+        }
+        //updates the magnitude of the vector according to its coordinates
+        update_len(){
+            //using formula l^2=(x1-x2)^2+(y1-y2)^2
+            this.len=Math.sqrt((this.x-c_x)*(this.x-c_x)+(this.y-c_y)*(this.y-c_y));
+        }
+        // updates the vector during dragging
+        update_vector(){
+            //sets the coordinates of vector to the current position of mouse
+            this.x=(canvas.mouseX-mid_x)/scale;
+            this.y=(mid_y-canvas.mouseY)/scale;
+            this.update_len();
+        }
+        // checks if the vector is being changed or not and dets the flag value accordingly
+        check_update(){
+            // checks if mouse position is inside the circle provided at the end of circle
+            if(canvas.mouseX<mid_x+scale*this.x+r && canvas.mouseX>mid_x+scale*this.x-r && canvas.mouseY>mid_y-scale*this.y-r && canvas.mouseY<mid_y-scale*this.y+r){
+                //checks if mouse is clicked or not 
+                if(canvas.mouseDown==true){
+                    // if both are true then sets flag as 1 which indicates that the vector is being updated
+                    this.flag=1;
+                }
+            }
+            //if the mouse is not pressed then vector is not updated inspite of the position of vector
+            if(canvas.mouseDown==false){
+                this.flag=0;
+            }
+        }
+        // calculate the resultant vector from given vector
+        calculate_resultant(v1,v2){
+            this.x=v1.x+v2.x-c_x;
+            this.y=v1.y+v2.y-c_y;
+            this.update_len();
+        }
+    }
+
+    let v1=new vector(4,0); //1st vector
+    let v2=new vector(0,3); //2nd vector
+    let res=new vector(4,3); // resultant vector
+    // Function while will be called repeatedly 
+
+    function main() {
+        canvas.clear(); // clears the canvas 
+        canvas.setColor("rgb(0,0,0)");
+        canvas.setLineThickness(1);
+        canvas.drawLine(mid_x,0,mid_x,canvas.height); //drawing the axis on canvas
+        canvas.drawLine(0,mid_y,canvas.width,mid_y);
+        print_text(canvas.width*0.335,canvas.height*0.1,"VECTOR ADDITION","rgb(100,50,15)",50);// prints the text "VECTOR ADDITION" on canvas
+
+        v1.update_len(); 
+        v2.update_len(); 
+        res.calculate_resultant(v1,v2);
+
+        v1.draw_vector("rgb(255,0,0)","rgb(150,0,0)",3);
+        v2.draw_vector("rgb(0,255,0)","rgb(0,150,0)",3);
+        res.draw_vector("rgb(0,0,255)","rgb(0,0,150)",3,r*0.5);
+
+        draw_arrow(v1.x,v1.y,res.x,res.y,"rgb(0,0,0)",0.5,0);
+        draw_arrow(v2.x,v2.y,res.x,res.y,"rgb(0,0,0)",0.5,0);
+
+        v1.check_update();
+        //if the vector is currently being upddated then flag variable will be one and during updation
+        //mouse should be down
+        if(canvas.mouseDown==true && v1.flag==1){ 
+            v1.update_vector();
+        }
+        v2.check_update();
+        if(canvas.mouseDown==true && v2.flag==1){
+            v2.update_vector();
+        }
+        
+    }
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    canvas.setupFunction = setup;
+    var timeStep =50;
     canvas.startMain(timeStep);
 
 
