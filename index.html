@@ -7,26 +7,78 @@
 
 </html>
 <script>
-
     // Declare all global variables here
-
+    var f;
+    var a,b,x,y;
+    var t1,t2;
     // Declare custom functions here
+    function setup() {
+        a = canvas.width/4;
+        b = canvas.height/7;
+        x = canvas.width/2;
+        y = canvas.height/2;
+        f = Math.sqrt((a*a)/4 - (b*b)/4);
+        t1 = -Math.PI/2;
+        t2 = 0;
+        t1_degree=0;
+        t2_degree=0;
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
+        seconds_initial = currentTime.getSeconds();
     }
 
+    function angle(x,y,x1,y1,x2,y2) {
+        var m1 = (y1-y)/(x1-x);
+        var m2 = (y2-y)/(x2-x);
+
+        var m_new = (m2-m1)/(1+ m1*m2);
+
+        return Math.atan(m_new);
+    }
+
+    function area(a,b,theta1, theta2) {
+        var angle1 = Math.atan(a*theta1/b);
+        var angle2 = Math.atan(a*theta2/b);
+        if(Math.atan(angle2)- Math.atan(angle1) >= 0)
+            return 0.5*a*b*(Math.atan(angle2) - Math.atan(angle1));
+        else
+            return 0.5*a*b*(Math.atan(angle1) - Math.atan(angle2));
+    }
+    // Function while will be called repeatedly 
+    function main() {
+
+        canvas.clear();
+        canvas.drawText(x-210,y-300,"Demonstrating Kepler's 2nd Law",30);
+        canvas.drawImg("./sunb.png",x+f-30,y-35,70,70);
+        
+
+        canvas.drawEllipse(x,y,a,b,0,0,360);
+        canvas.drawLine(x+f,y,x+(a*Math.cos(t1)),y+(b*Math.sin(t1)));
+        canvas.drawLine(x+f,y,x+(a*Math.cos(t2)),y+(b*Math.sin(t2)));
+        
+
+
+        t1 = (t1 - Math.PI/300)%360;
+        t2 = (t2 - Math.PI/300)%360;
+        t1_degree = -1*((t1*180)/Math.PI)%360;
+        t2_degree = -1*((t2*180)/Math.PI)%360;
+        var angle_line = angle(x+f,y,x+(a*Math.cos(t1)),y+(b*Math.sin(t1)),x+(a*Math.cos(t2)),y+(b*Math.sin(t2)));
+        angle_line = -1*((angle_line*180)/Math.PI)%360;
+
+        if(angle_line < 0)
+            angle_line *= -1;
+        canvas.drawText(x - 200,y - 200,"angle between two chords: " + angle_line.toFixed(2),30);
+
+        var theta1 = angle(x+f,y,x+(a*Math.cos(t1)),y+(b*Math.sin(t1)),x-a,y);
+        var theta2 = angle(x+f,y,x+(a*Math.cos(t2)),y+(b*Math.sin(t2)),x-a,y);
+        var area_sec = area(a,b,theta2,theta1).toFixed(2);
+        area_sec /= 1000;
+        area_sec = area_sec.toFixed(2);
+        canvas.drawText(x-200,y+200,"area between two chords: "+ area_sec + " x10^3",30);
+    }
     // Override functions here; 
     canvas.mainFunction = main;
-
+    canvas.setupFunction = setup;
     var timeStep = 50;
     canvas.startMain(timeStep);
-
-
     
 </script>
-
-
-
