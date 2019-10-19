@@ -2,7 +2,8 @@
     Developed for Zense Hackathon
     Author - Satvik Ramaprasad,
              Shubhayu Das,
-             Rohit Katlaa
+             Rohit Katlaa,
+             Prajwal Agarwal
 
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
 
@@ -38,6 +39,7 @@
         canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
+        canvas.drawEllipse(x, y, a, b, angle, startAngle, endAngle) // Draws an Ellipse with center(x,y) with major axis = a, minor axis = b at an angle theta given the startAngle And Endangle
         canvas.clear() // Clears the canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
@@ -132,6 +134,15 @@ canvas.drawRectangle = function(x, y, width, height) {
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
     this.draw();
+}
+
+//Draws Ellipse 
+canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
+    endAngle = (endAngle/180.0)*Math.PI;
+    this.ctx.beginPath();
+    this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
+    this.draw();
+    this.ctx.closePath();
 }
 
 // Draws <message> at (x, y) 
