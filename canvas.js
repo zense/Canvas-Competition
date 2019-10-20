@@ -41,7 +41,7 @@
         canvas.clear() // Clears the canvas
         canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
         canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
-        canvas.ActivateDoubleBuffer() //call in setup to use double buffering in your program.
+        canvas.activateDoubleBuffer() //call in setup to use double buffering in your program.
         canvas.update()  // updates the screen with changes made on canvas(use only with double buffering).
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
 
@@ -54,6 +54,9 @@
         canvas.keyUpCallback() // Called when mouse is released
         canvas.keyUpCallback() // Called when mouse is released
         canvas.mainFunction() // Called when mouse is released
+        
+   Note:(Regarding double buffering) Double buffering is entirely optional, you may not need it in your program. It is only required if
+   you face flickering issues.
 
 */
 
