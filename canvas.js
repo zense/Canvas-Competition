@@ -171,6 +171,7 @@ canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngl
 
 // Draws <message> at (x, y) 
 canvas.drawText = function(x, y, message, fontSize = 30) {
+    
     this.ctx.font = fontSize + "px Arial";
     this.ctx.fillText(message, x, y);
 }

@@ -1,35 +1,355 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 </body>
 
 </html>
 <script>
 
     // Declare all global variables here
+    const constants = {
+        metre: 7, // 10 Pixels / metre
+        gravity: 0,
+        friction: 10,
+        timeStep: 20,
+        velocityConstant: 10,
+        repulsiveForceConstant: 800,
+        attractiveConstant: 0.1
+    }
+    // Declare all global variables here
+
+
+    // Ball type enumeration
+    const ballType = {
+        NORMAL: 1,
+        FIXED: 2,
+        FOLLOW: 3
+    }
+
+    // Global list which contains the state
+    var global = {
+        balls: [],
+        ropes: [],
+        offsetX: 0,
+        offsetY: 0,
+        lastSelected: undefined,
+        prevTime: 0,
+        frameRate: 0
+    }
+
+    // Class Ball
+    class Ball {
+        constructor(x = 0, y = 0, mass = 3.0, density = 1.0) {
+
+            // Position of ball
+            this.x = x;
+            this.y = y;
+
+            // console.log(this.x, this.y);
+
+            // Velocity of ball
+            this.vx = 0;
+            this.vy = 0;
+
+            // Force on ball
+            this.fx = 0;
+            this.fy = 0;
+
+            this.degree = 0;
+
+            // Ball properties
+            this.mass = mass;
+            this.type = ballType.NORMAL;
+            this.density = density;
+
+
+            // Adds ball to global ropeList
+            global.balls.push(this);
+            this.id = global.balls.length;
+        }
+
+        // Reset all forces and apply gravitational force
+        resetForces() {
+            this.fx = 0;
+            this.fy = constants.gravity * this.mass;
+        }
+
+        // moves the ball by time `t`. `t` is the amount of time passed since this function was called last
+        move(t) {
+
+            if (this.type == ballType.NORMAL) {
+                t /= 1000;
+
+                // using acceleration = force/mass and velocity = acceleration*time
+                this.vx += this.fx * t / this.mass;
+                this.vy += this.fy * t / this.mass;
+
+                // Using x = v*time
+                this.x += constants.velocityConstant * this.vx * t;
+                this.y += constants.velocityConstant * this.vy * t;
+
+                // Applying friction
+                this.vy *= 1 - constants.friction * t;
+                this.vx *= 1 - constants.friction * t;
+
+            } else if (this.type == ballType.FOLLOW) {
+                // console.log(global.offsetX);
+                if (!isNaN(global.offsetX) && !isNaN(global.offsetY)) {
+                    this.x = (canvas.mouseX - global.offsetX) / constants.metre;
+                    this.y = (canvas.mouseY - global.offsetY) / constants.metre;
+                }
+
+            }
+
+        }
+
+        render() {
+            canvas.setColor("black");
+            var x = constants.metre * this.x;
+            var y = constants.metre * this.y;
+            var radius = constants.metre * this.radius();
+            canvas.drawCircle(x + global.offsetX, y + global.offsetY, radius);
+        }
+
+        radius() {
+
+            var volume = this.mass / this.density;
+            return Math.pow(3.0 * volume / (Math.PI * 4.0), 1 / 3.0);
+        }
+
+        //Distance is a function which calculates Distance between 2 points
+        distance(other) {
+            return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+        }
+
+        //Angle is a function which calculates the angle between 2 points
+        angle(other) {
+            var x1 = this.x;
+            var y1 = this.y;
+            var x2 = other.x;
+            var y2 = other.y;
+
+            // Tan inverse
+            return Math.atan2(y1 - y2, x1 - x2);
+        }
+
+        connect(other, length = 1, elasticity = 2) {
+            return new Rope(this, other, length, elasticity);
+        }
+    }
+
+    // Class which connects two balls
+    class Rope {
+        constructor(ball1, ball2, length, elasticity) {
+            this.ball1 = ball1;
+            this.ball2 = ball2;
+            this.length = length;
+            this.elasticity = elasticity;
+            global.ropes.push(this);
+        }
+
+        exertForces() {
+
+            var d = this.ball1.distance(this.ball2);
+            var angle = this.ball1.angle(this.ball2);
+
+            if (d - this.length > 0) {
+
+                var force = (d - this.length) * (d - this.length) * this.elasticity / this.length;
+
+                //Resolving tension into vectors
+                this.ball1.fy -= force * Math.sin(angle);
+                this.ball1.fx -= force * Math.cos(angle);
+
+                //Resolving tension into vectors
+                this.ball2.fy += force * Math.sin(angle);
+                this.ball2.fx += force * Math.cos(angle);
+            }
+        }
+
+        render() {
+            canvas.setColor("rgba(0,0,0,0.2");
+            //draws a line between them
+            var x1 = this.ball1.x * constants.metre;
+            var y1 = this.ball1.y * constants.metre;
+            var x2 = this.ball2.x * constants.metre;
+            var y2 = this.ball2.y * constants.metre;
+            canvas.drawLine(x1 + global.offsetX, y1 + global.offsetY, x2 + global.offsetX, y2 + global.offsetY);
+        }
+
+    }
+
+    function exertPairForces(ball1, ball2) {
+        var d = ball1.distance(ball2);
+        var angle = ball1.angle(ball2);
+
+
+        var force = constants.repulsiveForceConstant / Math.max((d * d), 0.1);
+
+        //Resolving tension into vectors
+        ball1.fy += force * Math.sin(angle);
+        ball1.fx += force * Math.cos(angle);
+
+        //Resolving tension into vectors
+        ball2.fy -= force * Math.sin(angle);
+        ball2.fx -= force * Math.cos(angle);
+
+    }
+
+
 
     // Declare custom functions here
+
+
+    function setupFunction() {
+
+        width = canvas.width / constants.metre; //Scaling to metres
+        height = canvas.height / constants.metre; //Scaling to metres
+
+        // basic();
+        // smallChain();
+        // random();
+        // longChain();
+        // cloth();
+
+        $.getJSON('./jazz.json', function (data) {
+            // console.log(data);
+            var nodeList = [];
+            for (var i = 0; i < 198; i++)
+                nodeList.push(new Ball(Math.random() * width, Math.random() * height));
+
+            for (var i = 0; i < data.length; i++) {
+
+                var ball1 = nodeList[data[i].u - 1];
+                var ball2 = nodeList[data[i].v - 1];
+                ball1.connect(ball2, 3, constants.attractiveConstant);
+                ball1.degree++;
+                ball2.degree++;
+
+            }
+
+            // nodeList[0].type = ballType.FOLLOW;
+        });
+
+        global.prevTime = new Date().getTime();
+
+
+    }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-        
+        var time = new Date().getTime();
+        var frameRate = 1000 / (time - global.prevTime);
+        global.frameRate = global.frameRate * 0.9 + 0.1 * frameRate;
+        global.prevTime = time;
+
+        global.offsetX = 0;
+        global.offsetY = 0;
+
+        for (var i = 0; i < global.balls.length; i++) {
+            global.offsetX += global.balls[i].x
+            global.offsetY += global.balls[i].y
+        }
+
+        global.offsetX /= -global.balls.length;
+        global.offsetY /= -global.balls.length;
+
+        global.offsetX *= constants.metre;
+        global.offsetY *= constants.metre;
+
+        global.offsetX += canvas.width / 2;
+        global.offsetY += canvas.height / 2;
+
+        var N = 4;
+        for (var t = 0; t < N; t++) {
+            // Clear forces
+            for (var i = 0; i < global.balls.length; i++)
+                global.balls[i].resetForces();
+
+            // // Apply all forces
+            for (var i = 0; i < global.ropes.length; i++)
+                global.ropes[i].exertForces();
+
+
+            for (var i = 0; i < global.balls.length; i++)
+                for (var j = i + 1; j < global.balls.length; j++)
+                    exertPairForces(global.balls[i], global.balls[j]);
+
+            // // Move by time T
+            for (var i = 0; i < global.balls.length; i++)
+                global.balls[i].move(constants.timeStep / N);
+        }
+
+        // render
+        for (var i = 0; i < global.ropes.length; i++)
+            global.ropes[i].render();
+
+        for (var i = 0; i < global.balls.length; i++)
+            global.balls[i].render();
+
+        if (global.lastSelected) {
+            var msg = "ID: " + global.lastSelected.id + ", " + "Degree: " + global.lastSelected.degree;
+            canvas.ctx.textAlign = "center";
+            canvas.drawText(canvas.width / 2, 50, msg, fontSize = 30)
+        }
+        canvas.ctx.textAlign = "left";
+        canvas.drawText(canvas.width / 2 - 100, canvas.height - 50, "Frame Rate: " + Math.round(global.frameRate * 10)/10, fontSize = 30)
+
+
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
-    canvas.startMain(timeStep);
+    canvas.setupFunction = setupFunction;
 
 
-    
+    canvas.startMain(constants.timeStep);
+
+    canvas.mouseDownCallback = function () {
+
+        var xx = (canvas.mouseX - global.offsetX) / constants.metre;
+        var yy = (canvas.mouseY - global.offsetY) / constants.metre;
+        console.log(xx, yy);
+        for (var i = 0; i < global.balls.length; i++) {
+            var x = global.balls[i].x;
+            var y = global.balls[i].y;
+            var d = Math.sqrt((x - xx) * (x - xx) + (y - yy) * (y - yy));
+            // console.log(i, d);
+
+            if (d <= global.balls[i].radius() * 2) {
+                global.lastSelected = global.balls[i];
+                global.lastSelected.type = ballType.FOLLOW;
+                return;
+            }
+        }
+
+    }
+
+    canvas.mouseUpCallback = function () {
+        if (global.lastSelected) {
+            global.lastSelected.type = ballType.NORMAL;
+            global.lastSelected = undefined;
+        }
+    }
+
+    canvas.keyUpCallback = function (e) {
+        if (e.key == "ArrowUp")
+            constants.metre++;
+        if (e.key == "ArrowDown")
+            constants.metre--;
+
+        constants.metre = Math.max(1, constants.metre);
+        constants.metre = Math.min(25, constants.metre);
+    }
+
+
+
 </script>
-
-
-
