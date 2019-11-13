@@ -1,4 +1,4 @@
-# Over the Dustbins
+# Jump Over the Dustbins
 This is a simple game where the player has to avoid hitting the dustbins. Press `space` to jump and avoid the dustbins.
 
 ## Overview of the code
