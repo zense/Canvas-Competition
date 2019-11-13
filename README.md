@@ -12,7 +12,7 @@
 
 - You need not understand the code here to be able to use it. 
 - Understanding the API below should be enough
--  See [Examples](canvas.zense.co.in) to get started.
+-  See [Examples](http://canvas.zense.co.in) to get started.
 
 ## API Documentation
 
