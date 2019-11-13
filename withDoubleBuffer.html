@@ -1,0 +1,159 @@
+<html>
+
+<body onload="canvas.setup()">
+    
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+
+// Declare all global variables here
+var posx;
+    var hitboxx;
+    var hitboxy;
+    var enemies = [];
+    var score;
+    var fuel;
+    var leftEdge;
+    var rightEdge;
+    var RIP;
+    var enemyDeploy;
+    var score;
+
+    //Initialising some global variables .Overriding the setupFunction
+    function setup() {
+        posx = canvas.width/2;
+        leftEdge = canvas.width/3;
+        rightEdge = 2 * canvas.width/3;
+        RIP = false;
+        score = 0;
+        enemyDeploy = 0;
+        canvas.activateDoubleBuffer();
+    }
+
+    function addEnemy()
+    {
+        enemies.push([leftEdge + Math.random() * (rightEdge - leftEdge - 49) + 49 ,50]);
+    }
+
+    function drawEnemies()
+    {
+        for(var i = 0; i < enemies.length; i++)
+        {   
+            var shiftedx = enemies[i][0] - 24;
+            var shiftedy = enemies[i][1] + 112;
+            canvas.drawImg("./car_final.jpg", shiftedx, shiftedy , 50, 112);
+        }
+    }
+    
+    
+    canvas.keyDownCallback = function(e)
+    {
+        if (e.code === "ArrowLeft")
+        {   
+            if(posx > canvas.width/3 - 40)
+  			    posx -= 0.01 * canvas.width;
+        }
+        
+        else if (e.code === "ArrowRight")
+        {
+            if(posx < 2 * canvas.width/3 - 110)
+            posx += 0.01 * canvas.width;
+  		}
+     
+    };
+
+    function drawBackground()
+    {
+        canvas.drawLine(canvas.width/3, 0, canvas.width/3, canvas.height);
+        canvas.drawLine(2*canvas.width/3, 0, 2*canvas.width/3, canvas.height);
+        
+    }
+
+    function checkCollision()
+    {
+        for(var i = 0; i < enemies.length; i++)
+        {
+            
+            if(Math.abs(enemies[i][0] - posx - 75) < 51 )
+            {
+                if(Math.abs(enemies[i][1] - canvas.height - 125) < 468)
+                {
+                    RIP = true;  
+                    
+                }    
+            }    
+        }
+    }
+
+    function drawCar(x)
+    {
+        var shiftedx = x + 49;
+        canvas.drawImg("./car_final.jpg", shiftedx, canvas.height - 125 , 50, 112);
+    }
+
+    function enemyMove()
+    {
+        for(var i = 0; i < enemies.length; i++)
+        {
+            enemies[i][1] += 8;
+            if(enemies[i][1] > canvas.height)
+            {
+                enemies.splice(i, 1);
+            }
+            
+            
+        }
+
+        
+    }
+
+    // Function while will be called repeatedly
+    function main() {
+        
+        if(!RIP)
+        {
+            canvas.setLineThickness(2);
+            drawBackground();
+            
+            drawCar(posx);
+            drawEnemies();
+            enemyMove();
+            checkCollision();
+
+            if(enemyDeploy > 20)
+            {
+                enemyDeploy = 0;
+                addEnemy();
+                score += 20;
+                console.log(score); 
+            }
+            enemyDeploy+= 1;
+            
+        }
+        else
+            canvas.drawText(0.3*canvas.width,0.08*canvas.height,"RIP");
+        
+        canvas.update();    
+    }
+
+    // Override functions here;
+    canvas.mainFunction = main;
+    canvas.setupFunction = setup;
+
+    var timeStep = 50;
+    canvas.startMain(timeStep);
+
+
+
+
+
+    
+</script>
+
+
+
