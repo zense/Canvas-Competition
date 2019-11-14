@@ -1,15 +1,15 @@
 <html>
 
-<!-- <<<<<<< master
+<<<<<<< HEAD
 <body onload="canvas.setup();globalInitialize();">
     <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-======= -->
-<body onload="canvas.setup();globalInitialize();">
+=======
+<body onload="canvas.setup()">
     
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 	
-<!-- >>>>>>> master -->
+>>>>>>> 5a632f26977d78251d8ed837134e3464bb7d5b3b
     <script src="./canvas.js"></script>
 </body>
 
@@ -29,9 +29,8 @@
     var gameover = 0; //state of game
     var score = 0; //variable that keeps chak of score, score = no. of obstracles passed.
     // To initialize the height and width dependent variables adter canvas loads
-    function globalInitialize()
+    function setup()
     {
-        // alert(width)
         width = canvas.width;
         height = canvas.height;
         divider.push(new Divider(width/2-width/128,-3*(height/18),height/128));
@@ -219,6 +218,7 @@
     }
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
     //for left an right motion of car
 	canvas.keyDownCallback = function(e) {
 		if (e.which == 37) {
