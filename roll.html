@@ -42,6 +42,8 @@
     function main() {
         canvas.clear();
         //redraw inclined plane
+        canvas.setColor("black");
+        canvas.setMode("stroke");
         canvas.drawLine(x1, y1, x2, y2);
         canvas.drawLine(x1, y1, x3, y3);
         canvas.drawLine(x2, y2, x3, y3);
@@ -63,8 +65,10 @@
         canvas.drawLine(x2, y2, x3, y3);
         //draw
         canvas.setColor("black");
+        canvas.setMode("stroke");
         canvas.drawCircle(center_x, center_y, radius);
         canvas.setColor("red");
+        canvas.setMode("fill");
         canvas.drawCircle(pt_x, pt_y, pt_rad);
         
     }
