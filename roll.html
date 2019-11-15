@@ -23,7 +23,7 @@
     const g = 0.000005; //gravity
     const Q = Math.atan(Math.abs((y1 - y2) / (x1 - x2))) + (Math.PI / 2);//incline Q
     const a = (g*Math.sin(Q)) / 2;
-    const a_x = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_y = Math.abs((g*(Math.sin(Q))) / 2); //components of acceleration
+    const a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_x = Math.abs((g*(Math.sin(Q))) / 2); //components of acceleration
                                                                             //along x-y axes
 
 
@@ -48,7 +48,7 @@
 
         //shift ring center
         center_x += (0.5)*a_x*(time**2);
-        center_y += (0.5)*a_y*(time**2);
+        center_y -= (0.5)*a_y*(time**2);
         //angle-change from initial after rotation(from base position at (x1, y1)) 
         R = (0.5)*(a / radius)*(time**2); 
         //increase the var 'time' after each timeStep
@@ -56,6 +56,11 @@
         //shift point 
         pt_x = center_x - (radius*Math.sin(Q + R));
         pt_y = center_y - (radius*Math.cos(Q + R));
+        canvas.clear();
+        //redraw inclined plane
+        canvas.drawLine(x1, y1, x2, y2);
+        canvas.drawLine(x1, y1, x3, y3);
+        canvas.drawLine(x2, y2, x3, y3);
         //draw
         canvas.setColor("black");
         canvas.drawCircle(center_x, center_y, radius);
