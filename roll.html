@@ -1,0 +1,57 @@
+<html>
+<title>PURE ROLLING ON AN INCLINED PLANE</title>
+<body onload="canvas.setup()">
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+
+    // Declare all global variables here
+    let center_x, center_y; //ring center coordinates
+    const radius = ; //ring radius
+    const x1 = , y1 = , x2 = , y2 = , x3 = , y3 = ; //endpts of inclined plane
+    const g = 10; //gravity
+    const Q = Math.atan(Math.sqrt((x1 - x3)**2 + (y1 - y3)**2)  /  ((x2 - x3)**2 + (y2 - y3)**2));//incline Q
+    const a_x = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_y = (g*Math.sin(Q)**2) / 2; //components of acceleration
+                                                                            //along x-y axes
+
+
+    function setup() {
+        // Initialize variables here
+        center_x = x1 + (radius*Math.sin(Q));
+        center_y = y1 + (radius*Math.cos(Q));
+        
+    }
+
+    // Declare custom functions here
+
+
+    // Function while will be called repeatedly 
+    function main() {
+        canvas.clear();
+        //redraw inclined plane
+        canvas.drawLine(x1, y1, x2, y2);
+        canvas.drawLine(x1, y1, x3, y3);
+        canvas.drawLine(x2, y2, x3, y3);
+
+        //shift ring center
+        center_x = (0.5)*a_x*(timeStep**2);
+        center_y = (0.5)*a_y*(timeStep**2);
+       
+        canvas.drawCircle(center_x, center_y, radius);
+    }
+
+    // Override functions here; 
+    canvas.mainFunction = main;
+
+    var timeStep = 50;
+    canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
+
+</script>
