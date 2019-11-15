@@ -58,7 +58,7 @@
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
         canvas.drawLine(x1,y1,x3,y3) // line along y
-        canvas.drawLine(x1,y1,x2,y2) // line along x
+        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
         canvas.drawLine(x2,y2,x3,y3) // inclined line
         canvas.drawCircle(circle_center_x, circle_center_y, radius) // drawing circle
 
@@ -68,12 +68,12 @@
 
         R = (0.5)*(a / radius)*(time**2); 
 
-        //canvas.clear()
+        canvas.clear()
         canvas.setColor("black");
-        //canvas.setDrawMode("stroke");
-        //canvas.drawLine(x1,y1,x3,y3) // line along y
-        //canvas.drawLine(x1,y1,x2,y2) // line along x
-        //canvas.drawLine(x2,y2,x3,y3) // inclined line
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
 
 
         canvas.setColor("black");
@@ -89,9 +89,11 @@
         
         pt_x = circle_center_x - (radius*Math.sin(Q+R));
         pt_y = circle_center_y + (radius*Math.cos(Q+R));
-        
+
         canvas.drawCircle(pt_x, pt_y, pt_rad);
 
+        //pt_x = circle_center_x - (radius*Math.sin(Q+R));
+        //pt_y = circle_center_y + (radius*Math.cos(Q+R));
 
         time += timeStep;
 
