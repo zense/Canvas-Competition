@@ -1,35 +1,143 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
-
     // Declare all global variables here
+    var center_x;
+    var center_y;
+    var circle_center_x;
+    var circle_center_y;
+    var x1,x2,x3,y1,y2,y3,angle,radius;
+    var a_x,a_y,a;
+    var time=0;
+    const g=0.00001;
+    var pt_x=0, pt_y=0;
+    var R;
+    var pt_rad;
+    var flag;
+    var v;
+
+    
+    function setup() 
+    {
+        center_x = canvas.width;
+        center_y = canvas.height;
+
+        x1=0.3*center_x
+        y1=0.6*center_y
+        x2=0.5*center_x
+        y2=0.6*center_y
+        x3=0.3*center_x
+        y3=0.3*center_y
+
+        radius=0.04*center_y // just an approximation
+        Q = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) / Math.sqrt ((x1-x2)**2 + (y1-y2)**2)) + Math.PI/2;
+        circle_center_x = x3 + (radius*Math.sin(Q));
+        circle_center_y = y3 + (radius*Math.cos(Q));
+
+        a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2
+        a_x = ((g*Math.sin(Q)**2) / 2)
+        a = (g*Math.sin(Q)) / 2;
+
+        pt_x = x3
+        pt_y = y3
+        pt_rad = 5;
+
+        flag = false;
+
+
+    }
 
     // Declare custom functions here
-
     // Function while will be called repeatedly 
-    function main() {
+    function main() 
+    {
         canvas.clear();
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,canvas.width,y1) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+        canvas.drawCircle(circle_center_x, circle_center_y, radius) // drawing circle
+
+        //shift ring center
+        circle_center_x += (0.5)*a_x*(time**2);
+        circle_center_y -= (0.5)*a_y*(time**2);
+
+        R = (0.5)*(a / radius)*(time**2); 
+
+        canvas.clear()
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,canvas.width,y1) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+
+
+
+        if (circle_center_y < y2 - radius - 4 && circle_center_y - (0.5)*a_y*(time**2) < y2-radius - 4 )
+        //(circle_center_x < x2 + (radius*Math.sin(Q)) && circle_center_y < y2 + (radius*Math.cos(Q)))
+        {
+           
+            circle_center_x += (0.5)*a_x*(time**2);
+            circle_center_y -= (0.5)*a_y*(time**2);
+
+            
+            R = (0.5)*(a / radius)*(time**2);
+            console.log("1st if")
+        }
+        else if (flag == false) 
+        {
+            v = a_x*time;
+            flag = true;
+            console.log("2nd if")
+        }
+        else 
+        {
+            circle_center_x += (v)*timeStep;
+            circle_center_y = y1-radius
+            //console.log("3rd if")
+            //console.log(v)
+        }
+
+
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+
+
+        console.log(circle_center_x)
+        console.log(circle_center_y)
+
+
+
+        canvas.drawCircle(circle_center_x, circle_center_y, radius);
+        canvas.setColor("red");
+        canvas.setDrawMode("fill");
+
         
+        pt_x = circle_center_x - (radius*Math.sin(Q+9*R));
+        pt_y = circle_center_y + (radius*Math.cos(Q+9*R));
+
+        canvas.drawCircle(pt_x, pt_y, pt_rad);
+
+        time += timeStep;
+
     }
+
 
     // Override functions here; 
     canvas.mainFunction = main;
-
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
 
-    
 </script>
-
-
-
