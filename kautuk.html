@@ -22,8 +22,6 @@
     var pt_x=0, pt_y=0;
     var R;
     var pt_rad;
-    var flag = false;
-    var v;
 
     function setup() 
     {
@@ -59,46 +57,51 @@
         canvas.clear();
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
-        canvas.drawLine(x1,y1,x3,y3); // line along y
-        canvas.drawLine(x1,y1,x2,y2); // line along x
-        canvas.drawLine(x2,y2,x3,y3); // inclined line
-        canvas.drawCircle(circle_center_x, circle_center_y, radius); // drawing circle
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+        canvas.drawCircle(circle_center_x, circle_center_y, radius) // drawing circle
 
-    
-        //canvas.clear()
-        //canvas.setColor("black");
-        //canvas.setDrawMode("stroke");
-        //canvas.drawLine(x1,y1,x3,y3) // line along y
-        //canvas.drawLine(x1,y1,x2,y2) // line along x
-        //canvas.drawLine(x2,y2,x3,y3) // inclined line
+        //shift ring center
+        circle_center_x += (0.5)*a_x*(time**2);
+        circle_center_y -= (0.5)*a_y*(time**2);
 
-        if (circle_center_x < x3 + (radius*Math.sin(Q)) && circle_center_y < y3 + (radius*Math.cos(Q))) {
-            circle_center_x += (0.5)*a_x*(time**2);
-            circle_center_y -= (0.5)*a_y*(time**2);
-            R = (0.5)*(a / radius)*(time**2);
-        }
-        else if (flag == false) {
-            v = a_x*time;
-            flag = true;
-        }
+        R = (0.5)*(a / radius)*(time**2); 
 
-        else {
-            circle_center_x += v*timeStep;
-        }
+        canvas.clear()
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+
 
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
         canvas.drawCircle(circle_center_x, circle_center_y, radius);
         canvas.setColor("red");
         canvas.setDrawMode("fill");
+
+        console.log(pt_x)
+        console.log(pt_y)
+        console.log(pt_rad)
+
         
         pt_x = circle_center_x - (radius*Math.sin(Q+R));
         pt_y = circle_center_y + (radius*Math.cos(Q+R));
-        
-        canvas.drawCircle(pt_x, pt_y, pt_rad);}
 
+        canvas.drawCircle(pt_x, pt_y, pt_rad);
+
+        //pt_x = circle_center_x - (radius*Math.sin(Q+R));
+        //pt_y = circle_center_y + (radius*Math.cos(Q+R));
 
         time += timeStep;
+
+
+
+
+
+
     }
 
 
