@@ -1,0 +1,278 @@
+<html>
+
+<body onload="canvas.setup()">
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+    // Declare all global variables here
+    menu = true;
+    running = false;
+    mass_of_air = 0.0002;
+    gravity = [Math.PI,0.2];
+            
+    function VectorAddition([angle1,length1],[angle2,length2])
+    {
+            var x = Math.sin(angle1) * length1 + Math.sin(angle2) * length2;
+            var y = Math.cos(angle1) * length1 + Math.cos(angle2) * length2;
+            var length = Math.hypot(x,y);
+            var angle = 0.5 * Math.PI - Math.atan2(y,x);
+            return [angle,length];
+    }
+
+    class particle {
+        constructor([x,y],size,angle,mass)
+        {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.speed = 10;
+            this.angle = angle;
+            this.elasticity = 0.75;
+            this.mass = mass;
+            this.drag = Math.pow(this.mass/(this.mass + mass_of_air),this.size);
+            
+        }
+
+        move()
+        {
+            this.x += Math.sin(this.angle)*this.speed;
+            this.y -= Math.cos(this.angle)*this.speed;
+            //[this.angle,this.speed] = VectorAddition([this.angle,this.speed],gravity)
+            //this.speed *= this.drag;
+        }
+
+        experienceDrag()
+        {
+            this.speed *= this.drag;
+        }
+
+        accelerate(acc)
+        {
+            [self.angle,self.speed] = VectorAddition([self.angle,self.speed],acc);
+        }
+
+        attract(other)
+        {
+            var dx = this.x - other.x;
+            var dy = this.y - other.y;
+            var r = Math.hypot(dy,dx);
+
+            var angle = Math.atan2(dy,dx);
+
+            var force = 0.2 * this.mass * other.mass / Math.pow(r,2) ;
+
+            this.accelerate([theta - 0.5 * Math.PI,force/other.mass]);
+            other.accelerate([theta + 0.5*Math.PI,force/this.mass]);
+        }
+
+        mouseMove()
+        {
+            var dx = canvas.mouseX - this.x;
+            var dy = canvas.mouseY - this.y;
+            this.speed = Math.hypot(dy,dx) * 0.1;
+            this.angle = Math.PI * 0.5 + Math.atan2(dy,dx);
+        }
+
+        display()
+        {
+            canvas.drawCircle(this.x,this.y,this.size);
+        }
+    }
+
+    class Environment {
+        constructor()
+        {
+            this.particles = []
+        
+            this.colour = (255,255,255)
+            this.mass_of_air = 0.2
+            this.elasticity = 1
+            this.acceleration = null;
+            this.my_functions1 = [];
+            this.my_functions2 = [];
+            this.func_dict = {
+                'move' :  [1,(p) => p.move()],
+                'MouseMove' : [1,(p) => p.mouseMove],
+                'drag' : [1,(p) => p.experienceDrag()],
+                'bounce' : [1,(p) => this.bounce(p)],
+                'accelerate' : [1,(p) => p.accelerate()],
+                'collide' : [2,(p1,p2) => collide(p1,p2)]
+            }
+        }
+
+        addfunction(func_list)
+        {
+            for(var i=0;i<func_list.length;i++)
+            {
+                var n;
+                var f;
+                if(this.func_dict[func_list[i]])
+                {
+                [n,f] = this.func_dict[func_list[i]];
+                if(n == 1)
+                    this.my_functions1.push(f);
+                else if(n == 2)
+                    this.my_functions2.push(f);
+                }
+            }
+        }
+
+        addParticle(x = -1,y = -1,size = -1,speed = -1,angle = -1,mass = -1)
+        {
+            if(x== -1)
+                var x1 = (Math.random() * (canvas.width));
+            else
+                var x1 = x;
+            
+            if(y== -1)
+                var y1 = (Math.random() * (canvas.height));
+            else
+                var y1 = y;
+            
+            if(size == -1)
+                var size1 = ( Math.random() * 10 ) + 10;
+            else
+                var size1 = size;
+            
+            if(angle == -1)
+                var angle1 = Math.random() * Math.PI * 2;
+            else
+                var angle1 = angle;
+            
+            if(mass == -1)
+                var mass1 = 5 + Math.random() * 20;
+            else
+                var mass1 = mass;
+                
+            var my_particle = new particle([x1,y1],size1,angle1,mass1)
+            this.particles.push(my_particle);
+        }
+
+        FindParticle(x,y)
+        {
+        for(var j=0;j<this.particles.length;j++)
+        {
+            if(Math.hypot(this.particles[j].x - x,this.particles[j].y - y) <= this.particles[j].size)
+            {
+                return this.particles[j];
+            }
+        }
+        return null;
+        }
+
+        bounce(p)
+        {
+            if(p.x > canvas.width - p.size)
+            { 
+                p.angle = -p.angle;
+                p.speed *= p.elasticity;
+            }
+
+            else if(p.x < p.size)
+            { 
+                p.angle = -p.angle;
+                p.speed *= p.elasticity;
+            }
+
+            if(p.y > canvas.height - p.size)
+            { 
+                p.angle = Math.PI-p.angle;
+                p.speed *= p.elasticity;
+            }
+
+            if(p.y < p.size)
+            { 
+                p.angle = Math.PI-p.angle;
+                p.speed *= p.elasticity;
+            }
+        }
+
+        update()
+        {
+        console.log(this.my_functions2[0]);
+        for(var i=0;i<this.particles.length;i++)
+        {
+            for(var j = 0;j<this.my_functions1.length;j++)
+            {
+                this.my_functions1[j](this.particles[i]);
+            }
+            for(var j = 0;j<this.my_functions2.length;j++)
+            {
+                for(var k = 0;k<this.particles.length && k!=i;k++)
+                {
+                    this.my_functions2[j](this.particles[i],this.particles[k]);
+                }
+            }
+            this.particles[i].display();
+        }
+        }
+    }
+
+    function collide(p1,p2)
+    {
+            var dx = p1.x - p2.x;
+            var dy = p1.y - p2.y;
+        
+            var dist = Math.hypot(dx, dy);
+            if(dist < p1.size + p2.size )
+            {
+            var angle = Math.atan2(dy, dx) + 0.5 * Math.PI;
+            var total_mass = p1.mass + p2.mass;
+
+            [p1.angle, p1.speed] = VectorAddition([p1.angle, p1.speed*(p1.mass-p2.mass)/total_mass],[angle, 2*p2.speed*p2.mass/total_mass]);
+            [p2.angle, p2.speed] = VectorAddition([p2.angle, p2.speed*(p2.mass-p1.mass)/total_mass],[angle+Math.PI, 2*p1.speed*p1.mass/total_mass]);
+            p1.speed *= p1.elasticity;
+            p2.speed *= p2.elasticity;
+
+            var overlap = 0.5*(p1.size + p2.size - dist+1);
+            p1.x += Math.sin(angle)*overlap;
+            p1.y -= Math.cos(angle)*overlap;
+            p2.x -= Math.sin(angle)*overlap;
+            p2.y += Math.cos(angle)*overlap;
+            }
+    }
+    
+    var selected_particle;
+
+    var env = new Environment();
+        
+    function setup() {
+        canvas.activateDoubleBuffer();
+        env.addfunction(['move','bounce','collide']);
+        for(var i=0;i<50;i++)
+        {
+        env.addParticle();
+        //env.addParticle(x=200,y=250,size=10,angle=Math.PI/2,speed=10);
+        env.addParticle();
+        env.addParticle();
+        }
+    }
+
+    // Declare custom functions here
+    // Function while will be called repeatedly 
+    function main() {
+        
+        env.update();
+        canvas.update();
+    }
+    // Override functions here;
+    canvas.mouseDownCallback = function() {
+        selected_particle = FindParticle(my_particles,canvas.mouseX,canvas.mouseY);
+    }
+    
+    canvas.mouseUpCallback = function() {
+        selected_particle = null;
+    }
+    
+    canvas.mainFunction = main;
+    var timeStep = 50;
+    canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
+</script>
