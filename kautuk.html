@@ -1,0 +1,52 @@
+<html>
+
+<body onload="canvas.setup()">
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+    // Declare all global variables here
+    var center_x;
+    var center_y;
+    var x1,x2,x3,y1,y2,y3,angle;
+
+    function setup() 
+    {
+        center_x = canvas.width;
+        center_y = canvas.height;
+        x1=0.3*center_x
+        y1=0.6*center_y
+        x2=0.5*center_x
+        y2=0.6*center_y
+        x3=0.3*center_x
+        y3=0.3*center_y
+        angle = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) , Math.sqrt ((x1-x2)**2 + (y1-y2)**2));
+        x_r1 = x3
+        y_r1 = 0.25*center_y
+
+    }
+
+    // Declare custom functions here
+    // Function while will be called repeatedly 
+    function main() 
+    {
+        canvas.clear();
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,x2,y2) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+    }
+
+
+    // Override functions here; 
+    canvas.mainFunction = main;
+    var timeStep = 50;
+    canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
+
+
+</script>
