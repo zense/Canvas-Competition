@@ -16,9 +16,12 @@
     var circle_center_x;
     var circle_center_y;
     var x1,x2,x3,y1,y2,y3,angle,radius;
-    var a_x,a_y;
+    var a_x,a_y,a;
     var time=0;
     const g=0.00001;
+    var pt_x=0, pt_y=0;
+    var R;
+    var pt_rad;
 
     function setup() 
     {
@@ -39,6 +42,11 @@
 
         a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2
         a_x = ((g*Math.sin(Q)**2) / 2)
+        a = (g*Math.sin(Q)) / 2;
+
+        pt_x = x3
+        pt_y = y3
+        pt_rad = 5;
 
     }
 
@@ -47,6 +55,8 @@
     function main() 
     {
         canvas.clear();
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
         canvas.drawLine(x1,y1,x3,y3) // line along y
         canvas.drawLine(x1,y1,x2,y2) // line along x
         canvas.drawLine(x2,y2,x3,y3) // inclined line
@@ -56,19 +66,33 @@
         circle_center_x += (0.5)*a_x*(time**2);
         circle_center_y -= (0.5)*a_y*(time**2);
 
-        //angle-change from initial after rotation 
-        //shift point 
-        //pt_x = center_x - (radius*);
-        //pt_y = center_y - (radius*);
-        //draw
-        canvas.clear()
-        canvas.drawLine(x1,y1,x3,y3) // line along y
-        canvas.drawLine(x1,y1,x2,y2) // line along x
-        canvas.drawLine(x2,y2,x3,y3) // inclined line
+        R = (0.5)*(a / radius)*(time**2); 
+
+        //canvas.clear()
+        canvas.setColor("black");
+        //canvas.setDrawMode("stroke");
+        //canvas.drawLine(x1,y1,x3,y3) // line along y
+        //canvas.drawLine(x1,y1,x2,y2) // line along x
+        //canvas.drawLine(x2,y2,x3,y3) // inclined line
+
+
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
         canvas.drawCircle(circle_center_x, circle_center_y, radius);
-        //canvas.setColor("red");
-        //canvas.drawCircle(pt_x, pt_y, pt_rad);
-        //increase the var 'time' after each timeStep
+        canvas.setColor("red");
+        canvas.setDrawMode("fill");
+
+        console.log(pt_x)
+        console.log(pt_y)
+        console.log(pt_rad)
+
+        
+        pt_x = circle_center_x - (radius*Math.sin(Q+R));
+        pt_y = circle_center_y + (radius*Math.cos(Q+R));
+        
+        canvas.drawCircle(pt_x, pt_y, pt_rad);
+
+
         time += timeStep;
 
 
