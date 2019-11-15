@@ -13,21 +13,32 @@
     // Declare all global variables here
     var center_x;
     var center_y;
-    var x1,x2,x3,y1,y2,y3,angle;
+    var circle_center_x;
+    var circle_center_y;
+    var x1,x2,x3,y1,y2,y3,angle,radius;
+    var a_x,a_y;
+    var time=0;
+    const g=0.00001;
 
     function setup() 
     {
         center_x = canvas.width;
         center_y = canvas.height;
+
         x1=0.3*center_x
         y1=0.6*center_y
         x2=0.5*center_x
         y2=0.6*center_y
         x3=0.3*center_x
         y3=0.3*center_y
-        angle = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) , Math.sqrt ((x1-x2)**2 + (y1-y2)**2));
-        x_r1 = x3
-        y_r1 = 0.25*center_y
+
+        radius=0.04*center_y // just an approximation
+        Q = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) / Math.sqrt ((x1-x2)**2 + (y1-y2)**2)) + Math.PI/2;
+        circle_center_x = x3 + (radius*Math.sin(Q));
+        circle_center_y = y3 + (radius*Math.cos(Q));
+
+        a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2
+        a_x = ((g*Math.sin(Q)**2) / 2)
 
     }
 
@@ -39,12 +50,38 @@
         canvas.drawLine(x1,y1,x3,y3) // line along y
         canvas.drawLine(x1,y1,x2,y2) // line along x
         canvas.drawLine(x2,y2,x3,y3) // inclined line
+        canvas.drawCircle(circle_center_x, circle_center_y, radius) // drawing circle
+
+        //shift ring center
+        circle_center_x += (0.5)*a_x*(time**2);
+        circle_center_y -= (0.5)*a_y*(time**2);
+
+        //angle-change from initial after rotation 
+        //shift point 
+        //pt_x = center_x - (radius*);
+        //pt_y = center_y - (radius*);
+        //draw
+        canvas.clear()
+        canvas.drawLine(x1,y1,x3,y3) // line along y
+        canvas.drawLine(x1,y1,x2,y2) // line along x
+        canvas.drawLine(x2,y2,x3,y3) // inclined line
+        canvas.drawCircle(circle_center_x, circle_center_y, radius);
+        //canvas.setColor("red");
+        //canvas.drawCircle(pt_x, pt_y, pt_rad);
+        //increase the var 'time' after each timeStep
+        time += timeStep;
+
+
+
+
+
+
     }
 
 
     // Override functions here; 
     canvas.mainFunction = main;
-    var timeStep = 50;
+    var timeStep = 1000;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
