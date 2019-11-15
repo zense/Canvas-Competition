@@ -1,5 +1,5 @@
 <html>
-
+    <title>PURE ROLLING ON AN INCLINED PLANE</title>
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -11,23 +11,34 @@
 </html>
 <script>
     // Declare all global variables here
+    //setting up inclined plane using ref vars stored here
     var center_x;
     var center_y;
+    //coordinates of rotating wheel
     var circle_center_x;
     var circle_center_y;
+    //vertices of wedge, angle of incline, radius of wheel
     var x1,x2,x3,y1,y2,y3,angle,radius;
+    //x-comp and y-comp, and net a along incline (acceleration in pure rolling of a ring object)
     var a_x,a_y,a;
+    //total time passed
     var time=0;
+    //gravity effects!
     const g=0.00001;
+    //coordinates of tracker
     var pt_x=0, pt_y=0;
+    //angle of deviation from base position in wheel (for tracker)
     var R;
+    //tracker radius
     var pt_rad;
+    //flag to determine code flow
     var flag;
+    //velocity (during run) along x-axis (after impulsively hitting x axis)
     var v;
 
     
     function setup() 
-    {
+    {   //setting up wedge vertices
         center_x = canvas.width;
         center_y = canvas.height;
 
@@ -37,20 +48,23 @@
         y2=0.6*center_y
         x3=0.3*center_x
         y3=0.3*center_y
-
-        radius=0.04*center_y // just an approximation
-        Q = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) / Math.sqrt ((x1-x2)**2 + (y1-y2)**2)) + Math.PI/2;
+        
+        radius=0.04*center_y // just an aesthetically appealing size
+        //angle of incline
+        Q = Math.atan(Math.abs((y2 - y1) / (x2 - x1))) + Math.PI/2;
+        //initial position of circle
         circle_center_x = x3 + (radius*Math.sin(Q));
         circle_center_y = y3 + (radius*Math.cos(Q));
-
+        //pure rolling results applied
         a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2
         a_x = ((g*Math.sin(Q)**2) / 2)
         a = (g*Math.sin(Q)) / 2;
-
+        //setting tracker coordinates
         pt_x = x3
         pt_y = y3
+        //tracker dot radius
         pt_rad = 5;
-
+        //flag variable
         flag = false;
 
 
@@ -103,7 +117,7 @@
         {
             circle_center_x += (v)*timeStep;
             circle_center_y = y1-radius
-   
+    
         }
 
 
