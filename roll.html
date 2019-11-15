@@ -60,6 +60,8 @@
         pt_y = center_y - (radius*Math.cos(Q + R));
         canvas.clear();
         //redraw inclined plane
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
         canvas.drawLine(x1, y1, x2, y2);
         canvas.drawLine(x1, y1, x3, y3);
         canvas.drawLine(x2, y2, x3, y3);
