@@ -13,17 +13,17 @@
 <script>
 
     // Declare all global variables here
-    let center_x, center_y; //ring center coordinates
-    let pt_x, pt_y;//locator pt coordinates
-    let time = 0;
-    let R; //change of angle
+    var center_x, center_y; //ring center coordinates
+    var pt_x, pt_y;//locator pt coordinates
+    var time = 0;
+    var R; //change of angle
     const radius = ; //ring radius
     const pt_rad = ; //radius of dot on wheel 
     const x1 = , y1 = , x2 = , y2 = , x3 = , y3 = ; //endpts of inclined plane
-    const g = 10; //gravity
+    const g = 1; //gravity
     const Q = Math.atan(Math.sqrt((x1 - x3)**2 + (y1 - y3)**2)  /  ((x2 - x3)**2 + (y2 - y3)**2)) + (Math.PI / 2);//incline Q
     const a = (g*Math.sin(Q)) / 2;
-    const a_x = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_y = (g*Math.sin(Q)**2) / 2; //components of acceleration
+    const a_x = Math.abs((g*Math.sin(Q)*Math.cos(Q)) / 2), a_y = Math.abs((g*(Math.sin(Q))) / 2); //components of acceleration
                                                                             //along x-y axes
 
 
@@ -47,8 +47,8 @@
         canvas.drawLine(x2, y2, x3, y3);
 
         //shift ring center
-        center_x = (0.5)*a_x*(time**2);
-        center_y = (0.5)*a_y*(time**2);
+        center_x += (0.5)*a_x*(time**2);
+        center_y += (0.5)*a_y*(time**2);
         //angle-change from initial after rotation(from base position at (x1, y1)) 
         R = (0.5)*(a / radius)*(time**2); 
         //increase the var 'time' after each timeStep
@@ -57,6 +57,7 @@
         pt_x = center_x - (radius*Math.sin(Q + R));
         pt_y = center_y - (radius*Math.cos(Q + R));
         //draw
+        canvas.setColor("black");
         canvas.drawCircle(center_x, center_y, radius);
         canvas.setColor("red");
         canvas.drawCircle(pt_x, pt_y, pt_rad);
