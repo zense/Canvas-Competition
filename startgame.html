@@ -1,0 +1,160 @@
+<html>
+
+<body onload="canvas.setup()">
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+    // Declare all global variables here
+    var ball_radius;
+    var timeStep = 20;
+    var eaten;
+    var eats_x=[];
+    var eats_y=[];
+    var eats_r=[];
+    var eats_color=[];
+    var snakes_x=[];
+    var snakes_y=[];
+    var finish=0;
+    //var danger_x,danger_y,danger_dest_x,danger_dest_y;
+    function setup() 
+    {
+        ball_radius=30;
+        eaten=0;
+        snakes_x.push(canvas.mouseX);
+        snakes_y.push(canvas.mouseY);
+    }
+    var snake=function snake(x,y,radius)
+    {
+        x=x;
+        y=y;
+        r=radius;
+        canvas.setDrawMode("fill");
+        canvas.setColor('#FF0000');
+        canvas.drawCircle(x,y,radius);
+    }
+    var glowers=function(_x,_y,radius,color)
+    {   
+        canvas.setDrawMode("fill");
+        canvas.setColor(color);
+        canvas.drawCircle(_x,_y,radius);
+    }
+    canvas.mouseMoveCallback = function (e) 
+    {   if(finish==0)
+        {   
+            snakes_x[0]=canvas.mouseX;
+            snakes_y[0]=canvas.mouseY;
+            snake(canvas.mouseX,canvas.mouseY,ball_radius);
+        }
+    }
+    canvas.keyDownCallback = function (e) 
+    {
+        finish=1;   
+    }
+    // var danger=function()
+    // {
+    //     canvas.setDrawMode("fill");
+    //     canvas.setColor(getRandomColor());
+    //     canvas.drawBar(danger_x,danger_y,10,10);
+    // var collision=function()
+    // {
+    //     var x,y;
+    //     for(var i=0;i<snakes_x.length;i++)
+    //     {
+    //         x=Math.abs(snakes_x[i]-)
+    //     }   
+    // }
+        // }
+    // Declare custom functions here
+    // Function while will be called repeatedly 
+    function main() 
+    {
+        if(finish===0)
+        {
+            canvas.clear();
+            canvas.setDrawMode("fill");
+            canvas.setColor('#111111');
+            canvas.drawRectangle(0, 0, canvas.width, canvas.height)
+            // collion();
+            swallow();
+            snake(canvas.mouseX,canvas.mouseY,ball_radius);
+            console.log(snakes_x.length);
+            for(var a=snakes_x.length-1;a>0;a--)
+            {
+                snakes_x[a]=snakes_x[a-1];
+                snakes_y[a]=snakes_y[a-1];
+                snake(snakes_x[a],snakes_y[a],ball_radius);
+            }
+         
+            var j = parseInt(Math.random()*10000,10)%2;
+            if(j===0)
+            {   
+                var p=(Math.random()*canvas.width);
+                var q=Math.random()*canvas.height;
+                var z=(Math.random()*7)+2;
+                var c=getRandomColor();
+                eats_x.push(p);
+                eats_y.push(q);
+                eats_r.push(z);
+                eats_color.push(c);
+            }
+            for(var i=0;i<eats_x.length;i++)
+            {   
+                glowers(eats_x[i],eats_y[i],eats_r[i],eats_color[i]);
+            }
+        }
+        else
+        {   
+            canvas.drawText(canvas.width-20,canvas.height,"CONGRATULAIONS!!",fonstsize=30);
+            canvas.drawImg("./img2.png",0,0);
+        }
+    }
+    function dbc(i)
+    {
+        return Math.sqrt(Math.pow(canvas.mouseX-eats_x[i],2)+Math.pow(canvas.mouseY-eats_y[i],2));
+    }
+    function touch(i)
+    {
+        if(dbc(i)<(ball_radius+eats_r[i]))
+        {
+            eaten=eaten+eats_r[i];
+            eats_r[i]=0;
+        }
+         if(eaten>100)
+         {
+             console.log("Yes");
+             snakes_x.push(0);
+             snakes_y.push(0);
+             eaten =0;
+         }
+    }
+    function swallow()
+    {
+        var j=eats_x.length;
+        for(var i=0;i<j;i++)
+        {
+            touch(i);
+            j=eats_x.length;
+        }
+    }
+    function getRandomColor() 
+    {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) 
+        {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    // Override functions here; 
+    canvas.mainFunction = main;
+    canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
+</script>
