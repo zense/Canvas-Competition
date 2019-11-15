@@ -84,28 +84,26 @@
 
 
         if (circle_center_y < y2 - radius - 4 && circle_center_y - (0.5)*a_y*(time**2) < y2-radius - 4 )
-        //(circle_center_x < x2 + (radius*Math.sin(Q)) && circle_center_y < y2 + (radius*Math.cos(Q)))
         {
            
-            circle_center_x += (0.5)*a_x*(time**2);
+            circle_center_x += (0.5)*a_x*(time**2); // updating the position of the circle
             circle_center_y -= (0.5)*a_y*(time**2);
 
             
-            R = (0.5)*(a / radius)*(time**2);
-            console.log("1st if")
+            R = (0.5)*(a / radius)*(time**2); // R is the angle between the diameter and locus of point
+   
         }
         else if (flag == false) 
         {
             v = a_x*time;
             flag = true;
-            console.log("2nd if")
+    
         }
         else 
         {
             circle_center_x += (v)*timeStep;
             circle_center_y = y1-radius
-            //console.log("3rd if")
-            //console.log(v)
+   
         }
 
 
@@ -113,17 +111,12 @@
         canvas.setDrawMode("stroke");
 
 
-        console.log(circle_center_x)
-        console.log(circle_center_y)
-
-
-
         canvas.drawCircle(circle_center_x, circle_center_y, radius);
         canvas.setColor("red");
         canvas.setDrawMode("fill");
 
         
-        pt_x = circle_center_x - (radius*Math.sin(Q+9*R));
+        pt_x = circle_center_x - (radius*Math.sin(Q+9*R)); // updating the coordinates of the red point
         pt_y = circle_center_y + (radius*Math.cos(Q+9*R));
 
         canvas.drawCircle(pt_x, pt_y, pt_rad);
@@ -132,10 +125,9 @@
 
     }
 
-
     // Override functions here; 
     canvas.mainFunction = main;
-    var timeStep = 50;
+    var timeStep = 50; // calling the main function at an interval of 50 miliseconds
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
