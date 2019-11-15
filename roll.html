@@ -1,85 +1,112 @@
 <html>
-<title>PURE ROLLING ON AN INCLINED PLANE</title>
+
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
-
     // Declare all global variables here
-    var center_x, center_y; //ring center coordinates
-    var pt_x, pt_y;//locator pt coordinates
-    var time = 0;
-    var R; //change of angle
-    const radius = ; //ring radius
-    const pt_rad = ; //radius of dot on wheel 
-    const x1 = , y1 = , x2 = , y2 = , x3 = , y3 = ; //endpts of inclined plane
-    const g = 0.000005; //gravity
-    const Q = Math.atan(Math.abs((y1 - y2) / (x1 - x2))) + (Math.PI / 2);//incline Q
-    const a = (g*Math.sin(Q)) / 2;
-    const a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_x = Math.abs((g*(Math.sin(Q))) / 2); //components of acceleration
-                                                                            //along x-y axes
+    var center_x;
+    var center_y;
+    var circle_center_x;
+    var circle_center_y;
+    var x1,x2,x3,y1,y2,y3,angle,radius;
+    var a_x,a_y,a;
+    var time=0;
+    const g=0.00001;
+    var pt_x=0, pt_y=0;
+    var R;
+    var pt_rad;
+    var flag = false;
+    var v;
 
+    function setup() 
+    {
+        center_x = canvas.width;
+        center_y = canvas.height;
 
-    function setup() {
-        // Initialize variables here 
-        center_x = x1 + (radius*Math.sin(Q));
-        center_y = y1 + (radius*Math.cos(Q));
-        pt_x = x1;
-        pt_y = y1;        
+        x1=0.3*center_x
+        y1=0.6*center_y
+        x2=0.5*center_x
+        y2=0.6*center_y
+        x3=0.3*center_x
+        y3=0.3*center_y
+
+        radius=0.04*center_y // just an approximation
+        Q = Math.atan(Math.sqrt ((x1-x3)**2 + (y1-y3)**2) / Math.sqrt ((x1-x2)**2 + (y1-y2)**2)) + Math.PI/2;
+        circle_center_x = x3 + (radius*Math.sin(Q));
+        circle_center_y = y3 + (radius*Math.cos(Q));
+
+        a_y = (g*Math.sin(Q)*Math.cos(Q)) / 2
+        a_x = ((g*Math.sin(Q)**2) / 2)
+        a = (g*Math.sin(Q)) / 2;
+
+        pt_x = x3
+        pt_y = y3
+        pt_rad = 5;
+
     }
 
     // Declare custom functions here
-
-
     // Function while will be called repeatedly 
-    function main() {
+    function main() 
+    {
         canvas.clear();
-        //redraw inclined plane
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
-        canvas.drawLine(x1, y1, x2, y2);
-        canvas.drawLine(x1, y1, x3, y3);
-        canvas.drawLine(x2, y2, x3, y3);
+        canvas.drawLine(x1,y1,x3,y3); // line along y
+        canvas.drawLine(x1,y1,x2,y2); // line along x
+        canvas.drawLine(x2,y2,x3,y3); // inclined line
+        canvas.drawCircle(circle_center_x, circle_center_y, radius); // drawing circle
 
-        //shift ring center
-        center_x += (0.5)*a_x*(time**2);
-        center_y -= (0.5)*a_y*(time**2);
-        //angle-change from initial after rotation(from base position at (x1, y1)) 
-        R = (0.5)*(a / radius)*(time**2); 
-        //increase the var 'time' after each timeStep
-        time += timeStep;
-        //shift point 
-        pt_x = center_x - (radius*Math.sin(Q + R));
-        pt_y = center_y - (radius*Math.cos(Q + R));
-        canvas.clear();
-        //redraw inclined plane
+    
+        //canvas.clear()
+        //canvas.setColor("black");
+        //canvas.setDrawMode("stroke");
+        //canvas.drawLine(x1,y1,x3,y3) // line along y
+        //canvas.drawLine(x1,y1,x2,y2) // line along x
+        //canvas.drawLine(x2,y2,x3,y3) // inclined line
+
+        if (circle_center_x < x3 + (radius*Math.sin(Q)) && circle_center_y < y3 + (radius*Math.cos(Q))) {
+            circle_center_x += (0.5)*a_x*(time**2);
+            circle_center_y -= (0.5)*a_y*(time**2);
+            R = (0.5)*(a / radius)*(time**2);
+        }
+        else if (flag == false) {
+            v = a_x*time;
+            flag = true;
+        }
+
+        else {
+            circle_center_x += v*timeStep;
+        }
+
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
-        canvas.drawLine(x1, y1, x2, y2);
-        canvas.drawLine(x1, y1, x3, y3);
-        canvas.drawLine(x2, y2, x3, y3);
-        //draw
-        canvas.setColor("black");
-        canvas.setDrawMode("stroke");
-        canvas.drawCircle(center_x, center_y, radius);
+        canvas.drawCircle(circle_center_x, circle_center_y, radius);
         canvas.setColor("red");
         canvas.setDrawMode("fill");
-        canvas.drawCircle(pt_x, pt_y, pt_rad);
         
+        pt_x = circle_center_x - (radius*Math.sin(Q+R));
+        pt_y = circle_center_y + (radius*Math.cos(Q+R));
+        
+        canvas.drawCircle(pt_x, pt_y, pt_rad);
+
+
+        time += timeStep;
     }
+
 
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 1000;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+
 
 </script>
