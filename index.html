@@ -78,8 +78,7 @@ function star(x,y,z){
 }
 
 function animate(){
-    requestAnimationFrame(animate);
-	canvas.setColor("rgb(0,0,0)");
+    canvas.setColor("rgb(0,0,0)");
     canvas.drawMode="fill";
     canvas.drawRectangle(0,0,innerWidth,innerHeight);
 	var s=0;
@@ -89,7 +88,7 @@ function animate(){
 }   
     // Function while will be called repeatedly 
     function main() {
-        var x=1;
+        animate();
         if(canvas.mouseDown){
         centerX=canvas.mouseX;
         centerY=canvas.mouseY-200;
