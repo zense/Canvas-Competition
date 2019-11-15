@@ -16,7 +16,7 @@
     let center_x, center_y; //ring center coordinates
     let pt_x, pt_y;//locator pt coordinates
     let time = 0;
-    let R;
+    let R; //change of angle
     const radius = ; //ring radius
     const pt_rad = ; //radius of dot on wheel 
     const x1 = , y1 = , x2 = , y2 = , x3 = , y3 = ; //endpts of inclined plane
@@ -51,6 +51,8 @@
         center_y = (0.5)*a_y*(time**2);
         //angle-change from initial after rotation(from base position at (x1, y1)) 
         R = (0.5)*(a / radius)*(time**2); 
+        //increase the var 'time' after each timeStep
+        time += timeStep;
         //shift point 
         pt_x = center_x - (radius*Math.sin(Q + R));
         pt_y = center_y - (radius*Math.cos(Q + R));
@@ -58,8 +60,7 @@
         canvas.drawCircle(center_x, center_y, radius);
         canvas.setColor("red");
         canvas.drawCircle(pt_x, pt_y, pt_rad);
-        //increase the var 'time' after each timeStep
-        time += timeStep;
+        
     }
 
     // Override functions here; 
