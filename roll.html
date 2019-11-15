@@ -14,19 +14,23 @@
 
     // Declare all global variables here
     let center_x, center_y; //ring center coordinates
+    let pt_x, pt_y;//locator pt coordinates
+    let time = 0;
     const radius = ; //ring radius
+    const pt_rad = ; //radius of dot on wheel 
     const x1 = , y1 = , x2 = , y2 = , x3 = , y3 = ; //endpts of inclined plane
     const g = 10; //gravity
-    const Q = Math.atan(Math.sqrt((x1 - x3)**2 + (y1 - y3)**2)  /  ((x2 - x3)**2 + (y2 - y3)**2));//incline Q
+    const Q = Math.atan(Math.sqrt((x1 - x3)**2 + (y1 - y3)**2)  /  ((x2 - x3)**2 + (y2 - y3)**2)) + (Math.PI / 2);//incline Q
     const a_x = (g*Math.sin(Q)*Math.cos(Q)) / 2, a_y = (g*Math.sin(Q)**2) / 2; //components of acceleration
                                                                             //along x-y axes
 
 
     function setup() {
-        // Initialize variables here
+        // Initialize variables here 
         center_x = x1 + (radius*Math.sin(Q));
         center_y = y1 + (radius*Math.cos(Q));
-        
+        pt_x = x1;
+        pt_y = y1;        
     }
 
     // Declare custom functions here
@@ -41,10 +45,18 @@
         canvas.drawLine(x2, y2, x3, y3);
 
         //shift ring center
-        center_x = (0.5)*a_x*(timeStep**2);
-        center_y = (0.5)*a_y*(timeStep**2);
-       
+        center_x = (0.5)*a_x*(time**2);
+        center_y = (0.5)*a_y*(time**2);
+        //angle-change from initial after rotation 
+        //shift point 
+        pt_x = center_x - (radius*);
+        pt_y = center_y - (radius*);
+        //draw
         canvas.drawCircle(center_x, center_y, radius);
+        canvas.setColor("red");
+        canvas.drawCircle(pt_x, pt_y, pt_rad);
+        //increase the var 'time' after each timeStep
+        time += timeStep;
     }
 
     // Override functions here; 
