@@ -22,7 +22,10 @@
     var pt_x=0, pt_y=0;
     var R;
     var pt_rad;
+    var flag;
+    var v;
 
+    
     function setup() 
     {
         center_x = canvas.width;
@@ -48,6 +51,9 @@
         pt_y = y3
         pt_rad = 5;
 
+        flag = false;
+
+
     }
 
     // Declare custom functions here
@@ -58,7 +64,7 @@
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
         canvas.drawLine(x1,y1,x3,y3) // line along y
-        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
+        canvas.drawLine(x1,y1,canvas.width,y1) // line along x
         canvas.drawLine(x2,y2,x3,y3) // inclined line
         canvas.drawCircle(circle_center_x, circle_center_y, radius) // drawing circle
 
@@ -72,28 +78,55 @@
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
         canvas.drawLine(x1,y1,x3,y3) // line along y
-        canvas.drawLine(x1,y1,0.9*canvas.width,y1) // line along x
+        canvas.drawLine(x1,y1,canvas.width,y1) // line along x
         canvas.drawLine(x2,y2,x3,y3) // inclined line
+
+
+
+        if (circle_center_y < y2 - radius - 4 && circle_center_y - (0.5)*a_y*(time**2) < y2-radius - 4 )
+        //(circle_center_x < x2 + (radius*Math.sin(Q)) && circle_center_y < y2 + (radius*Math.cos(Q)))
+        {
+           
+            circle_center_x += (0.5)*a_x*(time**2);
+            circle_center_y -= (0.5)*a_y*(time**2);
+
+            
+            R = (0.5)*(a / radius)*(time**2);
+            console.log("1st if")
+        }
+        else if (flag == false) 
+        {
+            v = a_x*time;
+            flag = true;
+            console.log("2nd if")
+        }
+        else 
+        {
+            circle_center_x += v*timeStep;
+            circle_center_y = y1-radius
+            //console.log("3rd if")
+            //console.log(v)
+        }
 
 
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
+
+
+        console.log(circle_center_x)
+        console.log(circle_center_y)
+
+
+
         canvas.drawCircle(circle_center_x, circle_center_y, radius);
         canvas.setColor("red");
         canvas.setDrawMode("fill");
 
-        console.log(pt_x)
-        console.log(pt_y)
-        console.log(pt_rad)
-
         
-        pt_x = circle_center_x - (radius*Math.sin(Q+R));
-        pt_y = circle_center_y + (radius*Math.cos(Q+R));
+        pt_x = circle_center_x - (radius*Math.sin(Q+9*R));
+        pt_y = circle_center_y + (radius*Math.cos(Q+9*R));
 
         canvas.drawCircle(pt_x, pt_y, pt_rad);
-
-        //pt_x = circle_center_x - (radius*Math.sin(Q+R));
-        //pt_y = circle_center_y + (radius*Math.cos(Q+R));
 
         time += timeStep;
 
@@ -107,7 +140,7 @@
 
     // Override functions here; 
     canvas.mainFunction = main;
-    var timeStep = 1000;
+    var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
