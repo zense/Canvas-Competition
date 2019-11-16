@@ -1,0 +1,29 @@
+Two Player Air Hockey Game
+
+Project Outline:
+
+Two users can play simultaneously in this game of Air hockey, developed as a part of Hacknight, organised by Zense.
+One user uses 'a' and 'd', and the other uses left and right arrow keys, to move their paddles. The main aim is defend your goal while scoring on the other. 
+The first player choooses the direction and power of his initial shot; through mouse press and enter key.
+We added some surprises in the gameplay to make it more exciting.
+
+Steps Taken:
+
+The whole project was done with the help of Zense resources. 
+First, boundaries were created then ball, barricades, paddles, etc. were instantiated.
+Then, using basic collision physics, we could make the ball traverse the required course, changing it whenever necessary.
+
+Problems we faced:
+
+Calibration was a big issue for us, refresh rate accompanied by variable speeds were a big issue in collision detection.
+Crunching the numbers accurately and applying the physical laws were also a slight issue.
+
+
+Group Members:
+
+Vijay Jaisankar(IMT2019525)
+Rohit Bolisetty(IMT2019527)
+
+Team Name:
+
+520 Boys
