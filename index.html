@@ -1,10 +1,11 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -13,12 +14,731 @@
 
     // Declare all global variables here
 
+	layout = [["wr","wn","wb","wq","wk","wb","wn","wr"], ["wp","wp","wp","wp","wp","wp","wp","wp"],["","","","","","","","",""],["","","","","","","","",""],["","","","","","","","",""],["","","","","","","","",""],["bp","bp","bp","bp","bp","bp","bp","bp"],["br","bn","bb","bq","bk","bb","bn","br"];
+
+	let output = [["", "", "", "", "", "", "",""],["", "", "", "", "", "", "",""], ["", "", "", "", "", "", "",""], ["", "", "", "", "", "", "",""],["", "", "", "", "", "", "",""],["", "", "", "", "", "", "",""],["", "", "", "", "", "", "",""],["", "", "", "", "", "", "",""]];	
+	pixelsx = [405, 475, 545, 615, 685, 755, 825, 895, 965];
+	pixelsy = [565, 495, 425, 355, 285, 215, 145, 75, 5];
+		
+	function print_layout( layout)
+        {
+                for(var i=0;i<8;i++)
+                {
+                        for(var j=0;j<8;j++)
+                        {
+                                canvas.drawText(420+i*70,20+j*70,""+layout[i][j],15);
+                        }
+                }
+        }
+
+    function setup() {
+        // Initialize variables here
+      
+       
+ }
+
     // Declare custom functions here
+
+function mouse_x_coord(){
+	var x_coord;
+
+	for(var i = 0 ; i < 8 ; ++i)
+	{
+		if(canvas.mouseDownX < pixelsx[i + 1] && canvas.mouseDownX >= pixelsx[i])
+		{
+			x_coord = i;
+			break;
+		}
+	
+	}
+
+	return x_coord;
+}
+
+function mouse_y_coord(){
+        var y_coord;
+
+        for(var i = 0 ; i < 8 ; ++i)
+        {
+                if(canvas.mouseDownY < pixelsy[i + 1] && canvas.mouseDownY >= pixelsy[i])
+                {
+                        y_coord = i;
+                        break;
+                }
+
+        }
+
+        return y_coord;
+}
+function eligible_pawn(x, y){
+
+	if(y == 1)
+	{
+		if(layout[x][2] == "" && layout[x][3] == "")
+		{
+			canvas.setColour("#77FF00");
+			canvas.drawCircle((pixelsx[x]+pixelsx[x+1])/2,(pixelsy[1]+pixelsy[2])/2,20);
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x]+pixelsx[x+1])/2,(pixelsy[2]+pixelsy[3])/2,20);
+			output[x][2] = "green";
+			output[x][3] = "green";
+				//both green
+		}
+
+		if(layout[x][2] == "" && layout[x][3] != "")
+		{
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x]+pixelsx[x+1])/2,(pixelsy[1]+pixelsy[2])/2,20);
+			output[x][2] = "green";
+			//only first green
+		}
+	}
+	if(layout[x + 1][y + 1][0] != "" && layout[x + 1][y + 1][0] != layout[x][y][0] && x!=7)
+	{
+		canvas.setColour("red");
+                canvas.drawCircle((pixelsx[x+1]+pixelsx[x+2])/2,(pixelsy[y+1]+pixelsy[y+2])/2,20);
+		//[x + 1][y+1] in red
+		output[x+1][y+1] = "red";
+	}
+
+	if(layout[x - 1][y - 1][0] != "" && layout[x - 1][y - 1][0] != layout[x][y][0] && x != 0)
+        {
+                //[x - 1][y - 1] in red 
+		canvas.setColour("red");
+                canvas.drawCircle((pixelsx[x-1]+pixelsx[x])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+		output[x-1][y-1] = "red";
+        }
+
+return output;
+}
+
+function eligible_queen(x, y){
+
+	for(i = x,j = y + 1; j < 8 ; j++)
+	{
+
+	    	if(layout[i][j] == "")
+	    	{
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+			//print in green
+	    	}
+		else
+		{
+			if(layout[i][j][0] != layout[x][y][0])
+			{
+				canvas.setColour("red");
+		                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+
+				output[i][j] = "red";
+
+				//print in red
+			}
+			break;
+		}
+	}
+
+	for(i = x, j = y -1 ; j >= 0 ; j--)
+	{
+
+	    	if(layout[i][j] == "")
+            	{
+                	//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+            	}
+
+		else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+	}
+
+	for(i = x + 1, j =y; i < 8 ; ++i)
+	{
+		if(layout[i][j] == "")
+		{
+			//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+		}
+		else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+	}
+	for(i = x - 1, j =y; i >= 0 ; --i)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+		else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+        }
+
+	for(i = x + 1,j = y + 1; x < 8 && y<8; ++i, ++j)
+	{
+		if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+	}
+	for(i = x - 1,j = y + 1; x >= 0 && y<8; --i, ++j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+	for(i = x + 1,j = y - 1; x < 8 && y >=0; ++i, --j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+	for(i = x - 1,j = y - 1; x >= 0 && y>=0; --i, --j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+return output;
+}
+
+
+function eligible_rook(x,y){
+
+	for(i = x,j = y + 1; j < 8 ; j++)
+        {
+
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+
+        for(i = x, j = y -1 ; j >= 0 ; j--)
+        {
+
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+        }
+
+
+	   for(i = x + 1, j =y; i < 8 ; ++i)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+	    		canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+        }
+        for(i = x - 1, j =y; i >= 0 ; --i)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+
+        }
+}
+
+function eligible_bishop(x,y){
+	  for(i = x + 1,j = y + 1; x < 8 && y<8; ++i, ++j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+	    		canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+        for(i = x - 1,j = y + 1; x >= 0 && y<8; --i, ++j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+	    		canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+	
+	for(i = x + 1,j = y - 1; x < 8 && y >=0; ++i, --j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+        for(i = x - 1,j = y - 1; x >= 0 && y>=0; --i, --j)
+        {
+                if(layout[i][j] == "")
+                {
+                        //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j+1])/2,20);
+			output[i][j] = "green";
+
+                }
+                else
+                {
+                        if(layout[i][j][0] != layout[x][y][0])
+                        {
+                                //print in red
+				canvas.setColour("red");
+                                canvas.drawCircle((pixelsx[i]+pixelsx[i+1])/2,(pixelsy[j]+pixelsy[j +1])/2,20);
+				output[i][j] = "red";
+
+                        }
+                        break;
+                }
+        }
+return output;
+}
+
+function eligible_knight(x, y){
+
+	if((x + 1) < 8 && (y + 2) < 8)//1
+	{
+		if(layout[x + 1][y + 2] == "") 
+		{
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x + 1]+pixelsx[x + 2])/2,(pixelsy[y + 2]+pixelsy[y + 3])/2,20);
+
+		}
+	
+	
+		if(layout[x][y][0] != layout[x + 1][y + 2][0])
+	    	{
+	    		canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x+1]+pixelsx[x+2])/2,(pixelsy[y+2]+pixelsy[y+3])/2,20);
+		}
+		//print in red
+	}
+
+	if((x + 2) < 8 && (y + 1) < 8)//2
+        {
+                if(layout[x + 2][y + 1] == "")
+		{
+                //print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x+2]+pixelsx[x+3])/2,(pixelsy[y+1]+pixelsy[y+2])/2,20);
+
+		}
+
+
+                if(layout[x][y][0] != layout[x + 2][y + 1][0])
+	    	{
+	    		canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x+2]+pixelsx[x+3])/2,(pixelsy[y+1]+pixelsy[y+2])/2,20);
+		}
+                //print in red
+        }
+	
+	if((x - 1) >= 0 && (y - 2) >= 0)//3
+        {
+                if(layout[x - 1][y - 2] == "") 
+		{//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x]+pixelsx[x-1])/2,(pixelsy[y-2]+pixelsy[y-1])/2,20);
+		}
+        
+        
+                if(layout[x][y][0] != layout[x - 1][y - 2][0])
+		{//print in red
+			canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x-1]+pixelsx[x])/2,(pixelsy[y-2]+pixelsy[y-1])/2,20);
+
+
+		}
+        }
+	if((x - 1) >= 0 && (y + 2) < 8)//4
+        {
+                if(layout[x - 1][y + 2] == "") 
+		{			//print in green
+        		canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x-1]+pixelsx[x])/2,(pixelsy[y+2]+pixelsy[y+3])/2,20);
+
+        
+                if(layout[x][y][0] != layout[x - 1][y + 2][0])
+	    	{	//print in red
+	    		canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x-1]+pixelsx[x])/2,(pixelsy[y+2]+pixelsy[y+3])/2,20);
+		}
+        }
+	if((x + 1) < 8 && (y - 2) >= 0)//5
+        {
+                if(layout[x + 1][y - 2] == "") 
+		{//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x+1]+pixelsx[x+2])/2,(pixelsy[y-2]+pixelsy[y-1])/2,20);
+		}
+        
+        
+                if(layout[x][y][0] != layout[x + 1][y - 2][0])
+                
+		{//print in red
+			canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x+1]+pixelsx[x+2])/2,(pixelsy[y-2]+pixelsy[y-1])/2,20);
+
+
+		}
+        }
+	if((x - 2) >= 0 && (y + 1) < 8)//*
+        {
+                if(layout[x - 2][y + 1] == "") 
+		{//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x-2]+pixelsx[x-1])/2,(pixelsy[y+1]+pixelsy[y+2])/2,20);
+
+
+		}
+        
+        
+                if(layout[x][y][0] != layout[x - 2][y + 1][0])
+	    	{//print in red
+	    		canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x-1]+pixelsx[y+3])/2,(pixelsy[x-1]+pixelsy[y+2])/2,20);
+		}
+        }
+	if((x + 2) < 8 && (y - 1) >= 0)//7
+        {
+                if(layout[x + 2][y - 1] == "") 
+		{//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x+2]+pixelsx[x+3])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+
+
+		}
+        
+        
+                if(layout[x][y][0] != layout[x + 2][y - 1][0])
+		{//print in red
+			canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x+3]+pixelsx[x+2])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+
+		}
+        }
+	if((x - 2) >= 0 && (y - 1) >= 0)//8
+        {
+                if(layout[x - 2][y - 1] == "") 
+		{//print in green
+			canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x-2]+pixelsx[x-1])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+
+
+		}
+        
+        
+                if(layout[x][y][0] != layout[x - 2][y - 1][0])
+		{//print in red
+
+			canvas.setColour("red");
+                        canvas.drawCircle((pixelsx[x-2]+pixelsx[x-1])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+
+		}
+        }
+
+
+
+}
+function eligible_king(x,y){
+	if(x + 1 < 8 && y + 1 <8){
+	    if(layout[x+1][y+1] == "")
+	    {
+	    		canvas.setColour("#77FF00");
+                        canvas.drawCircle((pixelsx[x-2]+pixelsx[x-1])/2,(pixelsy[y-1]+pixelsy[y])/2,20);
+			output[x+1][y+1] = "green";
+	    }
+	    if(layout[x][y][0] != layout
+
+
+function verify(x, y){
+
+	if(layout[x][y] != "")
+	{
+		if(layout[x][y][1] == 'p')
+			eligible_pawn(x, y);
+		if(layout[x][y][1] == 'r')
+                        eligible_rook(x, y);
+		if(layout[x][y][1] == 'k')
+                        eligible_king(x, y);
+		if(layout[x][y][1] == 'n')
+                        eligible_knight(x, y);
+		if(layout[x][y][1] == 'b')
+                        eligible_bishop(x,y);
+		if(layout[x][y][1] == 'q')
+                        eligible_queen(x,y);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-        
+	canvas.clear();
+                for(var j=0;j<8;j++)
+                {
+                        for(var i=0;i<4;i++)
+                        {
+                                h1 = 0;
+                                if(j%2 == 0)
+                                {
+                                        w1 = j*70;
+                                        h1 = 70;
+                                }
+                                canvas.setDrawMode("fill");
+                                canvas.setColor("#000000");
+                                canvas.drawRectangle(405+i*140+h1,5+j*70,70,70);
+                        }
+                }
+                canvas.setDrawMode("stroke");
+                canvas.drawLine(405,5,405+560,5);
+                canvas.drawLine(405,5,405,5+560);
+                canvas.drawLine(405,565,405+560,565);
+                canvas.drawLine(405+560,5,405+560,565);
+                for(var i=0;i<8;i++)
+                        canvas.drawText(430+i*70,580,''+(i+1),15);
+                for(var i=0;i<8;i++)
+                        canvas.drawText(395,45+i*70,''+(8-i),15);
+
+                let layout = [[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8]];
+                print_layout(layout);
+        }
+
     }
 
     // Override functions here; 
@@ -26,10 +746,6 @@
 
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
