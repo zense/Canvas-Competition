@@ -296,3 +296,4 @@ canvas.drawImg=function(imgPath,x,y,width=-1,height=-1){
         };
     }
 }
+
