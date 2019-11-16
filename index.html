@@ -182,7 +182,7 @@
         if(!solarCreate)
         {
           for(var i=0;i<num_particles;i++){
-            solarSysArray.push(new SolarSysClass(10,2,3,particles[i].x,particles[i].y))
+            solarSysArray.push(new SolarSysClass(parseInt(random(5,20)),parseInt(random(5,20)),parseInt(random(5,20)),particles[i].x,particles[i].y))
           }
           solarCreate=true;
           console.log(num_particles);
