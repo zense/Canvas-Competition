@@ -12,25 +12,188 @@
 </html>
 <script>
 
+  
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
-
+     var bX;
+     var ballY;
+     var acc;
+     var speed;
+     var fruit_num;
+     var fruits;
+     var obj1;
+     var obj_list = [];
+     var radius;
+     var i;
+     var timeStep;
+     var col;
+     var count;
+     var score;
     // Declare custom functions here
 
+        class fruit{
+          constructor(height,width,radius,color){
+            this.y= height;
+            this.x = width;
+            this.vx = 0;
+            this.vy = 0;
+            this.radius=radius;
+            this.color=color;
+            this.speed = 0;
+            obj_list.push(this);
+            this.ind = obj_list.length-1;
+          }
+         drawfruit()
+          {
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+            canvas.setDrawMode("fill");
+            canvas.setColor(this.color);
+            canvas.drawCircle(this.x,this.y,this.radius);
+          }
+          reset()
+          {
+            this.speed = 0;
+            this.acc = 0;
+          }
+          exert()
+          {
+            this.acc = 1;
+            this.speed = sp;
+          }
+          move() {
+            this.vy += 0.2;
+            this.x += this.vx;
+            this.y += this.vy;
+          }
+          distance(){
+            return Math.sqrt((this.x - canvas.mouseX) * (this.x - canvas.mouseX) + (this.y -canvas.mouseY)*(this.y -canvas.mouseY));
+          }
+          /*hover()
+          {
+            if(this.distance()<this.radius)
+            {
+              obj_list.splice(this.ind,1);
+              var d = Math.floor(Math.random() * 8);
+              for(var j = 0; j<Math.ceil((Math.random() + 1)); j++)
+              {
+                var obj= new fruit(canvas.height,Math.random() * canvas.width,50,col[d]);
+              obj.vy = -15;
+               if(obj.x > canvas.width *0.6)
+                {
+                  obj.vx = -(Math.random()) * 20;
+                }
+                if(obj.x<canvas.width * 0.4)
+                {
+                  obj.vx = (Math.random()) * 20;
+                }
+                else
+                  {
+                     obj.vx = (Math.random() - 0.5) * 20;
+                  }
+                }
+            }
+          }*/
+
+        }
+
+        function display()
+        {
+          console.log("h");
+          canvas.setColor("white");
+          canvas.drawText(canvas.width/2.5 , canvas.height/2 , "GAME OVER" , 36);
+          canvas.drawText(canvas.width/2.5 , canvas.height/2 + 300 ,score.toString() ,36);
+        }
+    function setup()
+    {
+      ballY= canvas.height;
+      bX=(Math.random()) * canvas.width;
+      ballX = [];
+      col = ["cyan" , "blue" , "green" , "yellow" , "red"  , "#17fc03" , "#440491" , "#db9e1a"];
+      acc = 1;
+      speed = 25;
+      fruit_num = 0;
+      fruits = [];
+      radius = 20;
+      count = 0;
+      score = 0;
+      fruit1 = new fruit(canvas.height,bX,50,"red");
+      fruit1.vy = -15;
+      fruit1.vx = (Math.random()-0.5) * 20;
+
 
     }
 
-    // Override functions here; 
-    canvas.mainFunction = main;
+    function hover()
+  {
+      for(var i=0;i<obj_list.length;i++)
+      {
+        if(obj_list[i].distance()<=obj_list[i].radius)
+        {
+          obj_list.splice(i,1);
+          score = score + 1;
+          for(var j = 0; j<Math.ceil((Math.random() + 1)) && obj_list.length<=2; j++)
+          {
+          var d = Math.floor(Math.random() * 5);
+          var obj= new fruit(canvas.height,Math.random() * canvas.width,50,col[d]);
+             obj.vy = -15;
+              if(obj.x > canvas.width *0.6)
+               {
+                 obj.vx = -(Math.random()) * 20;
+               }
+               if(obj.x<canvas.width * 0.4)
+               {
+                 obj.vx = (Math.random()) * 20;
+               }
+               else
+                 {
+                    obj.vx = (Math.random() - 0.5) * 20;
+                 }
+                 //obj.vx = (Math.random()-0.5) * 20;
+               i = 0;
+             }
+        }else {
+          for(var i=0;i<obj_list.length;i++){
+            if(obj_list[i].y>canvas.height || obj_list[i].x>canvas.width)
+                {
+                  console.log("Bruh");
+                  display();
 
-    var timeStep = 50;
-    canvas.startMain(timeStep);
+                }
+                console.log(score);
+
+          }
+
+        }
+      }
+    }
+
+
+    function main() {
+
+      canvas.clear();
+     canvas.setDrawMode("fill");
+    canvas.setColor("#000000");
+    canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+    for(var i=0;i<obj_list.length;i++)
+      obj_list[i].move();
+    for(var i=0;i<obj_list.length;i++)
+      obj_list[i].drawfruit();
+      //for(var i =0; i<obj_list.length ; i++)
+        //obj_list[i].hover();
+    hover();
+
+
+console.log(obj_list);
+}
+
+
+
+
+    // Override functions here;
+    canvas.mainFunction = main;
     canvas.setupFunction = setup;
+
+    timestep=10;
+    canvas.startMain(timeStep);
+
 
 </script>
