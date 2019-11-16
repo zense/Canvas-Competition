@@ -1,24 +1,140 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
 
-    // Declare all global variables here
+   const constants = {
+        timeStep: 5,
+   }
+   var ball;
+   globallist = {
+      balloon :[],
+      count : 0
+   };
+   class Ball
+   {
+      constructor(x1,y1)
+      {
+         this.x=0;
+         this.y=canvas.height - 10;
+         this.v = 200;
+         this.vy = -(this.v * y1/Math.sqrt(x1*x1 + y1*y1));
+         this.vx = this.v * x1/Math.sqrt(x1*x1 + y1*y1);
+         this.fx = 0;
+         this.mass = 1000;
+         this.density = 1.0;
+         this.fy = 10*this.mass;
+      }
+      move(t)
+      {
+         t/=1000;
+         this.vx += this.fx * t / this.mass;
+         this.vy += this.fy * t/this.mass;
+
+         // Using x = v*time
+         this.x += this.vx * t;
+         this.y += this.vy * t;
+      }
+      render()
+      {
+         //canvas.setDrawMode("fill");
+         var volume = this.mass / this.density;
+         this.radius = Math.pow(3.0 * volume / (Math.PI * 4.0), 1 / 3.0);
+         canvas.drawCircle(this.x, this.y, this.radius);
+      }
+   }
+   class Balloon
+   {
+      constructor(y)
+      {
+         this.x = Math.random()*2000; //random sta
+         this.y = y;
+         this.decelerate = Math.random()*15;
+      }
+      move()
+      {
+         this.y -= this.decelerate; //float the loons
+      }
+      /*collision(other)
+      {
+         //distance between the loon and the ball
+         var distance = ((this.x-other.x)*(this.x-other.x)+(this.y-other.y)*(this.y-other.y));
+         if(distance <= (other.radius + 15))
+         {
+            
+         } 
+      }*/
+      render() {
+            //canvas.setDrawMode("fill");
+            canvas.drawCircle(this.x, this.y, 15);
+            canvas.drawLine(this.x,this.y + 15,this.x,this.y + 30);
+        }
+   }
+   function display()
+   {
+      var x = 0;
+      for(var i=0;i< 20;i++)
+         globallist.balloon.push(new Balloon(canvas.height));
+   }
+   function newballoons()
+   {
+      for(var i=0;i< 20;i++)
+      {
+         if(globallist.balloon[i].y <=0)
+         {
+            globallist.balloon[i] = new Balloon(canvas.height);
+         }
+      }
+   }
+   function d_ball(x,y)
+   {
+         ball = new Ball(x,y);
+   }
+   
+    function setup() {
+        // Initialize variables here
+         display();    
+    }
 
     // Declare custom functions here
 
+
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-        
+      canvas.clear();
+      //canvas.drawLine(0,0,canvas.width,canvas.height);
+      for(var i=0;i<20;i++)
+         globallist.balloon[i].move();
+      for(var i=0;i<20;i++)
+         globallist.balloon[i].render();
+      newballoons();
+      if(canvas.isKeyDown("KeyA") && globallist.count == 0)
+      {
+         var x = canvas.mouseX;
+         var y = canvas.height - canvas.mouseY;
+         d_ball(x,y);
+         globallist.count++;
+      } 
+      if(globallist.count != 0)
+      {
+         ball.move(50);
+         ball.render();
+      }
+      /*for(var i=0;i<20;i++)
+         globallist.balloon[i].collision(ball);*/
+      if(ball.x >=canvas.width || ball.y <= 0 || ball.y <= 0)
+      {
+         globallist.count = 0;
+      } 
     }
 
     // Override functions here; 
@@ -26,10 +142,6 @@
 
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
