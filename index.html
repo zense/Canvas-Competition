@@ -1,5 +1,4 @@
 <html>
-
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -11,26 +10,372 @@
 
 </html>
 <script>
-
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
+        const constants = {
+            metre: 10, // 10 Pixels / metre
+            gravity: 9.8,
+            friction: 1,
+            timeStep: 5,
+            velocityConstant: 10,
+            count1 : 0,
+            count2 : 0,
+            helper : -1,
+            global1 : -10,
+            global2 : -10,
+            count3 : 0,
+            count4 : 0,
+            points : 0
+        }
+        // Ball type enumeration
+        const ballType = {
+            NORMAL: 1,
+            FIXED: 2,
+            FOLLOW: 3
+        }
+        // Global list which contains the state
+        var globalList = {
+            balls: [],
+            ropes: [],
+            block: [],
+            pig: []
+        }
+        // Class Ball
+        class Ball {
+            constructor(x = 0, y = 0, mass = 3.0, density = 1.0) {
+                // Position of ball
+                this.x = x;
+                this.y = y;
+                // console.log(this.x, this.y);
+                // Velocity of ball
+                this.vx = 0;
+                this.vy = 0;
+                // Force on ball
+                this.fx = 0;
+                this.fy = 0;
+                // Ball properties
+                this.mass = mass;
+                this.type = ballType.NORMAL;
+                this.density = density;
+                var volume = this.mass / this.density;
+                var radius = Math.pow(3.0 * volume / (Math.PI * 4.0), 1 / 3.0);
+                this.radius = radius;
+                // Adds ball to global ropeList
+                globalList.balls.push(this);
+            }
+            // Reset all forces and apply gravitational force
+            resetForces() {
+                this.fx = 0;
+                this.fy = constants.gravity * this.mass;
+            }
+            // moves the ball by time `t`. `t` is the amount of time passed since this function was called last
+            move(t) {
+                if (this.type == ballType.NORMAL) {
+                    t /= 1000;
+                    // using acceleration = force/mass and velocity = acceleration*time
+                    this.vx += this.fx * t / this.mass;
+                    this.vy += this.fy * t / this.mass;
+                    // Using x = v*time
+                    this.x += constants.velocityConstant * this.vx * t;
+                    this.y += constants.velocityConstant * this.vy * t;
+                    // Applying friction
+                    this.vy *= 1 - constants.friction * t;
+                    this.vx *= 1 - constants.friction * t;
+                } else if (this.type == ballType.FOLLOW) {
+                    this.x = canvas.mouseX / constants.metre;
+                    this.y = canvas.mouseY / constants.metre;
+                }
+            }
+            render() {
+                var x = constants.metre * this.x;
+                var y = constants.metre * this.y;
+                var radius = constants.metre * this.radius
+                canvas.setColor("red");
+                canvas.drawCircle(x, y, radius);
+            }
+            //Distance is a function which calculates Distance between 2 points
+            distance(other) {
+                return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+            }
+            //Angle is a function which calculates the angle between 2 points
+            angle(other) {
+                var x1 = this.x;
+                var y1 = this.y;
+                var x2 = other.x;
+                var y2 = other.y;
+                // Tan inverse
+                return Math.atan2(y1 - y2, x1 - x2);
+            }
+            connect(other, length = 0.1, elasticity = 50) {
+                return new Rope(this, other, length, elasticity);
+            }
+            drawBallaftercollision() {
+                //this.resetForces();
+                this.vx = 0;
+                //this.move(constants.timeStep);
+                //this.render();
+                //canvas.drawCircle(this.x,this.y,this,this.radius);
+                //this.vy = this.vy - constants.gravity * constants.timeStep;
+                //this.y = this.y - this.vy * constants.timeStep;
 
-    // Declare custom functions here
+
+            }
+        }
+        // Class which connects two balls
+        class Rope {
+            constructor(ball1, ball2, length, elasticity) {
+                this.ball1 = ball1;
+                this.ball2 = ball2;
+                this.length = length;
+                this.elasticity = elasticity;
+                globalList.ropes.push(this);
+            }
+            exertForces() {
+                var d = this.ball1.distance(this.ball2);
+                var angle = this.ball1.angle(this.ball2);
+                if (d - this.length > 0) {
+                    var force = (d - this.length) * this.elasticity / this.length;
+                    //Resolving tension into vectors
+                    this.ball1.fy -= force * Math.sin(angle);
+                    this.ball1.fx -= force * Math.cos(angle);
+                    //Resolving tension into vectors
+                    this.ball2.fy += force * Math.sin(angle);
+                    this.ball2.fx += force * Math.cos(angle);
+                }
+            }
+            render() {
+                //draws a line between them
+                var x1 = this.ball1.x * constants.metre;
+                var y1 = this.ball1.y * constants.metre;
+                var x2 = this.ball2.x * constants.metre;
+                var y2 = this.ball2.y * constants.metre;
+                canvas.setDrawMode("stroke");
+                canvas.setColor("black");
+                canvas.drawLine(x1, y1, x2, y2);
+                canvas.setDrawMode("fill");
+            }
+        }
+        class Block {
+            constructor(x, y, length, mass = 10.0){
+                this.x = x;
+                this.y = y;
+                this.length = length;
+                this.vx = 0;
+                this.vy = 0;
+                this.fx = 0;
+                this.mass = mass;
+                this.fy = this.mass * constants.gravity;
+                globalList.block.push(this);
+            }
+            drawBlock() {
+                canvas.setColor("brown");
+                canvas.drawRectangle(constants.metre * this.x, constants.metre * this.y,constants.metre * this.length,constants.metre* this.length);
+                canvas.setColor("black");
+            }
+            drawBlockAfterCollsion(t) {
+                    t /= 1000;
+                    // using acceleration = force/mass and velocity = acceleration*time
+                    this.vx += this.fx * t / this.mass;
+                    this.vy += this.fy * t / this.mass;
+                    // Using x = v*time
+                    this.x += constants.velocityConstant * this.vx * t;
+                    this.y += constants.velocityConstant * this.vy * t;
+                    // Applying friction
+                    this.vy *= 1 - constants.friction * t;
+                    this.vx *= 1 - constants.friction * t;
+                    canvas.setColor("brown");
+                    canvas.drawRectangle(constants.metre * this.x, constants.metre * this.y,constants.metre * this.length,constants.metre* this.length);
+            }
+        }
+            
+        class Pig {
+            constructor(x, y, radius=1){
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                globalList.pig.push(this);
+            }
+            drawPig() {
+                canvas.setDrawMode("fill");
+                canvas.setColor("green");
+                canvas.drawCircle(constants.metre * this.x, constants.metre * this.y, constants.metre * this.radius);
+                canvas.setColor("black");
+            }
+            drawPigAfterCollision() {
+                for(var i=0; i<=this.radius; i++)
+                {
+                    canvas.drawCircle(this.x, this.y, this.radius-i);
+                    this.radius = this.radius-i;
+                }
+                alert("Congratulation! Play again.")
+            }
+        }
+
+        function intersect(a, b) {
+            if(a.x + a.radius> b.x && a.y+a.radius > b.y && a.y-a.radius < b.y + b.length && a.x - a.radius < b.x + b.length)
+                return 1;
+            else
+                return 0;
+        }
+        function intersect2(c, d) {
+            //console.log(d.y);
+            //console.log(c.radius);
+            if(c.x + c.radius> d.x && c.y + c.radius > d.y && c.y - c.radius < d.y + d.length && c.x - c.radius < d.x + d.length)
+                {   
+                    //console.log("collided");
+                    return 1;
+                }
+            else
+            {
+                //console.log("not collided");
+                return 0;
+            }
+        }
+
+        function intersect_pig_ball(a, b) {
+            if(a.x+a.radius>b.x-b.radius && a.x-a.radius<b.x+b.radius && a.y-a.radius<b.y+b.radius && a.y+a.radius>b.y-b.radius)
+                
+                {console.log("collided");
+                return 1;}
+            else
+                {console.log("no collision");
+                return 0;}
+        }
 
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
 
-    }
 
-    // Override functions here; 
-    canvas.mainFunction = main;
+        
+        function basic() {
+            var ball1 = new Ball(width / 5, 4*height / 5);
+            var ball2 = new Ball(width / 2, 4*height / 2);
+            ball1.connect(ball2);
+            ball1.type = ballType.FIXED;
+            ball2.type = ballType.FOLLOW;
+        }
+        
+        
+        function setupFunction() {
+            
+            width = canvas.width / constants.metre; //Scaling to metres
+            height = canvas.height / constants.metre; //Scaling to metres
+            basic();
+            var block1 = new Block(6*width/8, height/5, height/10);
+            var block2 = new Block(5*width/8, 2*height/5, height/10);
+            var block3 = new Block(4*width/8, 3*height/5, height/10);
+            var block4 = new Block(3*width/8, 4*height/5, height/10);
+            var pig1 = new Pig(4*width/5, 4*height/5, 1.0);
+            var pig2 = new Pig(3*width/5, 4*height/5, 1.0);
 
-    var timeStep = 50;
-    canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
+
+            //smallChain();
+            // random();
+            // longChain();
+            // cloth();
+        }
+        // Function while will be called repeatedly 
+        function main() {
+            canvas.clear();
+            // Clear forces
+            for (var i = 0; i < globalList.balls.length; i++)
+                globalList.balls[i].resetForces();
+            // // Apply all forces
+
+            for (var i = 0; i < globalList.ropes.length; i++)
+                globalList.ropes[i].exertForces();
+            
+            
+            // // Move by time T
+            for (var i = 0; i < globalList.balls.length; i++)
+                globalList.balls[i].move(constants.timeStep);
+            // render
+            
+            if(constants.count1==0)
+            {for (var i = 0; i < globalList.ropes.length; i++)
+                globalList.ropes[i].render();
+            }
+            for (var i = 0; i < globalList.balls.length; i++)
+                globalList.balls[i].render();
+            if(canvas.mouseDown)
+            {
+                globalList.balls[1].type = ballType.NORMAL;
+                //globalList.ropes[0].elasticity = 0;
+                setTimeout(function(){globalList.ropes[0].elasticity = 0;}, 10)
+                constants.count1 = 1
+            }
+            if(constants.count2==0)
+            
+            {for (var i =0; i<globalList.block.length; i++)
+            {
+                globalList.block[i].drawBlock();
+            }
+        }
+        else
+        {
+          for (var i =0; i<globalList.block.length; i++)
+            {
+                if(i!=constants.helper)
+                    globalList.block[i].drawBlock();
+            }  
+        }
+            if(constants.count2==0){
+            for (var i =0; i<globalList.block.length; i++)
+            {
+            if(intersect(globalList.balls[1], globalList.block[i])==1)
+            {
+                constants.global1 = globalList.balls[1].vx * globalList.balls[1].mass;
+                constants.global2 = globalList.balls[1].vy * globalList.balls[1].mass;
+                
+                globalList.balls[1].drawBallaftercollision();
+                
+                constants.count2 = 1;
+                constants.helper = i;
+            }
+            
+
+            }}
+            if(constants.count2 == 1)
+            {
+                    globalList.block[constants.helper].vx = constants.global1/globalList.block[constants.helper].mass;
+                    //globalList.block[constants.helper].vy = constants.global2/globalList.block[constants.helper].mass;
+
+                    globalList.block[constants.helper].drawBlockAfterCollsion(constants.timeStep);
+            }
+            
+            // for(var i=0; i<globalList.pig.length; i++)
+            // {
+            //     globalList.pig[i].drawPig();
+            // }
+            // for(var i=0; i<globalList.pig.length; i++)
+            // {
+            //     if(inter)
+            // }
+            if(constants.count3 == 0)
+            {
+                 globalList.pig[0].drawPig();
+            }
+            if(intersect_pig_ball(globalList.pig[0],globalList.balls[1])==1)
+            {
+                 globalList.pig[0].drawPigAfterCollision();
+                 constants.count3 = 1;
+            }
+            // //console.log(width/2);
+            //console.log(2*height/5)
+            if(constants.count4 == 0)
+            {
+                 globalList.pig[0].drawPig();
+            }
+            if(constants.helper >=0)
+            {if(intersect2(globalList.pig[0], globalList.block[constants.helper])==1)
+            {
+                globalList.pig[0].drawPigAfterCollision();
+                constants.count4 = 1;
+            }}
+
+    }        
+        
+        // Override functions here; 
+        canvas.mainFunction = main;
+        canvas.setupFunction = setupFunction;
+        canvas.startMain(constants.timeStep);
 
 </script>
