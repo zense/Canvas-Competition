@@ -1,4 +1,5 @@
 <html>
+<meta charset="UTF-8">
 
 <body onload="canvas.setup()">
 
@@ -12,25 +13,198 @@
 </html>
 <script>
 
-    // Declare all global variables here
+   // Declare all global variables here
+    var position_x;
+    var position_y;
+    var radius;
+    var gravity;
+    var t;
+    var instant_x;
+    var instant_y;
+    var v;
+    var img = ["bowl.jpg","clouds.jpg"];
+    //var img1 = ["cannoner1.jpg"];
+    var grass=["grass.jpg"];
+    var bowl_x;
+    var bowl_y;
+    var centre_x;
+    var centre_y;
+    var points;
+    var count;
+    var missed;
+    var game_value; 
+    var images=["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg"] ;
+    var vel;
+    var i;
+    var j;
+
+
     function setup() {
-        // Initialize variables here
+        
+        position_x = canvas.width - 0.1* canvas.width;
+        position_y = canvas.height / 2;
+    
+        //bowl_y = canvas.height - canvas.height*0.1 ;
+        bowl_y = canvas.height - canvas.height*0.15;
+        bowl_x = canvas.width / 2.2;
+        centre_x=canvas.width-(0.2*canvas.width);
+        centre_y=canvas.height/3;
+        radius=(canvas.height*0.02);
+        gravity=1;
+        points = 0;
+        time=0;
+        count = 0;
+        missed = 0;
+        i=0;
+        j=0;
+        game_value = 1;
+        v=[25,43,35,25,42,30,14,11,28,11,23,40,23,11,13,40,23,34,13,7,32,13,23,40,15,17,11,31,38,26,27,24,27,12,32,12,41,11,39,5];
+       // canvas.activateDoubleBuffer();
+
+
+    }
+    function change_velocity()
+    {
+        vel=v[j];
+        j=j+1;
+        if(j==40){
+            j=0;
+        }
+    }
+    function change_center()
+    {
+        t=t+1;
+        if(t=10)
+        {
+            time=time+1;
+            t=0;
+        }
+
+        instant_x=centre_x-(vel*time);
+        instant_y=centre_y+(0.5*gravity*time*time);
+
     }
 
-    // Declare custom functions here
-
-
-    // Function while will be called repeatedly 
-    function main() {
+    function anim(){
+        canvas.drawImg(images[i],centre_x,centre_y,300,100);
+        i++;
+        if(i==10                                                                        )
+            i=0;
+    }
+ 
+    function main(){ 
         canvas.clear();
+    if(game_value == 1){
+         if(instant_y>centre_y){
+            canvas.drawImg(images[0],centre_x,centre_y,300,100);
+        }
+        else{
+            anim()
+        }
+        var text="POINTS = "+points;
 
+        canvas.drawImg( img[0],bowl_x,bowl_y,100,50);
+        anim();
+        //canvas.drawImg( img1[0],centre_x,centre_y-50,300,200);
+        if(bowl_x >= 0.68 *canvas.width) 
+        {
+            bowl_x = 0.68*canvas.width;
+        }
+        if(bowl_x <= 1.2)
+        {
+            bowl_x = 1.2;
+        }
+       // collision();
+        canvas.setDrawMode("fill");
+        canvas.setColor("black");
+        canvas.drawCircle(instant_x,instant_y,radius);
+       
+        canvas.setDrawMode("fill");
+        canvas.setColor("rgb(101,67,33)");
+        canvas.drawRectangle(0.8*canvas.width, (canvas.height/3)+100 ,canvas.width, canvas.height);
+        change_center();
+        canvas.drawImg(grass[0],0,(canvas.height - canvas.height*0.15)+50,0.8*canvas.width,50);
+        canvas.drawImg(img[1],0,0,canvas.width,canvas.height/5);
+        if(instant_y >= canvas.height)
+        {
+            anim();
+            instant_y = centre_y;
+            instant_x = centre_x;
+            time = 0;
+            count += 1;
+            change_velocity();
+
+        
+        }
+        // if(instant_y > bowl_y)
+        // {
+        //     missed += 1;
+        // }
+
+        if(canvas.isKeyDown("ArrowLeft")) {
+            bowl_x -= 50;
+        }
+        if(canvas.isKeyDown("ArrowRight")) {
+            bowl_x += 50;
+        }
+       canvas.drawText(1000,200,text);
+       collision();
+   }
+       else
+       {    
+            var t="Your score is "+points;
+            if(points >= 20)
+            {
+               // document.body.style.backgroundImage = "linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)";
+                // document.body.style.backgroundImage = "url('img_tree.png')
+                canvas.drawImg(grass[0],0,(canvas.height - canvas.height*0.15)+50,0.8*canvas.width,50);
+        canvas.drawImg(img[1],0,0,canvas.width,canvas.height/5);
+                canvas.drawText(350,400,"Game Over!!!",200);
+                canvas.drawText(500,500,"Congratulations!!");
+                canvas.drawText(500,550,t,100);
+            }
+            else if(points <= 20)
+            {   
+                //document.body.style.backgroundImage = "linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12)";
+                canvas.drawImg(grass[0],0,(canvas.height - canvas.height*0.15)+50,0.8*canvas.width,50);
+        canvas.drawImg(img[1],0,0,canvas.width,canvas.height/5);
+                canvas.drawText(350,400,"Game Over!!!",200);
+                canvas.drawText(500,500,"Better Luck Next Time.....!!!");
+                canvas.drawText(500,550,t,50);
+            }
+
+       }
+     
+
+        
     }
-
-    // Override functions here; 
+    function collision()
+    {
+        if(instant_x <= (bowl_x + 50) && instant_x >= (bowl_x - 50)   && instant_y >= bowl_y)
+        {
+            instant_x = centre_x;
+            instant_y = centre_y;
+            points += 1;
+        }
+        else if((instant_x >= (bowl_x +60) && instant_y >= bowl_y)|| (instant_x <= (bowl_x - 60)   && instant_y >= bowl_y))
+        {
+            
+            missed += 1/5;
+                if(missed >= 3 )
+                {
+                    game_value = 0;
+                }
+        }
+    
+        
+    }
+   // canvas.update()
+        
+    
     canvas.mainFunction = main;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
-</script>
+</script>0
