@@ -19,7 +19,7 @@
     var y;
     var x1;
     var y1;
-    var ang;
+    var angle;
     var key;
     var key2;
     var key3;
@@ -30,6 +30,7 @@
     var ay1;
 
     var m_list = [];
+    var r_list = [];
 
     class mirror {
         constructor(mx,my,mx1,my1){
@@ -57,6 +58,83 @@
         }
     }
 
+    class ray {
+        constructor(rx,ry,rx1,ry1,c1,c2,c3,ang){
+            this.rx=rx;
+            this.ry=ry;
+            this.rx1=rx1;
+            this.ry1=ry1;
+            this.c1=c1;
+            this.c2=c2;
+            this.c3=c3;
+            this.ang=ang;
+            this.rb=0;
+            r_list.push(this);
+        }
+
+        change_xy()
+        {
+            this.rx=this.rx1;
+            this.ry=this.ry1;
+            this.rx1 = this.rx + 10*Math.cos(this.ang);
+            this.ry1 = this.ry + 10*Math.sin(this.ang);
+        }
+
+        check_ang()
+        {
+
+            for(var i=0;i<m_list.length;i++)
+            {
+                if((m_list[i].mx == m_list[i].mx1) && ((this.ry<=m_list[i].my && this.ry>=m_list[i].my1) || (this.ry<=m_list[i].my1 && this.ry>=m_list[i].my)))
+                {
+                    if(this.rx1+4>m_list[i].mx && this.rx1<m_list[i].mx && ((this.ry1<m_list[i].my1 && this.ry1>m_list[i].my) || (this.ry1<m_list[i].my && this.ry1>m_list[i].my1)))
+                    {
+                        this.ang = pi - this.ang;
+                        if(key3%2==1){
+                            this.rb+=10;
+                            this.c1+=10;
+                            this.c2+=10;
+                            this.c3+=10;
+                        }
+                    }
+                    else if(this.rx1-4<m_list[i].mx && this.rx1>m_list[i].mx && ((this.ry1<m_list[i].my1 && this.ry1>m_list[i].my) || (this.ry1<m_list[i].my && this.ry1>m_list[i].my1)))
+                    {
+                        this.ang = pi - this.ang;
+                        if(key3%2==1){
+                            this.rb+=10;
+                            this.c1+=10;
+                            this.c2+=10;
+                            this.c3+=10;
+                        }
+                    }
+                }
+                else
+                {
+                    if(this.ry1+4>m_list[i].my && this.ry1<m_list[i].my && ((this.rx1>m_list[i].mx && this.rx1<m_list[i].mx1) || (this.rx1>m_list[i].mx1 && this.rx1<m_list[i].mx)))
+                    {
+                        this.ang = 2*pi - this.ang;
+                        if(key3%2==1){
+                            this.rb+=10;
+                            this.c1+=10;
+                            this.c2+=10;
+                            this.c3+=10;
+                        }
+                    }
+                    else if(this.ry1-4<m_list[i].my && this.ry1>m_list[i].my && ((this.rx1>m_list[i].mx && this.rx1<m_list[i].mx1) || (this.rx1>m_list[i].mx1 && this.rx1<m_list[i].mx)))
+                    {
+                        this.ang = 2*pi - this.ang;
+                        if(key3%2==1){
+                            this.rb+=10;
+                            this.c1+=10;
+                            this.c2+=10;
+                            this.c3+=10;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     function setup() {
         // Initialize variables here
         center_x = canvas.width/2;
@@ -69,84 +147,54 @@
         x1 = 0;
         y1 = 0;
         pi = Math.PI;
-        ang = 0;
+        angle = 0;
         b = 0;
     }
 
     // Declare custom functions here
-    function change_xy()
-    {
-        x=x1;
-        y=y1;
-        x1 = x + 10*Math.cos(ang);
-        y1 = y + 10*Math.sin(ang);
-    }
 
-    function angle()
+    function set_angle()
     {
+        console.log("ang");
         if(canvas.mouseDownX == center_x)
         {
             if(canvas.mouseDownY<=center_y)
-                ang = -1*pi/2;
+                angle = -1*pi/2;
             else
-                ang = pi/2;
+                angle = pi/2;
         }
         else
-            ang = Math.atan((canvas.mouseDownY-center_y)/(canvas.mouseDownX-center_x));
+            angle = Math.atan((canvas.mouseDownY-center_y)/(canvas.mouseDownX-center_x));
         if(canvas.mouseDownX<center_x)
-            ang = ang - pi;
-        x1 = x + 5*Math.cos(ang);
-        y1 = y + 5*Math.sin(ang);
-
+            angle = angle - pi;
+        x1 = x + 5*Math.cos(angle);
+        y1 = y + 5*Math.sin(angle);
+        console.log(angle);
     }
 
-    function check_ang()
-    {
-
-        for(var i=0;i<m_list.length;i++)
-        {
-            if((m_list[i].mx == m_list[i].mx1) && ((y<=m_list[i].my && y>=m_list[i].my1) || (y<=m_list[i].my1 && y>=m_list[i].my)))
-            {
-                if(x1+4>m_list[i].mx && x1<m_list[i].mx && ((y1<m_list[i].my1 && y1>m_list[i].my) || (y1<m_list[i].my && y1>m_list[i].my1)))
-                {
-                    ang = pi - ang;
-                    if(key3%2==1) b+=10;
-                }
-                else if(x1-4<m_list[i].mx && x1>m_list[i].mx && ((y1<m_list[i].my1 && y1>m_list[i].my) || (y1<m_list[i].my && y1>m_list[i].my1)))
-                {
-                    ang = pi - ang;
-                    if(key3%2==1) b+=10
-                }
-            }
-            else
-            {
-                if(y1+4>m_list[i].my && y1<m_list[i].my && ((x1>m_list[i].mx && x1<m_list[i].mx1) || (x1>m_list[i].mx1 && x1<m_list[i].mx)))
-                {
-                    ang = 2*pi - ang;
-                    if(key3%2==1) b+=10
-                }
-                else if(y1-4<m_list[i].my && y1>m_list[i].my && ((x1>m_list[i].mx && x1<m_list[i].mx1) || (x1>m_list[i].mx1 && x1<m_list[i].mx)))
-                {
-                    ang = 2*pi - ang;
-                    if(key3%2==1) b+=10;
-                }
-            }
-        }
-    }
 
 
     // Function while will be called repeatedly 
     function main() {
-        // canvas.clear();
+        if(key2%2==0)
+            canvas.clear();
         for(var i=0;i<m_list.length;i++){
             m_list[i].render();
         }
-        if(key >= 1 && key2%2==0){
-            canvas.setColor("rgb(255,"+b+","+b+")");
-            canvas.setLineThickness(3);
-            canvas.drawLine(x,y, x1,y1);
-            change_xy();
-            check_ang();
+        if(key%2 == 1 && key!=-1){
+            for(var i=0;i<r_list.length;i++){
+                console.log("ray"+i);
+                canvas.setColor("rgb("+r_list[i].c1+","+r_list[i].c2+","+r_list[i].c3+")");
+                canvas.setLineThickness(3);
+                canvas.drawLine(r_list[i].rx,r_list[i].ry, r_list[i].rx1,r_list[i].ry1);
+                r_list[i].change_xy();
+                r_list[i].check_ang();
+                if(this.c1>255 && this.c2>255 && this.c3>255)
+                {
+                    r_list.splice(i,1);
+                    i--;
+                }
+            }
         }
     }
 
@@ -169,9 +217,13 @@
     canvas.mouseUpCallback = function () {
         ax1 = canvas.mouseX;
         ay1 = canvas.mouseY;
-        if(key == 0)
+        if(key%2 == 0)
         {
-            angle();
+            set_angle();
+            var c1 = Math.floor((Math.random() * 255)+1);
+            var c2 = Math.floor((Math.random() * 255)+1);
+            var c3 = Math.floor((Math.random() * 255)+1);
+            r2 = new ray(x,y,x1,y1,c1,c2,c3,angle);
             key++;
         }
         else if(Math.abs(ax1-ax)>Math.abs(ay1-ay))
