@@ -158,7 +158,6 @@ canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngl
         radiusX = radiusY;
         radiusY = temp;
     }
-
     endAngle = (endAngle/180.0)*Math.PI;
     this.ctx.beginPath();
     this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
