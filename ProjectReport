@@ -1,0 +1,39 @@
+                                  PROJECT 
+                                   REPORT
+                  (Project Name - Watch Out !)
+
+INTRODUCTION :
+
+Our project is based on JavaScript to create a game which is a simplified derivative of ‘Flappy Bird’. This game however is a very simple version of the original as this is our first JS project.
+
+PROBLEM DESCRIPTION :
+
+    • The main motivation behind this project was ‘Flappy Bird’ and other similar games. 
+    • This game has a ball which should escape the spikes and reach the end of the frame.
+
+SOLUTION PROPOSED :
+
+    • The main problem i.e. the collision of the ball with the spikes was solved by using simple coordinate geometrical concepts. (When the distance between line and centre of circle is equal to radius, collision takes place).
+      
+EXECUTION :
+
+    • JavaScript and HTML to create the interactive ball and spikes in the game.
+
+CONCLUSIONS :
+
+    • Both the team members learnt to coordinate and propose new ideas which ultimately led to the creation of an effective game.
+    • Both the team members learnt to use and implement JavaScript.
+    • Because it was our first hackathon, we understood how to learn and implement an idea in a short period of time.
+
+REFERENCES :
+
+    • https://www.youtube.com/playlist?list=PL4cUxeGkcC9i5yvDkJgt60vNVWffpblB7
+      
+    • https://htmldog.com/guides/javascript/
+      
+    • https://www.w3schools.com/graphics/canvas_intro.asp
+
+TEAM MEMBERS :
+Abhigna(IMT2019040) & Jahanvi(IMT2019506)
+      
+      
