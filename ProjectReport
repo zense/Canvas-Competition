@@ -1,0 +1,11 @@
+The project is named as carromboard .
+As the name suggests it is a visual carromboard made by using canvas file .
+Main logic applied in the project is about collision , how collisions are performed , coefficient of restitution , linear momentum conservation .
+This project also includes oblique collision , and large no of equations made using two equations i.e. conservation of linear momentum and equation of coefficient of restitution .
+Special thanks to :
+  utkarsh bhaiya 
+  bharat joshi 
+  prajwal bhaiya
+  agam bhaiya
+  Jishnu bhaiya
+  
