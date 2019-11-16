@@ -1,35 +1,208 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <audio controls>
+      <source src="Bomb_Exploding-Sound_Explorer-68256487.wav" type="audio/wav">
+      <source src="Bomb_Exploding-Sound_Explorer-68256487.mp3" type="audio/mpeg">
+  Your browser does not support the audio tag.
+    </audio>
+    <source src = "Bomb_Exploding-Sound_Explorer-68256487.mp3">
+
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
 
+
+    count = 0;
+    var k;
+
+    const sunR = 10;
+    var merT;
+    var satT;
+    var solarCreate=false;
+    var solarSysArray=[];
     // Declare all global variables here
+
+    function setup() {
+      merT = 0 ;
+      satT = 0 ;
+      canvas.activateDoubleBuffer();
+    }
+
+
+
+    class SolarSysClass{
+
+    constructor(sunR, merT, satT,sunX,sunY){
+      this.sunR = sunR;
+      this.merT = merT;
+      this.satT = satT;
+      this.sunX=sunX;
+      this.sunY=sunY;
+      console.log(sunX)
+      console.log(sunY)
+    }
+
+    Orbit(radius)
+    {
+        var r = radius;
+        //Refer canvas.js to understand what the bottom 3 functions do
+        canvas.setDrawMode("stroke");
+        canvas.setColor("#5a5a5a");
+        canvas.drawCircle(this.sunX, this.sunY, radius);
+        return r;
+    }
+    //pOrbit = takes in the radius of it's orbit so that revolution can be done around the orbit
+     Planet(pOrbit, pRadius, time, color)
+    {
+        var orbitR = pOrbit; //orbit's radius
+        var centreX = orbitR * Math.cos(time * (Math.PI / 180)); //rcos(theta)
+        var centreY = orbitR * Math.sin(time * (Math.PI / 180)); //rsin(theta)
+        //Refer canvas.js to understand what the bottom 3 functions do
+        canvas.setDrawMode("fill");
+        canvas.setColor(color);
+        canvas.drawCircle(this.sunX + centreX, this.sunY + centreY, pRadius);
+    }
+     SolarSys(){
+      canvas.setDrawMode("fill");
+      canvas.setColor("#FDB813");
+      canvas.drawCircle(this.sunX, this.sunY, this.sunR);
+      var merOrb = this.Orbit(20);
+      var merP = this.Planet(merOrb, 0.20*this.sunR, merT, "#676767");
+      merT += 0.1;
+
+      var satOrb = this.Orbit(40);
+      var satP = this.Planet(satOrb, 0.47*this.sunR, satT, "#C5AB6E");
+      //Saturn Rings XD
+      var ringX = satOrb * Math.cos(satT * (Math.PI / 180)); //rcos(theta)
+      var ringY = satOrb * Math.sin(satT * (Math.PI / 180)); //rsin(theta)
+      canvas.setDrawMode("stroke");
+      canvas.setColor("#C5ABAB");
+      canvas.drawCircle(this.sunX + ringX, this.sunY + ringY, 0.9*this.sunR);
+      satT += 0.021;
+    }
+  }
+
+
+
+    const particles = [] //an array to keep track of the objects
+
+    const colors = ["#FDB813","#676767","#d7b95e","#0077be","#934838","#e36e4b","#C5AB6E","#6495ed","#73ACAC"];
+
+    const start_delay = (60 * 1);    //almost 1 seconds to start the simulation i.e simulation delay
+
+    var reference_time = 0;        //initial second/initialisation time
+
+
 
     // Declare custom functions here
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-        
+    const random = (min, max) => Math.random() * (max - min) + min;   //takes min and mas as input and arrow outputs random whole numbers between them
+
+    //const createParticles = function(n){
+    function createParticles(n){
+      for(var i = 0;i < n;i++){
+        particles.push({
+          x : canvas.width/2,
+          y : canvas.height/2,
+          color : colors[parseInt(random(0,colors.length))],
+          size : random(2,6),
+          alpha : random(0.5,1),
+          speed : random(10,100),
+
+          vel : {                    //random selection for the velocity unit vectors
+            x : random(-.1,.1),
+            y : random(-.1,.1),
+          }
+        });
+      }
+    };
+
+  //  const variation = function(){
+  function variation(){
+      reference_time ++;
+      if (reference_time > start_delay){
+        particles.forEach(p =>{
+          p.x += p.vel.x * p.speed * v_x;
+          p.y += p.vel.y * p.speed * v_y;
+        });
+      }
+    };
+
+  //  const plot = function(){
+      //canvas.clear()
+  function plot(){
+      particles.forEach(p => {
+            canvas.ctx.fillStyle = p.color;
+            //canvas.setColor(p.color);
+            canvas.ctx.globalAlpha = p.alpha;
+            //canvas.setColor()
+            // canvas.ctx.fillRect(p.x, p.y, p.size, p.size);
+            canvas.drawCircle(p.x,p.y,p.size)
+            //canvas.ctx.fillArc(p.x , p.y , p.size, p.size , Math.PI , 2*Math.PI);
+            //canvas.setDrawMode("fill");
+            //canvas.setColor("black");
+            //canvas.drawRectangle(p.x,p.y,p.size,p.size);
+            canvas.ctx.globalAlpha = 1;
+        });
     }
 
-    // Override functions here; 
-    canvas.mainFunction = main;
+    const call = function(){
+      variation();
+      plot();
+      requestAnimationFrame(call);
+  };
+    // Function while will be called repeatedly
 
+    var num_particles = prompt("Give me the number of particles you expect from your version of the Big-Bang!!, in one frame that is...preferably 100 or below");
+    alert("Give the input for the particle distribution for along the horizontal axes, REMEMBER!! keep them equal for a distribution that looks a bit realistic!");
+    var v_x = prompt("Along the horizontal axes, keep the value fractional for a visible experience, preferably 1");
+    var v_y = prompt("Along the vertical axes, keep the value fractional for a visible experience, preferably 0.2");
+
+    function main()
+    {
+      canvas.clear();
+      canvas.setDrawMode("fill");
+      canvas.setColor("black");
+      canvas.drawRectangle(0,0,canvas.width,canvas.height);
+
+      count++;
+
+      if(count<30){
+        createParticles(num_particles);
+        call();
+        canvas.update();
+      }
+      else{
+        if(!solarCreate)
+        {
+          for(var i=0;i<num_particles;i++){
+            solarSysArray.push(new SolarSysClass(10,2,3,particles[i].x,particles[i].y))
+          }
+          solarCreate=true;
+          console.log(num_particles);
+        }
+        else{
+          for(var i=0 ; i<num_particles ; i++){
+              solarSysArray[i].SolarSys();
+              // console.log(solarSysArray[i])
+          }
+        }
+
+          canvas.update();
+
+      }
+
+    }
+
+    // Override functions here;
+    canvas.mainFunction = main;
     var timeStep = 50;
     canvas.startMain(timeStep);
-
-
-    
+    canvas.setupFunction = setup;
 </script>
-
-
-
