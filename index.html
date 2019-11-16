@@ -1,6 +1,8 @@
 <html>
+<meta charset="utf-8">
 
-<body onload="canvas.setup()">
+
+<body onload="canvas.setup()" background="./src/bground.jpg">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
@@ -13,24 +15,172 @@
 <script>
 
     // Declare all global variables here
+    listOfObjects = [];
+    listOfObstacles = [];
+    baseX = canvas.width;
     function setup() {
+        b = new Ball(100,10000,15);
+        for(var i = 1;i<100;i++)
+        {   
+            var r = (Math.random()*1729);
+            // console.log(r);
+            new BrickWall(i*200,0,40,(r%(canvas.height/2-100)));
         // Initialize variables here
+        }
     }
 
     // Declare custom functions here
+    function renderall(){
+        for(var i in listOfObjects)
+            listOfObjects[i].render()
+        baseX = b.x;
+        for(var i in listOfObstacles)
+            listOfObstacles[i].render()
+    }
+    function distance(x1,y1,x2,y2)
+    {
+        return Math.sqrt(Math.pow((x1-x2),2)+Math.pow((y1-y2),2));
+    }
+    class Ball{
+        constructor(x,y,r){
+            this.r = r;
+            this.framefactor = 30;
+            if(r != 0){
+                this.velocity = canvas.width/this.r*0.5;
+                this.jumpVel = canvas.height * this.r/15/this.framefactor;
+            }
+            else{
+                this.velocity = 100;
+                this.jumpVel = 100;
+            }
+            this.x = x;
+            this.y = y;
+            listOfObjects.push(this);
+            this.upmove = false;
+            this.upstep = 0;
+            this.rightmove = false;
+            this.leftmove = false;
+            this.prevx = this.x;
+            this.frameid = 0;
+            // this.addListener('ArrowDown');
+        }
+        detectCollision(){
+            for(var i in listOfObstacles){
+                if(listOfObstacles[i].x < this.x && this.x < listOfObstacles[i].x+listOfObstacles[i].w)
+                if(this.y>=listOfObstacles[i].y)
+                {
+                    this.x =this.prevx - this.r;
+                    console.log(1);
+                }
+                if(Math.abs(baseX/25+105 - (listOfObstacles[i].x-baseX) )< this.r)
+                    if(this.y>=listOfObstacles[i].y)
+                {
+                    this.x =this.prevx-this.r;
 
+                }
+                else if(Math.abs(baseX/25+105 - (listOfObstacles[i].x-baseX+listOfObstacles[i].w) )< this.r)
+                {    if(this.y>=listOfObstacles[i].y)
+                        this.x =this.prevx+this.r;
+                }
+            }
+        }
+        jump()
+        {
+            this.upstep += 1;
+            if((this.upstep % this.framefactor) < (this.framefactor/2))
+            {
+                this.y -= this.jumpVel;            
+                console.log("up"+this.y);
+            }
 
+            else{
+                console.log("down"+this.y+",,,,,,,"+this.jumpVel,this.upstep);
+                this.y += this.jumpVel;
+            }
+            if(this.upstep % this.framefactor == 0){
+                this.y = canvas.height - this.r;
+                this.upmove = false;
+            }
+        }
+        render(){
+            if(this.rightmove){
+                this.x += this.velocity;
+                this.rightmove = false
+            }
+            else if(this.leftmove){
+                this.x -= this.velocity;
+                this.leftmove = false;
+            }
+            if(this.upmove){
+                this.jump();
+            }
+            if(this.y > canvas.height - this.r)
+            {
+                this.y = canvas.height - this.r;
+            }
+            canvas.setColor("red");
+            this.detectCollision();
+            console.log(this.x);
+            for(var i = 0;i<10;i++)
+            {
+                this.frameid += this.x;
+                this.prevx = this.x;
+                canvas.setColor("rgb("+(230+i*2)+","+ i*20 +","+ i*5 +")");
+                canvas.drawCircle(this.x-baseX+baseX/25+105,this.y,this.r-this.r/10*i);
+            }
+        }
+    }
+
+    class BrickWall{
+        constructor(x,y=0,w,h){
+            this.x = x;
+            this.y = canvas.height - h;
+            this.w = w;
+            this.h = h;
+            listOfObstacles.push(this);
+            this.render();
+        }
+        render(){
+            canvas.setColor("skyblue");
+            // canvas.drawRectangle(this.x,this.y,this.w,this.h);
+            for(var i = 0;i<10;i++)
+            {
+                canvas.setColor("rgb("+(100+i*2)+","+ i*20 +","+ i*10 +")");
+                canvas.drawRectangle(this.x-baseX,this.y,this.w-this.w/10*i,this.h-this.h/10*i);
+            }
+        }
+    }
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-
+        canvas.setDrawMode("fill");
+        renderall();
     }
 
     // Override functions here; 
+    canvas.keyDownCallback = function(e){
+        if(e.code === 'ArrowRight')
+        {
+            for(var i in listOfObjects){
+                listOfObjects[i].rightmove = true;
+            }
+        }
+        else if(e.code === 'ArrowLeft'){
+            for(var i in listOfObjects){
+                listOfObjects[i].leftmove = true;
+            }
+        }
+        else if(e.code === 'ArrowUp'){
+            for(var i in listOfObjects){
+                listOfObjects[i].upmove = true;
+            }
+        }
+    }
+    canvas.setupFunction = setup;
     canvas.mainFunction = main;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
+
 
 </script>

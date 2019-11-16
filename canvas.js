@@ -238,7 +238,7 @@ canvas.startListeners = function () {
 
 // Checks if keyboard key is pressed. Example KeyA for A. 
 canvas.isKeyDown = function(key) {
-    return keysDown[key] == true;
+    return this.keysDown[key] == true;
 }
 
 
