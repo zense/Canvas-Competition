@@ -13,17 +13,92 @@
 <script>
 
     // Declare all global variables here
-    function setup() {
+    var counter=0
+    var score=0
+    var ballArray=[]
+    var gameover=true 
+    // Declare custom functions here
+    canvas.mouseDownCallback=function()
+         {
+            for(i=0; i<ballArray.length ; i++)
+            {
+             if(gameover==true)
+             {
+              if(Math.sqrt((ballArray[i].x-canvas.mouseDownX)*(ballArray[i].x-canvas.mouseDownX)+(ballArray[i].y-canvas.mouseDownY)*(ballArray[i].y-canvas.mouseDownY))-30<=0)
+              {
+                if(Math.random()<=0.5)
+                { 
+                  ballArray[i].x -=Math.random()*150
+                }
+                else
+                {
+                 ballArray[i].x +=Math.random()*150
+                }
+                ballArray[i].y-=150          
+                score +=1             
+              } 
+             }
+            }
+         }
+     function setup() {
         // Initialize variables here
+        if(score%5==0)
+        {
+          b = new ball(Math.random()*100,Math.random()*100);
+          ballArray.push(b)
+        }  
     }
 
-    // Declare custom functions here
-
-
+    class ball
+    {
+        constructor(x,y)
+        {
+           this.x=x
+           this.y=y             
+        } 
+        create()
+        {
+         canvas.setDrawMode("fill")
+         canvas.setColor("orange")
+         canvas.drawCircle(this.x,this.y,30)
+        }
+    
+    }
+    
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-
+        canvas.clear()    
+         canvas.setColor("green")
+         canvas.drawText(100,100,"Score:",fontsize=30)
+        canvas.drawText(200,100,score,fontsize=30)
+        if(score/5.0== counter+1 && score!=0)
+        {
+          b = new ball(Math.random()*100,Math.random()*100);
+          ballArray.push(b)
+          counter +=1
+        }  
+        for( i=0 ; i<ballArray.length; i++)
+        {
+          ballArray[i].create() 
+          ballArray[i].y += 5
+        
+          if((ballArray[i].x-30)<=0 || (ballArray[i].y+30)>=canvas.width)
+          {
+            ballArray[i].x=(Math.random()*(canvas.width))
+            ballArray[i].y=(Math.random()*(canvas.height)/2)
+          }
+          if((ballArray[i].y-30)<=0)
+          {
+           ballArray[i].x=(Math.random()*(canvas.width))
+           ballArray[i].y=(Math.random()*(canvas.height)/2)
+          }
+          canvas.setColor("red")
+          if(ballArray[i].y+30>=canvas.height)
+          {
+           gameover=false
+           canvas.drawText(canvas.width/2,canvas.height/2,"GAME OVER!!!",55)  
+          }
+        }
     }
 
     // Override functions here; 
