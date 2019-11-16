@@ -184,7 +184,18 @@
         else if(c==0 && k>1)
                 colour[v]=1;
         else if(c==0 && k==0)
+        {
             colour[v]=2;
+
+            for(j=0;j<nodes.length;j++)
+            {
+                
+                if(adjacency_list[j][v]!=1 && colour[j]==0 )
+                {
+                    return j;
+                }
+            }
+        }
         else if(c!=0 && k!=0)
             colour[v]=1;
 
@@ -216,6 +227,9 @@
 
 
         }
+        
+        
+
 
                
               
@@ -253,7 +267,7 @@
 
         if(y==0)
         {
-            for(var a=0;a<7;a++)
+            for(var a=0;a<7;a++)//change 
               {
                 colour.push(0);
                 
@@ -267,7 +281,7 @@
             addEdge(4,5);
             addEdge(4,3);
             addEdge(3,2);
-            addEdge(4, 6);
+           // addEdge(4, 6);
             //addEdge(2, 1);
        v_start=dfs(v_start);
 
