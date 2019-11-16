@@ -41,14 +41,14 @@
          y+=-1;
          if(direction==="DOWN")
          y+=1;
-         canvas.drawImg("/Users/manaswithareddykauluri/Downloads/CLOSED\ PAC\ MAN.jpg",x,y,18,18);
+         canvas.drawImg("https://www.freepik.com/free-photo/top-view-yellow-circle-white-background_4852355.htm",x,y,18,18);
 
        }
     // Function while will be called repeatedly
     function main() {
 
     canvas.clear();
-    canvas.drawImg("/Users/manaswithareddykauluri/Desktop/1200px-Pac_Man.svg.png",x,y,18,18);
+    canvas.drawImg("https://upload.wikimedia.org/wikipedia/commons/0/06/Pac_Man.svg",x,y,18,18);
   	setTimeout(function(){},1000);
         canvas.drawMode = "stroke";
         canvas.drawRectangle(40,40,140,140);
@@ -107,7 +107,6 @@
       var i = Math.floor((y - 40) /20);
       console.log(j, i);
       array[j][i] = (array[j][i] + 1)%2;
-
       console.log(JSON.stringify(array));
     }
 
