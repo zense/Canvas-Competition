@@ -13,23 +13,176 @@
 <script>
 
     // Declare all global variables here
+    var center_x;
+    var center_y;
+    var x;
+    var y;
+    var x1;
+    var y1;
+    var ang;
+    var key;
+    var key2;
+    var key3;
+    var b;
+    var ax;
+    var ay;
+    var ax1;
+    var ay1;
+
+    var m_list = [];
+
+    class mirror {
+        constructor(mx,my,mx1,my1){
+            this.mx=mx;
+            this.my=my;
+            this.mx1=mx1;
+            this.my1=my1;
+            this.ix=0;
+            this.iy=0;
+            this.msl=0;
+            if(mx1==mx){
+                this.msl=-1*Math.PI/2;
+            }
+            else{
+                this.msl=(-1)*Math.atan((my1-my)/(mx1-mx));
+            }
+            m_list.push(this);
+        }
+
+        render() {
+            canvas.setColor("rgb(0,0,255)");
+            canvas.setDrawMode("stroke");
+            canvas.setLineThickness(8);
+            canvas.drawLine(this.mx, this.my, this.mx1, this.my1);
+        }
+    }
+
     function setup() {
         // Initialize variables here
+        center_x = canvas.width/2;
+        center_y = canvas.height/2;
+        key = -1;
+        key2 = 0;
+        key3 = 0;
+        x = center_x;
+        y = center_y;
+        x1 = 0;
+        y1 = 0;
+        pi = Math.PI;
+        ang = 0;
+        b = 0;
     }
 
     // Declare custom functions here
+    function change_xy()
+    {
+        x=x1;
+        y=y1;
+        x1 = x + 10*Math.cos(ang);
+        y1 = y + 10*Math.sin(ang);
+    }
+
+    function angle()
+    {
+        if(canvas.mouseDownX == center_x)
+        {
+            if(canvas.mouseDownY<=center_y)
+                ang = -1*pi/2;
+            else
+                ang = pi/2;
+        }
+        else
+            ang = Math.atan((canvas.mouseDownY-center_y)/(canvas.mouseDownX-center_x));
+        if(canvas.mouseDownX<center_x)
+            ang = ang - pi;
+        x1 = x + 5*Math.cos(ang);
+        y1 = y + 5*Math.sin(ang);
+
+    }
+
+    function check_ang()
+    {
+
+        for(var i=0;i<m_list.length;i++)
+        {
+            if((m_list[i].mx == m_list[i].mx1) && ((y<=m_list[i].my && y>=m_list[i].my1) || (y<=m_list[i].my1 && y>=m_list[i].my)))
+            {
+                if(x1+4>m_list[i].mx && x1<m_list[i].mx && ((y1<m_list[i].my1 && y1>m_list[i].my) || (y1<m_list[i].my && y1>m_list[i].my1)))
+                {
+                    ang = pi - ang;
+                    if(key3%2==1) b+=10;
+                }
+                else if(x1-4<m_list[i].mx && x1>m_list[i].mx && ((y1<m_list[i].my1 && y1>m_list[i].my) || (y1<m_list[i].my && y1>m_list[i].my1)))
+                {
+                    ang = pi - ang;
+                    if(key3%2==1) b+=10
+                }
+            }
+            else
+            {
+                if(y1+4>m_list[i].my && y1<m_list[i].my && ((x1>m_list[i].mx && x1<m_list[i].mx1) || (x1>m_list[i].mx1 && x1<m_list[i].mx)))
+                {
+                    ang = 2*pi - ang;
+                    if(key3%2==1) b+=10
+                }
+                else if(y1-4<m_list[i].my && y1>m_list[i].my && ((x1>m_list[i].mx && x1<m_list[i].mx1) || (x1>m_list[i].mx1 && x1<m_list[i].mx)))
+                {
+                    ang = 2*pi - ang;
+                    if(key3%2==1) b+=10;
+                }
+            }
+        }
+    }
 
 
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-
+        // canvas.clear();
+        for(var i=0;i<m_list.length;i++){
+            m_list[i].render();
+        }
+        if(key >= 1 && key2%2==0){
+            canvas.setColor("rgb(255,"+b+","+b+")");
+            canvas.setLineThickness(3);
+            canvas.drawLine(x,y, x1,y1);
+            change_xy();
+            check_ang();
+        }
     }
 
     // Override functions here; 
+
+    canvas.keyDownCallback = function (e) {
+        if(e.code == "KeyP")
+            key++;
+        else if(e.code == "KeyH")
+            key2++;
+        else if(e.code == "KeyA")
+            key3++;
+    }
+
+    canvas.mouseDownCallback = function () {
+        ax = canvas.mouseX;
+        ay = canvas.mouseY;
+    }
+
+    canvas.mouseUpCallback = function () {
+        ax1 = canvas.mouseX;
+        ay1 = canvas.mouseY;
+        if(key == 0)
+        {
+            angle();
+            key++;
+        }
+        else if(Math.abs(ax1-ax)>Math.abs(ay1-ay))
+            m2 = new mirror(ax,ay,ax1,ay);
+        else
+            m2 = new mirror(ax,ay,ax,ay1);
+    }
+
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 30;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
