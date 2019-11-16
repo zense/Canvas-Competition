@@ -16,6 +16,7 @@
     running = false;
     mass_of_air = 0.0002;
     gravity = [Math.PI,0.2];
+    GravitationalConstant = 200;
             
     function VectorAddition([angle1,length1],[angle2,length2])
     {
@@ -31,6 +32,7 @@
         {
             this.x = x;
             this.y = y;
+            this.collide_with = null;
             this.size = size;
             this.speed = 10;
             this.angle = angle;
@@ -38,6 +40,11 @@
             this.mass = mass;
             this.drag = Math.pow(this.mass/(this.mass + mass_of_air),this.size);
             
+        }
+
+        gravity()
+        {
+            [this.angle,this.speed] = VectorAddition([this.angle,this.speed],gravity)
         }
 
         move()
@@ -55,7 +62,7 @@
 
         accelerate(acc)
         {
-            [self.angle,self.speed] = VectorAddition([self.angle,self.speed],acc);
+            [this.angle,this.speed] = VectorAddition([this.angle,this.speed],acc);
         }
 
         attract(other)
@@ -64,12 +71,14 @@
             var dy = this.y - other.y;
             var r = Math.hypot(dy,dx);
 
+            if(r<this.size + other.size)
+                return true;
             var angle = Math.atan2(dy,dx);
 
-            var force = 0.2 * this.mass * other.mass / Math.pow(r,2) ;
-
-            this.accelerate([theta - 0.5 * Math.PI,force/other.mass]);
-            other.accelerate([theta + 0.5*Math.PI,force/this.mass]);
+            var force = GravitationalConstant * this.mass * other.mass / Math.pow(r,2) ;
+            console.log(force);
+            this.accelerate([angle - 0.5 * Math.PI,force/this.mass]);
+            other.accelerate([angle + 0.5*Math.PI,force/other.mass]);
         }
 
         mouseMove()
@@ -94,21 +103,27 @@
             this.colour = (255,255,255)
             this.mass_of_air = 0.2
             this.elasticity = 1
+            this.selected_particle = null;
             this.acceleration = null;
             this.my_functions1 = [];
             this.my_functions2 = [];
             this.func_dict = {
                 'move' :  [1,(p) => p.move()],
-                'MouseMove' : [1,(p) => p.mouseMove],
                 'drag' : [1,(p) => p.experienceDrag()],
+                'gravity' : [1,(p) => p.gravity()],
                 'bounce' : [1,(p) => this.bounce(p)],
                 'accelerate' : [1,(p) => p.accelerate()],
-                'collide' : [2,(p1,p2) => collide(p1,p2)]
+                'collide' : [2,(p1,p2) => collide(p1,p2)],
+                'attract' : [2,(p1,p2) => p1.attract(p2)],
+                'combine' : [2,(p1,p2) => combine(p1,p2)]
+                
             }
         }
 
         addfunction(func_list)
         {
+            this.my_functions1 = [];
+            this.my_functions2 = [];
             for(var i=0;i<func_list.length;i++)
             {
                 var n;
@@ -116,9 +131,9 @@
                 if(this.func_dict[func_list[i]])
                 {
                 [n,f] = this.func_dict[func_list[i]];
-                if(n == 1)
+                if(n == 1 && !(this.my_functions1.includes(f)))
                     this.my_functions1.push(f);
-                else if(n == 2)
+                else if(n == 2 && !(this.my_functions2.includes(f)))
                     this.my_functions2.push(f);
                 }
             }
@@ -196,7 +211,10 @@
 
         update()
         {
-        console.log(this.my_functions2[0]);
+        if(this.selected_particle)
+        {
+            this.selected_particle.mouseMove();
+        }
         for(var i=0;i<this.particles.length;i++)
         {
             for(var j = 0;j<this.my_functions1.length;j++)
@@ -239,36 +257,215 @@
             }
     }
     
-    var selected_particle;
+    function combine(p1, p2)
+    {
+    if(Math.hypot(p1.x - p2.x, p1.y - p2.y) < p1.size + p2.size)
+        {
+            var total_mass = p1.mass + p2.mass;
+            p1.x = (p1.x*p1.mass + p2.x*p2.mass)/total_mass;
+            p1.y = (p1.y*p1.mass + p2.y*p2.mass)/total_mass;
+            [p1.angle, p1.speed] = VectorAddition([p1.angle, p1.speed*p1.mass/total_mass], [p2.angle, p2.speed*p2.mass/total_mass]);
+            p1.speed *= (p1.elasticity*p2.elasticity);
+            p1.mass += p2.mass;
+            p1.collide_with = p2;
+            env.particles.splice(env.particles.indexOf(p1.collide_with),1);
+        }
+    }
+
+
 
     var env = new Environment();
         
     function setup() {
         canvas.activateDoubleBuffer();
-        env.addfunction(['move','bounce','collide']);
-        for(var i=0;i<50;i++)
+        env.addfunction(['move','bounce']);
+        for(var i=0;i<1;i++)
         {
         env.addParticle();
-        //env.addParticle(x=200,y=250,size=10,angle=Math.PI/2,speed=10);
         env.addParticle();
         env.addParticle();
         }
     }
 
+    function onclickMove(bool,a,b,c,d)
+    {
+        if(canvas.mouseDown)
+        {
+        if(canvas.mouseDownX < a && canvas.mouseDownX > b)
+            if(canvas.mouseDownY < c && canvas.mouseDownY > d)
+                return !bool;
+            else
+                return bool;
+        else
+            return bool;
+        }
+        else
+        {
+            return bool;
+        }
+    }
+
+    bool_move = true;
+    bool_Drag = false;
+    bool_Gravity = false;
+    bool_Bounce = true;
+    
+    bool_Accelerate = false;
+    bool_Collide = false;
+    bool_Attract = false;
+    bool_Combine = false;
+
+    func_working = [];
+    
     // Declare custom functions here
     // Function while will be called repeatedly 
     function main() {
+        var str;
+
+        bool_move = onclickMove(bool_move,50,30,canvas.height - 180,canvas.height - 200);
+        bool_Drag = onclickMove(bool_Drag,50,30,canvas.height - 160,canvas.height - 180);
+        bool_Gravity = onclickMove(bool_Gravity,50,30,canvas.height - 140,canvas.height - 160);
+        bool_Bounce = onclickMove(bool_Bounce,50,30,canvas.height - 120,canvas.height - 140);
         
+        bool_Accelerate = onclickMove(bool_Accelerate,50,30,canvas.height - 100,canvas.height - 120);
+        bool_Collide = onclickMove(bool_Collide,50,30,canvas.height - 80,canvas.height - 100);
+        bool_Attract = onclickMove(bool_Attract,50,30,canvas.height - 60,canvas.height - 80);
+        bool_Combine = onclickMove(bool_Combine,50,30,canvas.height - 40,canvas.height - 60);
+        
+        //canvas.drawText(50,50,bool_move,20);
+        
+        if(bool_move)
+        {
+        canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('move'))  {func_working.push('move');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('move')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 200,20,20);
+        canvas.drawText(55,canvas.height - 190,"Move",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+        
+        if(bool_Drag)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('drag'))  {func_working.push('drag');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('drag')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 180,20,20);
+        canvas.drawText(55,canvas.height - 170,"Drag",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Gravity)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('gravity'))  {func_working.push('gravity');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('gravity')];
+        }
+        canvas.drawRectangle(30,canvas.height - 160,20,20);
+        canvas.drawText(55,canvas.height - 150,"Gravity",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Bounce)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('bounce'))  {func_working.push('bounce');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('bounce')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 140,20,20);
+        canvas.drawText(55,canvas.height - 130,"Bounce",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Accelerate)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('accelerate'))  {func_working.push('accelerate');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('accelerate')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 120,20,20);
+        canvas.drawText(55,canvas.height - 110,"Accelerate",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Collide)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('collide'))  {func_working.push('collide');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('collide')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 100,20,20);
+        canvas.drawText(55,canvas.height - 90,"Collide",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Attract)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('attract'))  {func_working.push('attract');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('attract')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 80,20,20);
+        canvas.drawText(55,canvas.height - 70,"Attract",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+
+        if(bool_Combine)
+        {canvas.setDrawMode('Fill');
+        canvas.setColor('Green');
+        if(!func_working.includes('combine'))  {func_working.push('combine');}
+        }
+        else
+        {
+            delete func_working[func_working.indexOf('combine')];
+        }
+        
+        canvas.drawRectangle(30,canvas.height - 60,20,20);
+        canvas.drawText(55,canvas.height - 50,"Combine",10);
+        canvas.setDrawMode('Stroke');
+        canvas.setColor('Black');
+        console.log(func_working);
+        env.addfunction(func_working);
         env.update();
         canvas.update();
     }
     // Override functions here;
     canvas.mouseDownCallback = function() {
-        selected_particle = FindParticle(my_particles,canvas.mouseX,canvas.mouseY);
+        canvas.update();
+        env.selected_particle = env.FindParticle(canvas.mouseX,canvas.mouseY);
     }
     
     canvas.mouseUpCallback = function() {
-        selected_particle = null;
+        env.selected_particle = null;
     }
     
     canvas.mainFunction = main;
