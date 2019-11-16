@@ -4,16 +4,12 @@
              Shubhayu Das,
              Rohit Katlaa,
              Prajwal Agarwal
-
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
-
     Instructions for users
     1) You need not understand the code here to be able to use it. 
     2) Understanding the API below should be enough
     3) See examples to get started
-
     API Documentation
-
     Helpful Canvas Variables
         canvas.height // Height
         canvas.width // Width
@@ -23,7 +19,6 @@
         canvas.mouseDownX // Last Position of mouse press x coordinate
         canvas.mouseDownY // Last Position of mouse press y coordinate
         canvas.drawMode  // Fill in a shape or just draw the border
-
     Helpful Canvas Functions
         canvas.setDrawMode(mode)   // Set the drawMode variable to "stroke" or "fill"
         canvas.setColor(color)  // Set the color of the shape(s) to the given color. Default color is black(#000000)
@@ -32,9 +27,7 @@
                                 //    2. "#F54680"
                                 //    3. "rgb(100,100,100)"
                                 //    4. "rgba(100,100,101,0.3)"
-
         canvas.setLineThickness(width)  // Set the thickness of the lines while in "fill draw mode". Default value is 1.
-
         canvas.draw()   //  Draws the various shapes according to the drawing mode.
         canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
@@ -46,8 +39,6 @@
         canvas.activateDoubleBuffer() //call in setup to use double buffering in your program.
         canvas.update()  // updates the screen with changes made on canvas(use only with double buffering).
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
-
-
     Optionally Override the following functions
         canvas.mouseDownCallback() // Called when mouse is pressed
         canvas.mouseUpCallback() // Called when mouse is released
@@ -59,7 +50,6 @@
         
    Note:(Regarding double buffering) Double buffering is entirely optional, you may not need it in your program. It is only required if
    you face flickering issues.
-
 */
 
 // Canvas State Variables
@@ -162,6 +152,13 @@ canvas.drawRectangle = function(x, y, width, height) {
 
 //Draws Ellipse 
 canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
+    var temp = 0;
+    if(radiusY > radiusX){
+        temp = radiusX;
+        radiusX = radiusY;
+        radiusY = temp;
+    }
+    
     endAngle = (endAngle/180.0)*Math.PI;
     this.ctx.beginPath();
     this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
@@ -238,7 +235,7 @@ canvas.startListeners = function () {
 
 // Checks if keyboard key is pressed. Example KeyA for A. 
 canvas.isKeyDown = function(key) {
-    return keysDown[key] == true;
+    return this.keysDown[key] == true;
 }
 
 
