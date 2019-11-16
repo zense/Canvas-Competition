@@ -1,5 +1,9 @@
 <html>
-
+<style media="screen">
+  body{
+    background-image: radial-gradient(circle, #beeefb, #8bd1ef, #5ab3e5, #2b94da, #0074cb);
+  }
+</style>
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -13,24 +17,140 @@
 <script>
 
     // Declare all global variables here
-    function setup() {
+
+     function setup() {
+       canvas.activateDoubleBuffer();
+       x = canvas.width/2+50;
+       y = canvas.height/2;
+       y1 = canvas.height/2;
+       y2 = canvas.height/2;
+       vel = 20;
+       velballx = 25;
+       velbally = 25;
+       score1 = 0;
+       score2 = 0;
+       running = 1;
+       start = 0;
+        // ingame();
         // Initialize variables here
-    }
+     }
 
     // Declare custom functions here
 
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
+    function getscore(){
+      canvas.setColor("red")
+      if(x>=canvas.width){
+        score1 += 1;
+        x = canvas.width/2+50;
+        y = canvas.height/2;
+      }
+      if(x<=0){
+        score2 += 1;
+        x = canvas.width/2+50;
+        y = canvas.height/2;
+      }
+      canvas.drawText(canvas.width/4-70,50,"(PLAYER 1) "+score1.toString(),fontSize = 40);
+      canvas.drawText(3*canvas.width/4-70,50,"(PLAYER 2) "+score2.toString(),fontSize = 40);
     }
 
-    // Override functions here; 
+    function getdistance(){
+      if(x <= 60 && y<=y1+80 && y>=y1){
+        velballx = -velballx;
+      }
+      if(x >= canvas.width-60 && y<=y2+80 && y>=y2){
+        velballx = -velballx;
+      }
+      if(y-30 <= 0 || y+30 >= canvas.height){
+        velbally = -velbally;
+      }
+    }
+
+    // Function while will be called repeatedly
+    function main() {
+      canvas.clear();
+
+      if(start == 0){
+        canvas.setColor("black");
+        canvas.drawText(canvas.width/2-450,canvas.height/2-100,"WELCOME TO AIR HOCKEY",fontSize = 70);
+        canvas.setColor("darkorange");
+        canvas.drawText(canvas.width/2-350,canvas.height/2,"PRESS ENTER TO START",fontSize = 50);
+        canvas.setColor("black");
+        canvas.drawText(canvas.width/2-250,canvas.height/2+100,"PRESS Q TO QUIT",fontSize = 50);
+        canvas.setColor("red");
+        canvas.drawText(canvas.width/2-550,canvas.height/2+200,"INSTRUCTION:- PLAYER ONE USES ( W FOR UP AND S FOR DOWN ) PLAYER TWO USES ( UP AND DOWN ARROW KEYS )",fontSize = 20);
+        canvas.setColor("black");
+        canvas.drawText(canvas.width/2-380,canvas.height/2+300,"MADE BY:- SHIVANSH SETHI AND SAURABH",fontSize = 35);
+        if(canvas.isKeyDown("Enter")){
+          start = 1;
+        }
+        else if(canvas.isKeyDown("KeyQ")){
+          start = 1;
+          running = 0;
+        }
+      }
+
+      if(running === 0){
+        canvas.setColor("black");
+        if(score1 == 0 && score2 ==0){
+          canvas.drawText(canvas.width/2-350,canvas.height/2-180,"GAME OVER!!!",fontSize = 100);
+          canvas.drawText(canvas.width/2-350,canvas.height/2-65,"PLS REFRESH TO PLAY ANOTHER GAME",fontSize = 36);
+        }
+        if(score1 >= 10){
+          canvas.drawText(canvas.width/2-350,canvas.height/2-180,"GAME OVER!!!",fontSize = 100);
+          canvas.drawText(canvas.width/2-350,canvas.height/2-110,"PLAYER ONE WINS!!!",fontSize = 67);
+          canvas.drawText(canvas.width/2-350,canvas.height/2-65,"PLS REFRESH TO PLAY ANOTHER GAME",fontSize = 36);
+        }
+        if(score2 >= 10){
+          canvas.drawText(canvas.width/2-350,canvas.height/2-180,"GAME OVER!!!",fontSize = 100);
+          canvas.drawText(canvas.width/2-350,canvas.height/2-110,"PLAYER TWO WINS!!!",fontSize = 67);
+          canvas.drawText(canvas.width/2-350,canvas.height/2-65,"PLS REFRESH TO PLAY ANOTHER GAME",fontSize = 36);
+        }
+      }
+      else if(start == 1){
+        canvas.setLineThickness(5);
+        canvas.setDrawMode("stroke");
+        canvas.setColor("black");
+        canvas.drawLine(30,0,30,800);
+        canvas.drawLine(canvas.width-30,0,canvas.width-30,800);
+        canvas.drawLine(canvas.width/2,0,canvas.width/2,800);
+        canvas.drawCircle(canvas.width/2,canvas.height/2,60);
+        canvas.setDrawMode("fill");
+        canvas.drawRectangle(0,y1,30,90);
+        canvas.drawRectangle(canvas.width-30,y2,30,90);
+        canvas.setColor("darkorange");
+        canvas.drawCircle(x,y,30);
+
+        if(canvas.isKeyDown("ArrowUp") && y2>=0){
+          y2 -= vel;
+        }
+        else if(canvas.isKeyDown("ArrowDown") && y2<=canvas.height-90){
+          y2 += vel;
+        }
+        if(canvas.isKeyDown("KeyW") && y1>=0){
+          y1 -= vel;
+        }
+        else if(canvas.isKeyDown("KeyS") && y1<=canvas.height-90){
+          y1 += vel;
+        }
+
+        getdistance();
+        getscore();
+
+        x += velballx;
+        y += velbally;
+        if(score1 >=10 || score2 >=10){
+          running = 0;
+        }
+      }
+      canvas.update();
+      }
+
+      // home()
+    // Override functions here;
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
 
 </script>
