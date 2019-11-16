@@ -1,36 +1,261 @@
 <html>
-
-<body onload="canvas.setup()">
-
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
-    <script src="./canvas.js"></script>
-</body>
-
+    <!-- Instructions -->
+    <!-- You can control the left paddle with touchpad/mouse. -->
+    <!-- press 'p/P' to pause. -->
+    <!-- press 'r/R' to reset scores -->
+    <!-- click/tap to activate sound -->
+    <body onload="canvas.setup()">
+        <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        <canvas id="canvasArea2"
+            style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        <script src="./canvas.js"></script>
+        <style type="text/css">
+            body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+        </style>
+    </body>
+    <title>Ping Pong</title>
 </html>
-<script>
 
+<script>
     // Declare all global variables here
+
+    var pause = false;
+    var scodf = (1+Math.floor((Math.random() * 10) + 1))%3;
+    var scobo = false;
+    var scoah = (1+Math.floor((Math.random() * 10) + 1))%6;
+
+    var audio = new Audio('collision.mp3');
+
+    var padw =  10; // paddle  width, divider width
+    var padh = 100; // paddle height
+
+    var uscr = 0; // user score
+    var bscr = 0; //  bot score
+
+    var cvs = {
+
+        x : 0,
+        y : 0,
+        c : "black",
+        s : "fill"
+
+    }
+
+    var display = {
+
+        w : 750,
+        x : 100,
+        y : 100,
+        h : 420,
+        c : "red",
+        s : "fill"
+
+    }
+
+    var border = {
+
+        h : 10,
+        c : "darkblue",
+        s : "fill"
+
+    }
+
+    var usr_paddle = {
+
+        x : display.x+0.5,
+        y : display.y+((display.h-padh)/2),
+        c : "yellow",
+        s : "fill"
+
+    }
+
+    var bot_paddle = {
+
+        x : display.x+display.w-padw-0.5,
+        y : display.y+((display.h-padh)/2),
+        c : "yellow",
+        s : "fill"
+
+    }
+
+    var ball = {
+
+        x  : display.x+(display.w/2),
+        y  : display.y+(display.h/2),
+        r  : 7,
+        c  : "white",
+        s  : "fill",
+        dx : 1,
+        dy : 1
+
+    }
+
+    var divider = {
+
+        x : display.x+(display.w/2)-(padw/2),
+        y : display.y+border.h+1,
+        w : 10,
+        h : display.h-(2*(border.h))-1,
+        c : "red",
+        s : "fill"
+
+    }
+
+    var score = {
+
+        c : "white",
+        s : "fill"
+
+    }
+
     function setup() {
         // Initialize variables here
     }
-
     // Declare custom functions here
+    
+    function rect_display(x, y, w, h, c, s) {
+        canvas.setDrawMode(s);
+        canvas.setColor(c);
+        canvas.drawRectangle(x, y, w, h);
+    }
+
+    function ball_display(x, y, r, c, s) {
+        canvas.setDrawMode(s);
+        canvas.setColor(c);
+        canvas.drawCircle(x, y, r);
+    }
+
+    function reset() {
+        ball.x = display.x+(display.w/2);
+        ball.y = display.y+(display.h/2);
+    }
+
+    function score_display() {
+        canvas.setColor(score.c);
+        canvas.drawText(display.x+(display.w/4), display.y/2, uscr);
+        canvas.drawText(display.x+(3*(display.w/4)), display.y/2, bscr);
+    }
+
+    function update(mousey) {
+
+        // update user paddle
+
+        if(mousey-(padh/2) < display.y+border.h) {
+            usr_paddle.y = display.y+border.h+1;
+        } else if (mousey+(padh/2) > display.y+display.h-border.h) {
+            usr_paddle.y = display.y+display.h-border.h-padh-1;
+        } else {
+            usr_paddle.y = mousey-(padh/2);
+        }
+
+        // collision with border
+
+        if ((ball.y-ball.r <= display.y+border.h) || (ball.y+ball.r >= display.y+display.h-border.h)) {
+            ball.dy = -1 * ball.dy;
+            var playPromise = audio.play();
+        }
+        
+        // collison with paddles
+
+        if (((ball.x-ball.r === usr_paddle.x+padw-0.5) && (usr_paddle.y <= ball.y) && (ball.y <= usr_paddle.y+padh)) || ((ball.x+ball.r === bot_paddle.x-0.5) && (bot_paddle.y <= ball.y) && (ball.y <= bot_paddle.y+padh))) {
+            ball.dx = -1 * ball.dx;
+            var playPromise = audio.play();
+        }
+
+        // update score
+
+        if(ball.x-ball.r < usr_paddle.x-0.5) {
+            bscr += 1;
+            reset();
+        }else if(ball.x+ball.r > bot_paddle.x+0.5) {
+            uscr += 1;
+            reset();
+        } else {
+            bscr += 0; uscr += 0;
+        }
+
+        // update  bot paddle
+
+        if(bscr-uscr <= scodf && !(scobo)) { // to normalise scores
+            score.c = "white";
+            if (ball.y-ball.r-(padh/2) < display.y+border.h) {
+                bot_paddle.y = display.y+border.h;
+            } else if (ball.y+ball.r+(padh/2) > display.y+display.h-border.h) {
+                bot_paddle.y = display.y+display.h-border.h-padh;
+            } else {
+                bot_paddle.y = ball.y-(padh/2);
+            }
+
+        } else {
+            scobo = true;
+            score.c = "tomato";
+            bot_paddle.y = usr_paddle.y;
+            if(uscr-bscr >= scoah) {
+                scobo = false;
+            }
+        }
+
+        ball.x -= ball.dx;
+        ball.y -= ball.dy;
+
+    }
 
 
     // Function while will be called repeatedly 
     function main() {
+
         canvas.clear();
 
-    }
+        // display - s
 
-    // Override functions here; 
+        rect_display(cvs.x, cvs.y, canvas.width, canvas.height, cvs.c, cvs.s); // background
+        rect_display(display.x, display.y, display.w, border.h, border.c, border.s);  // border
+        rect_display(display.x, display.y+display.h-border.h, display.w, border.h, border.c, border.s);  // border
+        rect_display(divider.x, divider.y, divider.w, divider.h, divider.c, divider.s); // divider
+
+        // display - e
+
+        // paddle - s
+
+        rect_display(usr_paddle.x, usr_paddle.y, padw, padh, usr_paddle.c, usr_paddle.s);
+        rect_display(bot_paddle.x, bot_paddle.y, padw, padh, bot_paddle.c, bot_paddle.s);
+
+        // paddle - e
+
+        // ball - s
+
+        ball_display(ball.x, ball.y, ball.r, ball.c, ball.s);
+
+        // ball - e
+
+        // score
+
+        score_display();
+
+        // update game - s
+        if(!pause) {
+            update(canvas.mouseY);
+        }
+        // update gpppame - e
+
+    }
+    // Override functions here;
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    canvas.keyUpCallback = function (e) {
+        if(e.code == "KeyP") {
+            pause = !(pause);
+        } else if (e.code == "KeyR") {
+            bscr = 0;
+            uscr = 0;
+        }
+    }
+
+    var timeStep = 1;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
-
 </script>
