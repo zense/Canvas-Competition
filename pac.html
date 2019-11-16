@@ -1,0 +1,116 @@
+<html>
+
+<body onload="canvas.setup()">
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <script src="./canvas.js"></script>
+</body>
+
+</html>
+<script>
+    // Declare all global variables here
+
+    // Declare custom functions here
+
+    function setup(){
+         array=[[1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1],
+                   [1,1,1,1,1,1,1]];
+
+        x=100;
+         vx=5;
+         y=100;
+      }// Declare all global variables here
+
+          // Declare custom functions here
+       function updat_pos(direction)
+       {
+           if(direction==="LEFT")
+         x+=-1;
+         if(direction==="RIGHT")
+         x+=1;
+         if(direction==="UP")
+         y+=-1;
+         if(direction==="DOWN")
+         y+=1;
+         canvas.drawImg("/Users/manaswithareddykauluri/Downloads/CLOSED\ PAC\ MAN.jpg",x,y,18,18);
+
+       }
+    // Function while will be called repeatedly
+    function main() {
+
+    canvas.clear();
+    canvas.drawImg("/Users/manaswithareddykauluri/Desktop/1200px-Pac_Man.svg.png",x,y,18,18);
+  	setTimeout(function(){},1000);
+        canvas.drawMode = "stroke";
+        canvas.drawRectangle(40,40,140,140);
+        canvas.drawMode = "fill";
+        for(j=0;j<7;j++)
+        {
+          for(i=0;i<9;i++)
+          {
+            if(array[j][i]==0)
+              canvas.drawRectangle(40+20*j,40+20*i,20,20);
+          }
+        }
+
+  }
+
+    // Override functions here;
+
+    canvas.mainFunction = main;
+    canvas.setupFunction=setup;
+
+    var timeStep = 50;
+
+    canvas.startMain(timeStep);
+    canvas.keyDownCallback = function(e)
+      {
+    if(array[Math.floor((x - 40)/20)][Math.floor((y - 40)/20)]==1)
+    {
+    if (e.code === "ArrowLeft")
+    {
+    updat_pos("LEFT");
+    }
+    else if (e.code === "ArrowRight")
+    {
+              updat_pos("RIGHT");
+    }
+    else if(e.code==="ArrowUp")
+    {
+          updat_pos("UP");
+    }
+    else if(e.code==="ArrowDown")
+    {
+      updat_pos("DOWN");
+    }
+    }
+    else {
+    canvas.drawImg("/Users/manaswithareddykauluri/Desktop/Unknown.png",x,y,23,23);
+    setTimeout(function(){},40000);
+    alert("Game over! Please restart to play again");
+    }
+      };
+
+    canvas.mouseDownCallback = function () {
+      var x = canvas.mouseX;
+      var y = canvas.mouseY;
+      var j = Math.floor((x - 40) / 20);
+      var i = Math.floor((y - 40) /20);
+      console.log(j, i);
+      array[j][i] = (array[j][i] + 1)%2;
+
+      console.log(JSON.stringify(array));
+    }
+
+
+
+</script>
