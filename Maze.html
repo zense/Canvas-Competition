@@ -1,0 +1,292 @@
+<html>
+
+    <body onload="canvas.setup()">
+    
+        <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        <canvas id="canvasArea2"
+            style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    
+        <script src="./canvas.js"></script>
+    </body>
+    
+    </html>
+    <script>
+        // Declare all global variables here
+        var pos_x;
+        var pos_y;
+        var direction;
+        var nodes;
+        var start = 0;
+        var level = 1;
+        var waiting = false;
+        function setup() 
+        {
+            // Initialize variables here
+            level1();
+            level2();
+        }
+        // Declare custom functions here
+        function check_collision_vertical(pos_x,line_x,rad)
+        {
+            distance = Math.abs(line_x - pos_x)
+            if(distance<=rad)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0
+            }
+        }
+    
+        function check_collision_horizontal(pos_y,line_y,rad)
+        {
+            distance = Math.abs(line_y - pos_y)
+            if(distance<rad)
+            {
+                return 1
+            }
+            else
+            {
+                return 0
+            }
+        }
+    
+       
+       function level1()
+        {
+            if(start == 0)
+            {
+                pos_x = 450;
+                pos_y = 160;
+    
+                start = 1;
+            }
+            canvas.drawLine(500,10,500,110);
+            canvas.drawLine(500,10,1200,10);
+            canvas.drawLine(1000,10,1000,310);
+            canvas.drawLine(900,210,1000,210);
+            canvas.drawLine(900,210,900,110);
+            canvas.drawLine(500,210,500,810);
+            canvas.drawLine(500,210,800,210);
+            canvas.drawLine(700,210,700,110);
+            canvas.drawLine(500,810,1200,810);
+            canvas.drawLine(700,310,700,710);
+            canvas.drawLine(600,710,700,710);
+            canvas.drawLine(700,710,700,810);
+            canvas.drawLine(800,110,600,110);
+            canvas.drawLine(500,610,600,610);
+            canvas.drawLine(600,510,700,510);
+            canvas.drawLine(500,410,600,410);
+            canvas.drawLine(800,310,800,610);
+            canvas.drawLine(800,710,900,710);
+            canvas.drawLine(900,710,900,810);
+            canvas.drawLine(1000,610,1000,310);
+            canvas.drawLine(900,310,1100,310);
+            canvas.drawLine(900,410,800,410);
+            canvas.drawLine(900,510,1000,510);
+            canvas.drawLine(900,610,1000,610);
+            canvas.drawLine(1200,10,1200,710);
+            canvas.drawLine(1000,510,1100,510);
+            canvas.drawLine(1000,710,1100,710);
+            canvas.drawLine(1100,410,1200,410);
+            canvas.drawLine(1100,610,1200,610);
+            canvas.drawLine(1100,710,1100,810);
+            canvas.drawLine(900,410,900,510);
+    
+            canvas.drawCircle(pos_x,pos_y,30);
+    
+            nodes = [[550,60], [550,160],[550,260],[550,360],[550,460],[550,560],[550,660],[550,760],[650,160],[650,360],[650,460],[650,560],
+                    [650,660],[650,760],[750,160],[750,260],[750,660],[750,760],[850,60],[850,160],[850,260],[850,360],[850,460],[850,560],
+                    [850,660],[850,760],[950,60],[950,160],[950,260],[950,360],[950,460],[950,560],[950,660],[950,760],[1050,60],[1050,260],
+                    [1050,360],[1050,460],[1050,560],[1050,660],[1050,760],[1150,60],[1150,260],[1150,360],[1150,460],[1150,560],[1150,660],
+                    [1150,760]]
+    
+        }
+    
+        function level2()
+        {
+            if(start == 0)
+            {
+                pos_x = 100;
+                pos_y = 45;
+    
+                start = 1;
+            }
+            canvas.drawLine(100,80,100,640);
+            canvas.drawLine(100,640,1010,640);
+            canvas.drawLine(100,10,1080,10);
+            canvas.drawLine(1080,10,1080,640);
+            canvas.drawLine(100,570,240,570);
+            canvas.drawLine(170,500,310,500);
+            canvas.drawLine(100,430,240,430);
+            canvas.drawLine(170,80,170,360);
+            canvas.drawLine(170,360,310,360);
+            canvas.drawLine(310,80,310,640);
+            canvas.drawLine(240,290,240,10);
+            canvas.drawLine(310,290,520,290);
+            canvas.drawLine(590,80,380,80);
+            canvas.drawLine(380,80,380,220);
+            canvas.drawLine(380,220,590,220);
+            canvas.drawLine(590,220,590,430);
+            canvas.drawLine(590,430,450,430);
+            canvas.drawLine(450,430,450,500);
+            canvas.drawLine(450,500,660,500);
+            canvas.drawLine(660,500,660,10);
+            canvas.drawLine(660,150,450,150);
+            canvas.drawLine(520,360,380,360);
+            canvas.drawLine(380,360,380,570);
+            canvas.drawLine(380,570,730,570);
+            canvas.drawLine(730,570,730,80);
+            canvas.drawLine(730,80,870,80);
+            canvas.drawLine(870,80,870,570);
+            canvas.drawLine(870,500,940,500);
+            canvas.drawLine(800,640,800,150);
+            canvas.drawLine(940,640,940,500);
+            canvas.drawLine(940,430,940,80);
+            canvas.drawLine(940,80,1010,80);
+            canvas.drawLine(1010,150,1080,150);
+            canvas.drawLine(1010,220,940,220);
+            canvas.drawLine(1010,290,1080,290);
+            canvas.drawLine(1010,360,940,360);
+            canvas.drawLine(1010,360,1010,500);
+            canvas.drawLine(1010,500,1080,500);
+    
+            canvas.drawCircle(pos_x,pos_y,30);
+    
+            nodes = [[135,45],[135,395],[135,465],[135,535],[135,605],[205,325],[205,45],[275,45],[275,325],
+            [275,395],[275,465],[275,535],[275,605],[345,45],[345,255],[345,325],[345,605],[415,535],[415,395],
+            [415,185],[415,115],[485,465],[555,395],[555,325],[555,255],[625,465],[625,185],[625,115],[625,45],
+            [695,535],[695,45],[765,605],[765,115],[835,605],[835,605],[835,115],[905,605],[905,535],[905,465],[905,45],
+            [975,605],[975,465],[975,395],[975,325],[975,255],[975,185],[975,115],[1045,45],[1045,115],[1045,185],
+            [1045,255],[1045,325],[1045,465],[1045,535],[1045,605]];
+        }
+    
+        canvas.keyDownCallback = function (e) 
+        {
+            //console.log("Dummy KeyDownCallback - Override canvas.KeyDownCallback");
+            if(e.which == 38)
+            {   
+                for (i=0; i<nodes.length; i++)
+                {
+                    if(pos_x == nodes[i][0] && pos_y == nodes[i][1])
+                    { 
+                        pos_y = pos_y - 5;
+                    }
+                } 
+                direction = "u";
+            }
+    
+            if(e.which == 39)
+            {
+                for (i=0; i<nodes.length; i++)
+                {
+                    if(pos_x == nodes[i][0] && pos_y == nodes[i][1])
+                    {
+                        pos_x = pos_x + 5;
+                    }
+                } 
+                direction = "r";
+            }
+            
+            if(e.which == 40)
+            {
+                for (i=0; i<nodes.length; i++)
+                {
+                    if(pos_x == nodes[i][0] && pos_y == nodes[i][1])
+                    {
+                        pos_y = pos_y + 5;
+                    }
+                } 
+                direction = "d";
+            }
+            
+            if(e.which == 37)
+            {
+                for (i=0; i<nodes.length; i++)
+                {
+                    if(pos_x == nodes[i][0] && pos_y == nodes[i][1])
+                    {
+                        pos_x = pos_x - 5;
+                    }
+                } 
+                direction = "l";
+            }
+    
+            // if(e.which == 13 && waiting == true)
+            // {
+            //     waiting = false;
+            // }
+        }
+    
+        // Function while will be called repeatedly 
+        function main() 
+        {
+            canvas.clear();
+    
+            if(pos_x == 1200 && pos_y == 760)
+            {
+                //console.log("a");
+                start = 0;
+                canvas.clear();
+                // canvas.drawText(900,350,"CONGRATS");
+                // canvas.drawText(900,400,"PRESS ENTER KEY TO MOVE TO NEXT LEVEL");
+                //waiting = true;;
+                //while(waiting);
+            //    canvas.isKeyDown("Enter")
+            //         {
+            //             level++;
+            //             console.log("Yes");
+            //         }
+                level = 2;
+    
+            }
+            
+           // else
+            {
+                if(level == 1)
+                {
+                   level1();
+                }
+                
+                else if(level == 2)
+                {
+                    level2();
+                }
+                for(i=0; i<nodes.length; i++)
+                {
+                    if(pos_x == nodes[i][0] && pos_y == nodes[i][1] && direction != "x")
+                    {
+                        direction = "x";
+                    }
+                }
+    
+                if(direction == "u")
+                {
+                    pos_y = pos_y - 5;
+                }
+    
+                if(direction == "d")
+                {
+                    pos_y = pos_y + 5;
+                }
+    
+                if(direction == "l")
+                {
+                    pos_x = pos_x - 5;
+                }
+    
+                if(direction == "r")
+                {
+                    pos_x = pos_x + 5;
+                }
+            }
+    
+            canvas.update();
+        }
+        // Override functions here; 
+        canvas.mainFunction = main;
+        var timeStep = 50;
+        canvas.startMain(timeStep);
+        canvas.setupFunction = setup;
+    </script>
