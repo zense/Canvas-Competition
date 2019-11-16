@@ -13,23 +13,285 @@
 <script>
 
     // Declare all global variables here
-    function setup() {
+    var final_win;
+    var striker_x;
+    var striker_y;
+    var coin_x;
+    var coin_y;
+    var radius; 
+    var Vcoin_x;
+    var Vcoin_y;
+    var Vstriker_x;
+    var Vstriker_y;
+    var e;
+    var deltaX;
+    var deltaY;
+    var c;
+    var end;
+    var lose;
+
+    function setup() 
+    {
         // Initialize variables here
+        coin_x = canvas.width/2;
+        coin_y = canvas.height/2;
+        striker_x = canvas.width/2+canvas.height * 0.03;
+        striker_y = canvas.height*4/5;
+        radius_coin = canvas.height * 0.025;
+        radius_striker = canvas.height * 0.05;
+        lose=0;
+        final_win=0;
+        e=1;
+        c=0;
+        deltaY=0;
+        deltaX=0;
+        Vstriker_y=0;
+        Vstriker_x=0;
+        Vcoin_x = 0;
+        Vcoin_y = 0;
+        end=0;
     }
+
 
     // Declare custom functions here
 
+    function drawCoin(x, y)
+    {
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("blue");
+        canvas.drawCircle(x, y,radius_coin);
+    }
+
+    function drawStriker(x, y)
+    {
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("red");
+        canvas.drawCircle(x, y,radius_striker);
+    }
+
 
     // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
 
+    function distance(x1,x2,y1,y2)
+    {
+        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+    }
+
+    function isCollision()
+    {
+        if(distance(coin_x,striker_x,coin_y,striker_y) <= radius_striker+radius_coin)
+            return true;
+        else
+            return false;
+    }
+
+    function angles(x1,x2,y1,y2)
+    {
+        var temp = -Math.atan2((y2-y1),(x2-x1));
+        if(temp>=0)
+            return temp;
+        else
+            return 2*Math.PI-temp;
+    }
+    
+    function Collision_coin_striker()
+    {
+        if(isCollision())
+        {
+            var angle =angles(striker_x,coin_x,striker_y,coin_y);
+            var Vstriker = ((1-e)/2)*( Vstriker_x * (Math.cos(angle)) + Vstriker_y * Math.sin(angle) ) 
+                            + ( (1+e) /2 ) * (Vcoin_x * Math.cos(angle) + Vcoin_y * Math.sin(angle));
+            var Vs_x = Vstriker * (Math.cos(angle));
+            var Vs_y = Vstriker * (Math.sin(angle));
+            var Vcoin = ((1+e)/2)*( Vstriker_x * (Math.cos(angle)) + Vstriker_y * Math.sin(angle) ) 
+                        + ( (1-e) /2 ) * (Vcoin_x*Math.cos(angle)+ Vcoin_y * Math.sin(angle));
+            var Vc_x = Vcoin * ( Math.cos(angle));
+            var Vc_y = Vcoin * ( Math.sin(angle));
+            Vstriker_x = Vs_x + Vstriker_x * Math.sin(angle) * Math.sin(angle) 
+                        - Vstriker_y*(Math.cos(angle)) * (Math.sin(angle));   
+            Vstriker_y = Vs_y - Vstriker_x * Math.sin(angle) * Math.cos(angle)
+                        + Vstriker_y * Math.cos(angle) * Math.cos(angle);
+
+            Vcoin_x = Vc_x + Vcoin_x * Math.sin(angle) * Math.sin(angle) 
+                        - Vcoin_y*(Math.cos(angle)) * (Math.sin(angle));   
+            Vcoin_y = Vc_y - Vcoin_x * Math.sin(angle) * Math.cos(angle)
+                        + Vcoin_y * Math.cos(angle) * Math.cos(angle);
+
+        }
+
+    }
+
+    function Collision_striker_wall()
+    {
+        if( striker_y <= radius_striker )
+        {
+            Vstriker_y = (-1) * Vstriker_y;
+        }
+        if( striker_y >= canvas.height-radius_striker )
+        {
+            Vstriker_y = (-1) * Vstriker_y;
+        }
+        if( striker_x <= radius_striker )
+        {
+            Vstriker_x = (-1) * Vstriker_x;
+        }
+        if( striker_x >= canvas.width-radius_striker )
+        {
+            Vstriker_x = (-1) * Vstriker_x;
+        }
+    }
+
+    function Collision_coin_wall()
+    {
+        if( coin_y <= radius_coin )
+        {
+            Vcoin_y = (-1) * Vcoin_y;
+        }
+        if( coin_y >= canvas.height-radius_coin )
+        {
+            Vcoin_y = (-1) * Vcoin_y;
+        }
+        if( coin_x <= radius_coin )
+        {
+            Vcoin_x = (-1) * Vcoin_x;
+        }
+        if( coin_x >= canvas.width-radius_coin )
+        {
+            Vcoin_x = (-1) * Vcoin_x;
+        }
+    }
+
+    function friction()
+    {
+        var anglee = -Math.atan2(Vstriker_y,Vstriker_x);
+        if(anglee>=0)
+            anglee = -anglee;
+        else
+            anglee = 2*Math.PI-anglee;
+        var ug = 0.004;
+        if(Vstriker_y > 0)
+            Vstriker_y = Vstriker_y - ug * Math.sin(anglee);
+        if(Vstriker_x > 0)
+            Vstriker_x = Vstriker_x - ug * Math.cos(anglee);
+        
+        var anglees = -Math.atan2(Vcoin_y,Vcoin_x);
+        if(anglees>=0)
+            anglees = -anglees;
+        else
+            anglees = 2*Math.PI-anglees;
+        var ug1 = 0.04;
+        if(Vcoin_y > 0)
+            Vcoin_y = Vcoin_y - ug1 * Math.cos(anglees);
+        if(Vcoin_x > 0)
+            Vcoin_x = Vcoin_x - ug1 * Math.sin(anglees);
+
+    }
+
+    canvas.mouseDownCallback=function()
+    {
+        console.log(c);
+        // if(c==2)
+        //     lose++;
+        if(c==1){
+        deltaX = striker_x - canvas.mouseX; 
+        deltaY = striker_y - canvas.mouseY; 
+        Vstriker_y =  0.01*deltaY;
+        Vstriker_x = - 0.01*deltaX;
+        }
+        c++;
+
+    }
+
+    function main() 
+    {
+        if(final_win==0)
+        {
+        canvas.clear();
+        if(c == 0)
+        {
+            striker_x=canvas.mouseX;
+            striker_y=canvas.height*4/5;
+        }
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("black");
+        canvas.drawCircle(canvas.width, 0,150);
+        
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("black");
+        canvas.drawCircle(0,0,150);
+        
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("black");
+        canvas.drawCircle(0, canvas.height,150);
+        
+        mode="fill";
+        canvas.setDrawMode(mode);
+        canvas.setColor("black");
+        canvas.drawCircle(canvas.width, canvas.height,150);
+        
+        if(lose==1)
+        {
+            // end=0;
+        }
+        if(distance(0,coin_x,0,coin_y) <= 150 - radius_coin)
+        {
+            console.log("1");
+            end=1;
+        }
+        else if(distance(canvas.width,coin_x,0,coin_y) <=  150 - radius_coin)
+        {
+            console.log("2");
+            // end=1;
+            lose++;
+        }
+        else if(distance(0,coin_x,canvas.height,coin_y) <=  150 - radius_coin)
+        {
+            console.log("3");
+            // end=1;
+            lose++;
+        }
+        else if(distance(canvas.width,coin_x,canvas.height,coin_y) <=  150 - radius_coin)
+        {
+            console.log("4");
+            end=1;
+        }
+
+        striker_y = striker_y - Vstriker_y;
+        striker_x = striker_x + Vstriker_x;
+        coin_y = coin_y - Vcoin_y;
+        coin_x = coin_x + Vcoin_x;
+        Collision_coin_striker();
+        Collision_striker_wall();
+        Collision_coin_wall();
+        drawCoin(coin_x, coin_y);
+        drawStriker(striker_x, striker_y);        
+        //friction();
+        if(end == 1)
+        {
+            final_win=1;
+            canvas.clear();
+            canvas.drawText(750,250,"You Win",50);
+        }
+        if(lose == 1)
+        {
+            final_win=1;
+
+            canvas.clear();
+            canvas.drawText(750,250,"You Lose",50);
+        }
+    }
+    
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 0.001;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
