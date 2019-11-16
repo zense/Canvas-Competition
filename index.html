@@ -1,15 +1,11 @@
 <html>
 
-<<<<<<< HEAD
-<body onload="canvas.setup();globalInitialize();">
-    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-=======
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
->>>>>>> 5a632f26977d78251d8ed837134e3464bb7d5b3b
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -17,216 +13,280 @@
 <script>
 
     // Declare all global variables here
-    var start = 0;
-    var shift = 0;
-    var gap;
-    var state = 0;
-    var divider = [];
     var width;
     var height;
-    var player_car; 
-    var opp_car = []; //array to hold obstracle objects
-    var gameover = 0; //state of game
-    var score = 0; //variable that keeps chak of score, score = no. of obstracles passed.
-    // To initialize the height and width dependent variables adter canvas loads
-    function setup()
-    {
-        width = canvas.width;
-        height = canvas.height;
-        divider.push(new Divider(width/2-width/128,-3*(height/18),height/128));
-        divider.push(new Divider(width/2-width/128,2*(height/18),height/128));
-        divider.push(new Divider(width/2-width/128,7*(height/18),height/128));
-        divider.push(new Divider(width/2-width/128,12*(height/18),height/128));
-        divider.push(new Divider(width/2-width/128,17*(height/18),height/128));
-        player_car = new Car(width/2-3*width/32,5*height/6,height/32,-height/64,"#1E90FF","#00BFFF");
-        opp_car.push(new Car(width/2-3*width/32,0,-height/6,height/64,"#8B008B","#EE82EE"));
-        gap = 5*height/6;
-    }
-    // Declare custom functions here
-    // To handle white rectangles of divider
-    class Divider {
-        constructor(x_cord,y_cord,speed){
-            this.x_cord = x_cord;
-            this.y_cord = y_cord;
-            this.stop = 0;
-            this.speed = speed;
+    var ghostArray = [];
+    var grassArray = [];
+    var bulletArray = [];
+    var difficulty = 50;
+    var kills;
+    var distance;
+    var sampX;
+    var xCordinate = new Array(20);
+    var gameOver;
+    var count;
+    class shooter {
+        constructor(x,y){
+            this.X = x;
+            this.Y = y;
+            this.Z = y;
         }
-        move() {
-            if(this.stop == 0)
-            {
-                if(this.y_cord < height)
-                    this.y_cord = this.y_cord+ this.speed;
-                else
-                    this.y_cord = -(7*height/18);    
-            }
-            canvas.setDrawMode("fill")
-            canvas.setColor("white");
-            canvas.drawRectangle(this.x_cord,this.y_cord,width/64,4*(height/18));
+        returnFrame(){
+           return "gun.png";
         }
-        set_speed(speed)
-        {
-            this.speed = speed;
+        setX(newX){
+            this.X += newX;
         }
-        hault(boolean)
-        {
-            if(boolean == 1)
-                this.stop = 1;
-            else
-                this.stop = 0;
+        getX(){
+            return this.X;
         }
-    }
-    //Car instance to capsulate it's dimensions and methods.
-    class Car {
-        constructor(x_cord,y_cord,speedx,speedy,color1,color2) {
-            this.x_cord = x_cord;
-            this.y_cord = y_cord;
-            this.stop = 0;
-            this.speedx = speedx;
-            this.speedy = speedy;
-            this.color1 = color1;
-            this.color2 = color2;
-            this.cross = 0;
+        getY(){
+            return this.Y;
         }
-        move_y() {
-            if(this.stop == 0)
-            {
-                if(this.y_cord < 3*height/2)
-                    this.y_cord = this.y_cord + this.speedy;
-            }
-            canvas.setDrawMode("fill")
-            canvas.setColor(this.color1);
-            canvas.drawRectangle(this.x_cord,this.y_cord,width/16,height/6);
-            canvas.setColor(this.color2);
-            canvas.drawRectangle(this.x_cord+width/64,this.y_cord+height/24,width/32,height/12);
-            canvas.setColor("black")
-            canvas.drawRectangle(this.x_cord-width/256,this.y_cord+height/48,width/128,height/24,height/180);
-            canvas.drawRectangle(this.x_cord-width/256,this.y_cord+5*height/48,width/128,height/24,height/180);
-            canvas.drawRectangle(this.x_cord+width/16-width/256,this.y_cord+height/48,width/128,height/24,height/180);
-            canvas.drawRectangle(this.x_cord+width/16-width/256,this.y_cord+5*height/48,width/128,height/24,height/180);
-        }
-        move_x(dir)
-        {
-            if(gameover == 0)
-            {
-                if(dir == 0 && this.x_cord - this.speedx > 3*width/8)
-                    this.x_cord = this.x_cord - this.speedx;
-                else if(dir == 1 && this.x_cord + width/16 + this.speedx < 5*width/8)
-                    this.x_cord = this.x_cord + this.speedx;
-            }
-        }
-        set_speed(speed)
-        {
-            this.speed = speed;
-        }
-        hault(boolean)
-        {
-            if(boolean == 1)
-                this.stop = 1;
-            else
-                this.stop = 0;
-        }
-        y_pos()
-        {
-            return this.y_cord;
-        }
-        check_crossed()
-        {
-            return this.cross;
-        }
-        set_crossed()
-        {
-            this.cross = 1;
-        }
-        clash(oppCar)
-        {
-            if((this.y_cord <= oppCar.y_cord + height/6 && this.y_cord >= oppCar.y_cord) || (this.y_cord  <= oppCar.y_cord  && this.y_cord + height/6 >= oppCar.y_cord))
-            {
-                if((this.x_cord >= oppCar.x_cord && this.x_cord <= oppCar.x_cord + width/16) || (this.x_cord + width/16 >= oppCar.x_cord && this.x_cord <= oppCar.x_cord))
+        collision(bulObj){
+            if(this.X+100 <= bulObj.getX() && bulObj.getX() <= this.X+800){
+                if(bulObj.getY()+bulObj.getSize()*7 >= height-150)
                     return true;
             }
-            return false;
         }
     }
+    class bullet {
+        constructor(x){
+            this.X = x;
+            this.Y = height-220;
+            this.Z = height-220;
+            this.R = 15;
+        }
+        getX(){
+            return this.X;
+        }
+        getY(){
+            return this.Y;
+        }
+        getZ(){
+            return this.Z;
+        }
+        getR(){
+            return this.R;
+        }
+        updatePos(){
+            this.X -= 0.5;
+            this.Y += 0.00001;
+            this.Z -= 1;
+            this.R -= 0.1;
+        }
+    }
+    class grass {
+        constructor(x,y,size){
+            this.X = x;
+            this.Y = y;
+            this.Z = y;
+            this.size = size;
+        }
+        returnFrame(){
+            this.Y += 0.5;
+            this.size += 0.05;
+            return "grass.png";
+        }
+        getSize(){
+            return this.size;
+        }
+        getX(){
+            return this.X;
+        }
+        getY(){
+            return this.Y;
+        }
+    }
+    class ghost1 {
+        constructor(x,y,s){
+            this.imgList = ["frame1.jpg","frame2.jpg","frame3.jpg","frame4.jpg","frame5.jpg","frame6.jpg","frame7.jpg","frame8.jpg","frame9.jpg","frame9.jpg","frame10.jpg","frame11.jpg","frame12.jpg"];
+            this.size = 20;
+            this.frame = 0;
+            this.X = x;
+            this.Y = y;
+            this.Z = y;
+            if(s == 0)
+                this.speed = 0.1;
+            else
+                this.speed = s/10;
+        }
+        returnFrame(){
+            this.frame = (this.frame+1)%12;
+            this.size += 0.05;
+            this.Y += this.speed;
+            this.Z += this.speed;
+            return "ghost1/"+this.imgList[this.frame];
+        }
+        getSize(){
+            return this.size;
+        }
+        getX(){
+            return this.X;
+        }
+        getY(){
+            return this.Y;
+        }
+        collision(bulObj){
+            if(this.X <= bulObj.getX() && bulObj.getX() <= this.X+6*this.size){
+                if(this.Y <= bulObj.getY() && bulObj.getY() <= this.Y+5*this.size)
+                    return true;
+            }
+        }
+    }
+    function setup() {
+        // Initialize variables here
+        canvas.activateDoubleBuffer();
+        height = canvas.height;
+        width = canvas.width;
+        kills = 0;
+        distance = 0;
+        count = 18;
+        for(var i = 0 ; i < 20 ; i++) {
+            xCordinate[i]=0;
+        }
+        sampX = Math.floor(Math.random()*20);
+        xCordinate[sampX] = 1;
+        ghostArray.push(new ghost1(sampX*width/20,height/2,1));
+        for(var i = 0 ; i < 30 ; i++) {
+            grassArray.push(new grass(Math.floor(Math.random()*60)*width/60,2*height/5+Math.floor(Math.random()*400),Math.floor(Math.random()*10)));        
+        }
+        gameOver = false;
+        player = new shooter(width/2-width/120,height-260);
+    }
+    function fillRectangle(x,y,width,height){
+        canvas.ctx.strokeStyle="red";
+        canvas.ctx.fillRect(x,y,width,height);
+    }
+    function reInitialise(){
+        count = 15;
+        for(var i = 0 ; i < 18 ; i++) 
+            xCordinate[i] = 0;
+        for(var j = 0 ; j < count/2 ; j++) {
+            var rand = Math.floor(Math.random()*count);
+            if(xCordinate[rand] != 1) {
+                ghostArray.push(new ghost1(Math.floor(Math.random()*20)*width/21,height/2,Math.floor(Math.random()*2)));
+                xCordinate[rand] = 1;
+            }
+        }
+        count -= Math.ceil(count/2);        
+    }
+    // Declare custom functions here
+
+    // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-        canvas.setDrawMode("fill");
-        canvas.setColor("green");
-        canvas.drawRectangle(0,0,width,height);
-        canvas.setColor("grey");
-        canvas.drawRectangle(width/2-width/8,0,width/4,height);
-        canvas.setColor("white");
-        canvas.drawText(width/8-width/128,7*height/16-height/32,"Traffic",height/8);
-        canvas.drawText(width/8+width/128,9*height/16-height/32,"Rush",height/8);
-        canvas.drawText(width/32,20*height/32,"Use left and right arrow keys to move avoid collision",height/32);
-        canvas.drawText(24*width/32,height/2-height/16,"Score",3*height/32);
-        canvas.drawText(51*width/64,height/2+height/16,score,height/8);
-        //before obstracles start to begin move the player car ahead
-        if(player_car.y_pos() > 7*height/12)
-        {
-            for (var i = 0; i < 5 ; i++)
-                divider[i].hault(1);
-            player_car.hault(0);
-            for (var i = 0; i < 5 ; i++)
-                divider[i].move();
-        }
-        //once obstracles start move the divider and put player car static
-        else
-        {
-            for(var i = 0 ; i < opp_car.length ; i++)
-            {
-                if(player_car.clash(opp_car[i]))
-                {
-                    gameover = 1;
-                    break;
-                }
-            }
-            for (var i = 0; i < 5; i++)
-                divider[i].hault(gameover);
-            for (var i = 0; i < opp_car.length; i++)
-                opp_car[i].hault(gameover);
-            player_car.hault(1);
-            for (var i = 0; i < 5 ; i++)
-                divider[i].move();
-            for(var i = 0 ; i < opp_car.length; i++)
-            {
-                if(opp_car[i].y_pos() > height)
-                    opp_car.shift();
-            }     
-            for (var i = 0; i < opp_car.length; i++)
-            {
-                if(opp_car[i].y_pos() > 7*height/12 + height/6 && opp_car[i].check_crossed() == 0)
-                {
-                    opp_car[i].set_crossed();
-                    score++;
-                }
-                opp_car[i].move_y();
-            }
-            if(opp_car.length == 0 || opp_car[opp_car.length-1].y_pos() >= gap)
-            {
-                var random_x = Math.floor(Math.random()*8)+2;
-                opp_car.push(new Car(3*width/8+random_x*(width/64),-height/6,0,height/64+height/2048*score,"#8B008B","#EE82EE"));
-                gap = gap-height/512;
-            }
-            if(gameover == 1)
-            {
-                canvas.setColor('red');
+        if(!gameOver) {
+            // alert(height);
+            canvas.update();
+            canvas.setDrawMode('fill');
+            canvas.setColor('Black');
+            canvas.drawRectangle(0,0,width,height);
+            if(count == 0 || ghostArray.length == 0)
+                reInitialise();
+            // canvas.drawText(width/2,0,"KILLS:",height/50);
+            // canvas.drawText(7*width/8,0,kills,30);
+            for(var i = 0 ; i < 100 ; i++) {
                 canvas.setDrawMode('fill');
-                canvas.drawText(width/2-width/16,height/2-height/32,"Game Over",height/16)
+                canvas.setColor(`rgb(${i},${i},${i})`);
+                var hgt = 3*height/5;
+                fillRectangle(0,(2*height/5)+(hgt/100)*i,width,2*hgt/100);
+            }
+            canvas.drawImg("sky2.jpg",0,0,1*width/3,2*height/5);
+            for(var i = 0 ; i < grassArray.length ; i++) {
+                var samp = grassArray[i];
+                canvas.drawImg(samp.returnFrame(),samp.getX(),samp.getY(),samp.getSize()*5,samp.getSize()*5);
+                if(samp.getY()+samp.getSize()*5 >= height) {
+                    grassArray.splice(i,1);
+                    grassArray.push(new grass(Math.floor(Math.random()*60)*width/60,2*height/5,Math.floor(Math.random()*10)));
+                }
+            }
+            for(var i = 0 ; i < ghostArray.length ; i++) {
+                var obj = ghostArray[i];
+                canvas.drawImg(obj.returnFrame(),obj.getX(),obj.getY(),6*obj.getSize(),10*obj.getSize());
+            }
+            for(var i = 0 ; i < ghostArray.length ; i++) {
+                var obj = ghostArray[i];
+                var check = true;
+                if(player.collision(obj)) {
+                    gameOver = true;
+                }
+                if(!gameOver){
+                    for(var j = 0 ; j < bulletArray.length ; j++) {
+                        if(obj.collision(bulletArray[j])) {
+                            xCordinate[j]=0;
+                            ghostArray.splice(i,1);
+                            bulletArray.splice(j,1);
+                            check = false;
+                            count++;
+                            for(var j = 0 ; j < count/2 ; j++) {
+                                var rand = Math.floor(Math.random()*count);
+                                if(xCordinate[rand] != 1) {
+                                    ghostArray.push(new ghost1(Math.floor(Math.random()*20)*width/21,height/2,Math.floor(Math.random()*2)));
+                                    xCordinate[rand] = 1;
+                                }
+                            }
+                            count -= Math.ceil(count/2);
+                            kills += 1;
+                        }
+                    }
+                    if(check && obj.getY()+10*obj.getSize() > height) {
+                        ghostArray.splice(i,1);
+                        xCordinate[i]=0;
+                        count++;
+                        for(var j = 0 ; j < count/2 ; j++) {
+                            var rand = Math.floor(Math.random()*count);
+                            if(xCordinate[rand] != 1) {
+                                ghostArray.push(new ghost1(Math.floor(Math.random()*20)*width/21,height/2,Math.floor(Math.random()*2)));
+                                xCordinate[rand] = 1;
+                            }
+                        }
+                        count -= Math.ceil(count/2);
+                    }
+                }
+            }
+            if(!gameOver){
+                canvas.drawImg(player.returnFrame(),player.getX(),player.getY(),820,260);
+                for(var i = 0 ; i < bulletArray.length ; i++) {
+                    var obj = bulletArray[i];
+                    if(obj.getR() < 0.5)
+                        bulletArray.splice(i,1);
+                    else {
+                        canvas.setColor("#D2691E");
+                        obj.updatePos();
+                        canvas.drawCircle(obj.getX(),obj.getY(),obj.getR());
+                    }
+                }
+                distance += 0.01;
+                canvas.setColor("#FFFFFF");
+                canvas.drawText(1200,100,"KILLS : "+kills,30);
+                canvas.drawText(1100,149,"DISTANCE : "+distance+"m",20);
             }
         }
-        player_car.move_y();
+        else{
+            canvas.update();
+            canvas.setColor("black");
+            canvas.drawRectangle(0,0,width,height);
+            canvas.setColor("white");
+            canvas.drawText(width/2-100,height/2-500,"GameOver!",50);
+            canvas.drawText(width/2-400,height/2+50,"Distance:"+distance+"m",50);
+            canvas.drawText(width/2-100,height/2+100,"Kills:"+kills,50);
+        }
+        //canvas.update();
     }
-    // Override functions here; 
-    canvas.mainFunction = main;
-    canvas.setupFunction = setup;
-    //for left an right motion of car
+    canvas.mouseDownCallback = function () {
+        bulletArray.push(new bullet(player.getX()+410));
+    }
 	canvas.keyDownCallback = function(e) {
 		if (e.which == 37) {
-			player_car.move_x(0);
+			player.setX(-10);
 		} else if (e.which === 39) {
-            player_car.move_x(1);
+            player.setX(10);
 		}
 	};
+    // Override functions here; 
+    canvas.mainFunction = main;
+
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 </script>
