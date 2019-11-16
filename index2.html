@@ -17,10 +17,6 @@
 
     // Function while will be called repeatedly 
     
-    function setup()
-    {
-        canvas.activateDoubleBuffer();
-    }
     obs_x=1000;
     obs_y=500;
     block_width=100;
@@ -56,7 +52,7 @@
     
     function main() {
         //canvas.activateDoubleBuffer();
-        //canvas.clear();
+        canvas.clear();
         canvas.drawImg("background.jpg",10,40,1300,730)
         //canvas.drawImg("tree.png",300,200,459,536);
         //canvas.drawRectangle(block_x,block_y,100,100); //main block
@@ -108,7 +104,6 @@
         
 
         canvas.drawText(600,30,"Points: "+points,fontSize=30);
-        canvas.drawText(900,30,"Press S to shoot",fontSize=30);
         canvas.drawText(200,30,"Waterballs remaining: "+water_balls,fontSize=30);
         console.log(points);
         //canvas.drawImg("waterball.png",100,100,100,100);
@@ -137,7 +132,7 @@
             obs_x=1000;
             obs_y=500;
             block_y=500;
-            block_x=450;
+            block_x=50;
             water_balls=5;
         }
         
@@ -210,14 +205,12 @@
 
         }
 
-    canvas.update();
 
         
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
-    canvas.setupFunction = setup;
 
     var timeStep = 25;
     canvas.startMain(timeStep);
