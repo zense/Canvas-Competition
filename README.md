@@ -1,20 +1,14 @@
 ## Developed for Zense HacKnight 2K19
 
 ### Authors
-- Satvik Ramaprasad
-- Shubhayu Das
-- Rohit Katlaa
-- Prajwal Agarwal
-- Jishnu Kumar
-    
+- Anjan
 
 ## Instructions for users
 
-- You need not understand the code here to be able to use it. 
-- Understanding the API below should be enough
--  See [Examples](http://canvas.zense.co.in) to get started.
-
-## API Documentation
+- index.html is opening page of the game. You would find start game option at the top left corner
+- game is just like snake game with little modifications in the appearances and the snake itself.
+- In my game when ever it's moving we see it's full length but when we stop moving it then it folds itself and form a circle.
+# API Documentation
 
 ### Helpful Canvas Variables
 - **canvas.height**: Height
