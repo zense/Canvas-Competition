@@ -1,10 +1,11 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -12,24 +13,70 @@
 <script>
 
     // Declare all global variables here
+    var g = 9.8;
+   
+        var angle = prompt("Enter the angle","");
+        var u = prompt("Enter the velocity","");
+        var t = 0;
+    function setup() {
+        c1 = new ball(100,800,10);
+       
+        // Initialize variables here
+    }
+    class ball
+    {
+        constructor(x,y,r)
+        {
+            this.x = x;
+            this.y = y;
+            this.r = r;
+        }
+        draw()
+        {
+            canvas.drawCircle(this.x,this.y,this.r);
+            canvas.drawLine(100,810,1800,810);
+        }
+        movement()
+        {
+            var velx = u*Math.cos(Math.PI*angle/180);
+            var vely = u*Math.sin(Math.PI*angle/180) - g*t/40;
+            this.x = this.x + velx*t/40;
+            this.y = this.y - vely*t/40;
+            t += 0.5;
+            if(this.y >800)
+            {
+                vely = -vely;
+                this.y = this.y + vely*t/50;
+            }
+            if(this.x >= 1800)
+            {
+                this.x = 1800 - velx*t/50;
+            }
+            // canvas.drawCircle(this.x,this.y,this.r);
+        }
+
+    }
 
     // Declare custom functions here
 
+
     // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+    function main() 
+    {
+         canvas.clear();
         
+        c1.draw();
+        c1.movement();
+        c1.bounce();
     }
+
+
 
     // Override functions here; 
     canvas.mainFunction = main;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
