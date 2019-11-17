@@ -2,9 +2,9 @@
 
 <body onload="canvas.setup()">
 
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%; background:#000"></canvas>
     <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%; background:#000"></canvas>
 
     <script src="./canvas.js"></script>
 </body>
@@ -13,21 +13,106 @@
 <script>
 
     // Declare all global variables here
+    var innerWidth,innerHeight,radius,starsIndex,stars=[],
+        centerX,centerY,focalLength,starRadius,starX,starY,numStars,
+        mouse={},starX_dir,starY_dir;
     function setup() {
-        // Initialize variables here
+        // Initialize variables here\
+        innerwidth=canvas.width;
+        innerHeight=canvas.height;
+        radius=1;
+        starsIndex=0;
+        stars=[],
+        centerX=innerWidth/2;
+        centerY=innerHeight/2;
+        focalLength=100;
+        starX=null;
+        starY=null;
+        numStars=2000;
+        mouse={};
+        starX_dir=2;//initial direction
+        starY_dir=200;
+        var s;
+        for(s = 0; s < numStars; s++){
+	        x = Math.random() * innerWidth;
+	        y = Math.random() * innerHeight;
+	        z = Math.random() * innerWidth;
+	        new star(x,y,z);
+        }
+        animate();
     }
 
     // Declare custom functions here
+// Function for create new start
+function star(x,y,z){
+    this.x = x;
+	this.y = y;
+	this.z = z;
+	this.radius = radius;
+	this.color = "#ffffff";
+	starsIndex++;
+	stars[starsIndex] = this;
+	this.id = starsIndex;
+	
+	this.update = function(){
+	    starX=(this.x-centerX)*(focalLength /this.z);
+	    starX=starX+centerX;
+	    starY=(this.y-centerY)*(focalLength/this.z);
+	    starY=starY+centerY;
+	    starRadius=radius*(focalLength/this.z);
+	    starX=starX+starX_dir;
+	    starY=starY+starY_dir;
+	    this.z=this.z-5;
+        //console.log(starX,starY);
+	    if(this.z<=0){
+	        this.z=parseInt(innerWidth);
+	    }
+            this.draw();
+    }
+    this.draw=function(){
+        canvas.drawMode="fill";
+        canvas.setColor('#fff');
+        canvas.drawCircle(starX,starY,starRadius);
+    }
+}
 
-
+function animate(){
+    canvas.setColor("rgb(0,0,0)");
+    canvas.drawMode="fill";
+    canvas.drawRectangle(0,0,innerWidth,innerHeight);
+	var s=0;
+    for(var i in stars){
+	    stars[i].update();
+	}
+}   
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
+        animate();
+        if(canvas.mouseDown){
+        centerX=canvas.mouseX;
+        centerY=canvas.mouseY-200;
+        }
 
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.keyUpCallback = function(e){
+        if(e.code==="ArrowUp"){
+            focalLength=focalLength*1.2;
+        }else if(e.code==="ArrowDown")
+        {
+            focalLength=focalLength/1.2;
+        }else if(e.code==="ArrowLeft"){
+            starX_dir=starX_dir+10;
+            starY_dir=starY_dir-10;
+        }
+        else if(e.code==="ArrowRight"){
+            starX_dir=starX_dir-10;
+            starY_dir=starY_dir+10;
+        }
+    }
+    
 
     var timeStep = 50;
     canvas.startMain(timeStep);
