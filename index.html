@@ -1,5 +1,5 @@
 <html>
-
+  
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -12,21 +12,75 @@
 </html>
 <script>
 
+
+
     // Declare all global variables here
     function setup() {
-        // Initialize variables here
+
+    //var joint1 = new joint(250,250) ;    not used
+    //var joint2 = new joint(350,350) ;
+    //var stick1 = new stick(joint1,joint2) ;
+
     }
 
-    // Declare custom functions here
+var globalList = {
+        //sticks: [],
+        //joints: [],
 
 
-    // Function while will be called repeatedly 
+        xs : [],   // for storing x coordinate of final stick's end
+        ys : []    // for storing y coordinate of final stick's end
+
+
+    }
+
+var angle = 0.1 ;   // used to make it look like angular velocity
+
     function main() {
-        canvas.clear();
 
+{
+    canvas.clear();
+
+    //var currentTime = new Date();  first we were using actual time for angle
+    //var time = currentTime.getSeconds();
+
+
+  var x1 = 600 ;
+  var y1 = 400 ;
+
+  var x2 = x1 + 100*Math.cos(angle) ;
+  var y2 = y1 + 100*Math.sin(angle) ;
+
+  var x3 = x2 + 50*Math.cos(angle*1.5) ;
+  var y3 = y2 + 50*Math.sin(angle*1.5) ;
+
+  var x4 = x3 + 25*Math.cos(angle*2.25) ;
+  var y4 = y3 + 25*Math.sin(angle*2.25);
+
+  var x5 = x4 + 25*Math.cos(angle*4) ;
+  var y5 = y4 + 25*Math.sin(angle*4) ;
+
+  canvas.drawLine(x1,y1,x2,y2) ;
+  canvas.drawLine(x2,y2,x3,y3) ;
+  canvas.drawLine(x3,y3,x4,y4) ;
+  canvas.drawLine(x4,y4,x5,y5) ;
+
+  globalList.xs.push(x5) ;
+  globalList.ys.push(y5) ;
+    
+    for(var i=0 ; i<500; i++)
+    {
+      canvas.drawCircle(globalList.xs[i] , globalList.ys[i] , 2 ) ;
     }
 
-    // Override functions here; 
+angle += 0.1  ;  //increasing angle
+}
+
+
+}
+
+
+    // Override functions here;
     canvas.mainFunction = main;
 
     var timeStep = 50;
@@ -34,3 +88,4 @@
     canvas.setupFunction = setup;
 
 </script>
+
