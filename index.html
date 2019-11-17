@@ -11,26 +11,266 @@
 
 </html>
 <script>
-
+//variables
+    var player1_x;
+    var player1_rec_y;
+    var player1_circ_y;
+    var player2_x;
+    var player2_rec_y;
+    var player2_circ_y;
+    var ball_x;
+    var ball_y;
+    var player_vel;
+    var p1flag;
+    var p2flag;
+    var pluv;
+    var p2uv;
+    var p1b_dist;
+    var p2b_dist;
+    var ball_vx;
+    var ball_vy;
+    var angle;
+    var new_ball_vx;
+    var new_ball_vy;
+    var another_flag;
+    var which_side;
+    var message;
     // Declare all global variables here
-    function setup() {
+    function setup()
+        {
+        player1_x=canvas.width*(0.25);
+        player1_rec_y=canvas.height*(0.9);
+        player1_circ_y=canvas.height*(0.9);
+        player2_x=canvas.width*(0.75);
+        player2_rec_y=canvas.height*(0.9);
+        player2_circ_y=canvas.height*(0.9);
+        ball_y=canvas.height*(0.3);
+        ball_x=canvas.width*(0.75);
+        player_vel=canvas.width*(0.07);
+        p1uv=canvas.width*(0.03);
+        p2uv=canvas.width*(0.03);
+        ball_vx=0;
+        ball_vy=0;
+        p1flag=0;
+        p2flag=0;
+        another_flag=0;
+        which_side=1;
+        }
+
         // Initialize variables here
-    }
+    
+
+    function draw_objects()
+        {
+        //immovable-objects
+        canvas.setDrawMode("fill");  
+        canvas.drawRectangle(canvas.width*(0.5), canvas.height*(0.55), canvas.width*(0.025), canvas.height*(0.45));
+        canvas.drawRectangle((0.97)*canvas.width,0 , canvas.width*(0.1), canvas.height);
+        canvas.drawRectangle(0, 0, canvas.width*(0.03), canvas.height); 
+        //movable-objects
+        canvas.drawCircle(ball_x,ball_y,canvas.width*(0.05));//ball
+        canvas.drawRectangle(player1_x,player1_rec_y,canvas.width*(0.1),canvas.height*(0.1));//player1
+        canvas.drawCircle(player1_x+canvas.width*(0.05),player1_circ_y,canvas.width*(0.05));//player1
+        canvas.drawRectangle(player2_x,player2_rec_y,canvas.width*(0.1),canvas.height*(0.1));//player2
+        canvas.drawCircle(player2_x+canvas.width*(0.05),player2_circ_y,canvas.width*(0.05));//player2 
+        ball_x+=ball_vx;
+        ball_y+=ball_vy;
+        ball_vy+=5;
+        if(ball_vx>=canvas.width*(0.07))
+            {
+            ball_vx=ball_vx*(0.5);
+            }
+        if(ball_vy>=canvas.width*(0.07))
+            {
+            ball_vy=ball_vy*(0.5);
+            }
+        }
+     
+    canvas.keyDownCallback = function (e) {
+    if(e.which==87)
+        {
+        if(p1flag==0)
+            {
+            p1flag=1;
+            }
+        }
+    if(e.which==73)
+        {
+        if(p2flag==0)
+            {
+            p2flag=1;
+            }
+        }
+    if(e.which==68 && player1_x<=canvas.width*(0.4))
+        {
+        player1_x+=player_vel;
+        }
+    if(e.which==65 && player1_x>=(0.03)*canvas.width)
+        {
+        player1_x-=player_vel;    
+        }
+    if(e.which==74 && player2_x>=canvas.width*(0.5)+canvas.width*(0.025))
+        {
+        player2_x-=player_vel;
+        }
+    if(e.which==76 && player2_x<=canvas.width*(0.87))
+        {
+        player2_x+=player_vel;    
+        }
+    
+}
+    function update_objects()
+        {
+        if(p2flag==1)
+            {
+            if(player2_circ_y>(0.93)*canvas.height )
+                {
+                p2flag=0;
+                p2uv=(0.03)*canvas.width;
+                }
+            player2_circ_y-=p2uv;
+            player2_rec_y-=p2uv;
+            p2uv-=(0.003)*canvas.width;
+            }
+         if(p1flag==1)
+            {
+            if(player1_circ_y>(0.93)*canvas.height)
+                {
+                p1flag=0;
+                p1uv=(0.03)*canvas.width;
+                }
+            player1_circ_y-=p1uv;
+            player1_rec_y-=p1uv;
+            p1uv-=(0.003)*canvas.width;
+            }
+        }
+    function update_ball()
+        {
+        if(ball_x>=canvas.width*(0.5))
+            {
+            which_side=1;
+            }
+        else
+            {
+            which_side=-1;
+            }
+        if(ball_vx<=0 && ball_x<=canvas.width*(0.525) && ball_y>=canvas.height*(0.4) && which_side==1)
+            {
+            console.log("boo");
+            ball_vx=(-1)*ball_vx;
+            }
+        if(ball_vx>=0 && ball_x>=canvas.width*(0.5) && ball_y>=canvas.height*(0.4) && which_side==-1)
+            {
+            ball_vx=(-1)*ball_vx;    
+            }    
+        if(ball_x>=(0.87)*canvas.width|| ball_x<=(0.08)*canvas.width)
+            {
+            ball_vx=-ball_vx;
+            }
+        if(ball_y>=(0.93)*canvas.height)
+            {
+            ball_vy=-ball_vy;
+            if(ball_x>=canvas.width*(0.5))
+                {
+                message="player-2 lose";
+                console.log(message);
+                canvas.drawText(canvas.width*(0.5), canvas.height*(0.1), message, fontSize = 30);
+                reset();    
+                }
+            else
+                {
+                message="player-1 lose";
+                console.log(message);
+                canvas.drawText(canvas.width*(0.5), canvas.height*(0.1), message, fontSize = 30)
+                reset();  
+                }
+            
+            }
+        p1b_dist=Math.hypot(player1_x-ball_x,player1_circ_y-ball_y);
+        p2b_dist=Math.hypot(player2_x-ball_x,player2_circ_y-ball_y);
+        if(another_flag==0)
+            {
+            if(p1b_dist<=(0.1)*canvas.width)
+                {
+
+                console.log("dummy1");
+                angle=Math.atan((ball_y-player1_circ_y)/(ball_x-player1_x-(canvas.width*(.05)) ));
+                console.log(angle);
+                new_ball_vx=(-1)*((( ball_vy*Math.sin(angle) + ball_vx*Math.cos(angle) )*Math.cos(angle) )+(( ball_vy*Math.cos(angle) - ball_vx*Math.sin(angle) ) *Math.sin(angle)) );
+                new_ball_vy=(-1)*( (ball_vy*Math.sin(angle) + ball_vx*Math.cos(angle))*Math.sin(angle)) + (  ball_vx*Math.sin(angle)-ball_vy*Math.cos(angle) )*Math.cos(angle) ;
+                //new_ball_vx=new_ball_vx*(-1)*(ball_y-canvas.height);
+                //new_ball_vy=new_ball_vy*(-1)*(ball_y-canvas.height);
+                //new_ball_vx=new_ball_vx*(300);
+                //new_ball_vy=new_ball_vy*(300);   
+                ball_vx=new_ball_vx;
+                ball_vy=new_ball_vy;
+                another_flag=1;
+                }
+            if(p2b_dist<=(0.1)*canvas.width)
+                {
+                if(ball_vy==0&&ball_vx==0)
+                    {
+                    console.log("flag");
+                    ball_vx=(-0.018)*canvas.width;
+                    ball_vy=(0.025)*canvas.width;
+                    }
+                console.log("dummy2");
+                angle=Math.atan((ball_y-player1_circ_y)/(ball_x-player2_x-(canvas.width*(.05))));
+                console.log(Math.sin(angle));
+                new_ball_vx=(-1)*((( ball_vy*Math.sin(angle) + ball_vx*Math.cos(angle) )*Math.cos(angle) )+(( ball_vy*Math.cos(angle) - ball_vx*Math.sin(angle) ) *Math.sin(angle)) );
+                new_ball_vy=(-1)*( (ball_vy*Math.sin(angle) + ball_vx*Math.cos(angle))*Math.sin(angle)) + (  ball_vx*Math.sin(angle)-ball_vy*Math.cos(angle) )*Math.cos(angle) ;
+                //new_ball_vx=new_ball_vx*(-1)*(ball_y-canvas.height);
+                //new_ball_vy=new_ball_vy*(-1)*(ball_y-canvas.height);
+                //new_ball_vx=new_ball_vx/270;
+                //new_ball_vy=new_ball_vy/270;                
+                ball_vx=new_ball_vx;
+                ball_vy=new_ball_vy;
+                another_flag=1;
+                }
+            }
+        if(p1b_dist>=(0.2)*canvas.width && p2b_dist>=(0.2)*canvas.width)   
+            {
+            another_flag=0;
+            }     
+        //ball_x+=ball_vx;
+        //ball_y+=ball_vy;
+        }
 
     // Declare custom functions here
-
+    function reset()
+        {
+        player1_x=canvas.width*(0.25);
+        player1_rec_y=canvas.height*(0.9);
+        player1_circ_y=canvas.height*(0.9);
+        player2_x=canvas.width*(0.75);
+        player2_rec_y=canvas.height*(0.9);
+        player2_circ_y=canvas.height*(0.9);
+        ball_y=canvas.height*(0.3);
+        ball_x=canvas.width*(0.75);
+        player_vel=canvas.width*(0.07);
+        p1uv=canvas.width*(0.03);
+        p2uv=canvas.width*(0.03);
+        ball_vx=0;
+        ball_vy=0;
+        p1flag=0;
+        p2flag=0;
+        another_flag=0;
+        }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-
+        draw_objects();
+        update_objects();
+        update_ball();
     }
 
     // Override functions here; 
+    canvas.setupFunction = setup;
     canvas.mainFunction = main;
+    
 
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
 
 </script>
