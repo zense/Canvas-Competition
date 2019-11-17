@@ -11,26 +11,195 @@
 
 </html>
 <script>
-
     // Declare all global variables here
+    var x;
+    var y;
+    var flag;
     function setup() {
         // Initialize variables here
+        x=canvas.width * 0.35;
+        y=canvas.height * 0.25;
+        flag=0;
+        canvas.setDrawMode("fill");
+        canvas.setColor("black");
+        canvas.drawRectangle(0, 0, canvas.width, canvas.height);
     }
-
     // Declare custom functions here
-
-
     // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
-    }
-
+    function main() 
+    {
+       canvas.setDrawMode("stroke");
+       canvas.setColor("blue");
+       canvas.setLineThickness(40);
+       if(x<=canvas.width*0.65 && flag==0)
+       {
+       canvas.drawLine(x,y,x+10,y);
+       x=x+10;
+       }
+       else
+       {
+            if(flag==0)
+            {
+            x=((canvas.width * 0.35)+x)/2;
+            flag++;
+            }
+            if(y<=canvas.height*0.75 && flag==1)
+            {
+            canvas.drawLine(x,y,x,y+10);
+            y=y+10;   
+            }
+            else
+            {
+                if(flag==1)
+                {
+                x=(canvas.width*0.35);
+                flag++;
+                }
+                if(x<=canvas.width*0.65 && flag==2)
+                {
+                canvas.drawLine(x,y,x+10,y);
+                x=x+10;
+                }
+                else
+                {
+                    if(flag==2)
+                    {
+                    canvas.clear();
+                    canvas.setDrawMode("fill");
+                    canvas.setColor("black");
+                    canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+                    canvas.setDrawMode("stroke");
+                    canvas.setColor("blue");
+                    x=canvas.width * 0.35;
+                    y=canvas.height * 0.25;
+                    flag++;
+                    }
+                    if(x<=canvas.width*0.65 && flag==3)
+                    {
+                    canvas.drawLine(x,y,x+10,y);
+                    x=x+10;
+                    }
+                    else
+                    {
+                        if(flag==3)
+                        {
+                        x=((canvas.width * 0.35)+x)/2;
+                        flag++;
+                        }
+                        if(y<=canvas.height*0.75 && flag==4)
+                        {
+                        canvas.drawLine(x,y,x,y+10);
+                        y=y+10;   
+                        }
+                        else
+                        {
+                            if(flag==4)
+                            {
+                            x=(canvas.width*0.35);
+                            flag++;
+                            }
+                            if(x<=canvas.width*0.65 && flag==5)
+                            {
+                            canvas.drawLine(x,y,x+10,y);
+                            x=x+10;
+                            }
+                            else
+                            {
+                                if(flag==5)
+                                {
+                                    canvas.clear();
+                                    canvas.setDrawMode("fill");
+                                    canvas.setColor("black");
+                                    canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+                                    canvas.setDrawMode("stroke");
+                                    canvas.setColor("blue");
+                                    x=canvas.width * 0.35;
+                                    y=canvas.height * 0.25;
+                                    flag++;
+                                }
+                                if(x<=canvas.width*0.65 && flag==6)
+                                {       
+                                canvas.drawLine(x,y,x+10,y);
+                                x=x+10;
+                                }
+                                else
+                                {
+                                    if(flag==6)
+                                    {
+                                    x=((canvas.width * 0.35)+x)/2;
+                                    flag++;
+                                    }
+                                    if(y<=canvas.height*0.75 && flag==7)
+                                    {
+                                    canvas.drawLine(x,y,x,y+10);
+                                    y=y+10;   
+                                    }
+                                    else
+                                    {
+                                        if(flag==7)
+                                        {
+                                        x=(canvas.width*0.35);
+                                        flag++;
+                                        }
+                                        if(x<=canvas.width*0.65 && flag==8)
+                                        {
+                                        canvas.drawLine(x,y,x+10,y);
+                                        x=x+10;
+                                        }
+                                        else
+                                        {
+                                            if(flag==8)
+                                            {
+                                            canvas.clear();
+                                            canvas.setDrawMode("fill");
+                                            canvas.setColor("black");
+                                            canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+                                            canvas.setDrawMode("stroke");
+                                            canvas.setColor("blue");
+                                            x=canvas.width * 0.35;
+                                            y=canvas.height * 0.25;
+                                            flag++;
+                                            }
+                                            if(x<=canvas.width*0.65 && flag==9)
+                                            {       
+                                            canvas.drawLine(x,y,x+10,y);
+                                            x=x+10;
+                                            }
+                                            else
+                                            {
+                                                if(flag==9)
+                                                {
+                                                x=((canvas.width * 0.35)+x)/2;
+                                                flag++;
+                                                }
+                                                if(y<=canvas.height*0.75 && flag==10)
+                                                {
+                                                canvas.drawLine(x,y,x,y+10);
+                                                y=y+10;   
+                                                }
+                                                else
+                                                {
+                                                    canvas.clear();
+                                                    canvas.setDrawMode("fill");
+                                                    canvas.setColor("black");
+                                                    canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+                                                    canvas.setColor("blue");
+                                                    canvas.drawText(canvas.width * 0.21, canvas.height * 0.75, "IIIT", fontSize = 600);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }    
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 20;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
-
 </script>
