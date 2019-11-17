@@ -1,4 +1,4 @@
-Canvas 3D animation (stars in Galaxy)
+## Canvas 3D animation (stars in Galaxy)
 
 1.Tap ArrowUp to zoomIn.
 2.Tap ArrowDowm to ZoomOut.
