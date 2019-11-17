@@ -1,5 +1,12 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -8,29 +15,289 @@
 
     <script src="./canvas.js"></script>
 </body>
-
 </html>
 <script>
+    var center_x = 926.5;
+    var center_y = 475.5;   
+    //var center_x
+    //var center_y
+    var radius = 1050;
+    var Quit = false;
+    var midArcAngle;
+    var coreRadius = 20;
+    var ballRadius = 10;
+    var score = 0;
+    var collided_count = 0;
 
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+    //  function setup() {
+    //      center_x = 926.5;
+    //     center_y = 475.5;
+    //     console.log("hi")
+    // };
+ 
+    function core() {
+        canvas.setDrawMode("fill");
+        canvas.setColor("#249d93")
+        canvas.drawCircle(center_x, center_y, coreRadius);
+    };
+
+    class Enemy
+    {
+        constructor(angle,speed) 
+        {
+            this.angle = angle;
+            this.speed = speed;
+            this.x = center_x + Math.cos(angle) * radius;
+            this.y = center_y + Math.sin(angle) * radius;
+            this.i = 0;
+            this.j = 0;
+            this.collision = false
+        }
+
+        draw()
+        {
+            canvas.setDrawMode("fill")
+            canvas.setColor("red")
+            canvas.drawCircle(this.x+this.i,this.y+this.j,10);
+            this.i += -(this.speed)*Math.cos(this.angle);
+            this.j += -(this.speed)*Math.sin(this.angle);
+        }
+
     }
 
-    // Declare custom functions here
+    class Energy
+    {
+        constructor(angle,speed) 
+        {
+            this.angle = angle;
+            this.speed = speed;
+            this.x = center_x + Math.cos(angle) * radius;
+            this.y = center_y + Math.sin(angle) * radius;
+            this.i = 0;
+            this.j = 0;
+            this.collision = false
+        }
+
+        draw()
+        {
+            canvas.setDrawMode("fill")
+            canvas.setColor("#249d93")
+            canvas.drawCircle(this.x+this.i,this.y+this.j,10);
+            this.i += -(this.speed)*Math.cos(this.angle);
+            this.j += -(this.speed)*Math.sin(this.angle);
+        }
+
+    }
 
 
-    // Function while will be called repeatedly 
-    function main() {
+    function drawEnemy_circle(){
+        canvas.setDrawMode("stroke")
+        canvas.setColor("white")
+        canvas.drawCircle(center_x,center_y,radius);
+    }
+    
+    function gradientBackground() {
+        var gradient = canvas.ctx.createRadialGradient(center_x, center_y, 0, center_x , center_y , 500);
+        gradient.addColorStop(0, 'rgba(0, 70, 70, 1)');
+        gradient.addColorStop(1, 'rgba(0, 8, 14, 1)');
+        canvas.ctx.fillStyle = gradient;
+        canvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    function shield() {
+        canvas.ctx.beginPath();
+        canvas.ctx.arc(center_x, center_y, 75, midArcAngle-Math.PI/3 , midArcAngle+Math.PI/3, false)
+        canvas.ctx.lineWidth = 3
+        canvas.ctx.strokeStyle = "#648d93";
+        canvas.ctx.stroke();
+    }
+    function mouseControl() {
+        var Mouse_X = canvas.mouseX
+        var Mouse_Y = canvas.mouseY
+        midArcAngle = Math.atan2((Mouse_Y - center_y ),(Mouse_X - center_x ))          
+    }  
+    canvas.keyDownCallback = function(e)
+    {
+        if (e.code === "ArrowLeft")
+        {
+            midArcAngle += 0.075;    
+        }
+        
+        else if (e.code === "ArrowRight")
+        { 
+            midArcAngle -= 0.075
+        }
+    }
+
+var enemy_count = Math.floor((Math.random() * 2)+3);
+var energy_count = Math.floor((Math.random() * 1)+1 );
+var angles=[]
+var enemies =[]
+var speeds = []
+var energies = []
+// var enemies_collided = []
+// var energies_collided = []
+
+    for(var k =0;k<enemy_count;k++)
+    {
+        angles.push((Math.random() * 2)*Math.PI);
+
+    }
+    for(var k =0;k<enemy_count;k++)
+    {
+        speeds.push((Math.random() * 5)+9);
+    }
+
+    for(var p=0;p<enemy_count;p++)
+    {
+        enemies.push(new Enemy(angles[p],speeds[p]))
+    }
+    
+    for(var p=0;p<energy_count;p++)
+    {
+        energies.push(new Energy(angles[p],speeds[p]))
+    }
+
+    function drawEnemies()
+    {
+         for(var n = 0 ; n < enemies.length; n++)
+         {
+             enemies[n].draw();
+         }
+        }
+    function drawEnergies()        
+    {
+         for(var p=0;p < energies.length; p++)
+        {
+            energies[p].draw();
+        }
+    }
+
+    function redrawEnemies_Energies(){   
+    for(var n = 0 ; n < enemies.length; n++)
+    {
+            if (enemies[n].x + enemies[n].i > 2*center_x || enemies[n].y + enemies[n].j > 2*center_y || enemies[n].x + enemies[n].i < 0 ||enemies[n].y + enemies[n].j <0  )
+            {
+
+                angles[n] = (Math.random() * 2)*Math.PI;
+                speeds[n] = (Math.random() * 7)+7;
+                enemies[n] = new Enemy(angles[n],speeds[n]);
+                enemies[n].draw();
+            }             
+    }
+    for(var n = 0 ; n < energies.length; n++)
+    {
+            if ( energies[n].x + energies[n].i > 2*center_x || energies[n].y + energies[n].j > 2*center_y || energies[n].x + energies[n].i < 0 ||energies[n].y + energies[n].j <0  )
+            {
+                
+                angles[n] = (Math.random() * 2)*Math.PI;
+                speeds[n] = (Math.random() * 7)+4;
+                energies[n] = new Energy(angles[n],speeds[n]);
+                energies[n].draw();
+            }             
+    }
+    }
+
+
+    function coreCollision()
+    {
+        for(var k =0;k<enemies.length;k++)
+        {
+            var dist =  Math.sqrt(Math.pow(enemies[k].x+enemies[k].i - center_x, 2) + Math.pow(enemies[k].y+enemies[k].j - center_y,2))
+            if (dist < coreRadius+ ballRadius && dist > coreRadius+ballRadius-20)
+            {
+                enemies[k] = new Enemy((Math.random() * 2)*Math.PI,(Math.random() * 7)+4);
+                coreRadius -= 4
+                enemies[k].draw()
+            }
+        }
+        for(var k =0;k<energies.length;k++)
+        {
+            var dist =  Math.sqrt(Math.pow(energies[k].x+energies[k].i - center_x, 2) + Math.pow(energies[k].y+energies[k].j - center_y,2))
+            if (dist < coreRadius+ ballRadius && dist > coreRadius+ballRadius-20)
+            {
+                energies[k] = new Enemy((Math.random() * 2)*Math.PI,(Math.random() * 7)+4);
+                coreRadius += 2
+                energies[k].draw()
+                collided_count +=1
+            }
+        }
+    }
+
+
+    function arcCollision()
+    {
+        for(var k = 0; k < enemies.length; k++)
+        {
+            var dist =  Math.sqrt(Math.pow(enemies[k].x+enemies[k].i - center_x , 2) + Math.pow(enemies[k].y+enemies[k].j - center_y ,2))
+            newAngle = (Math.atan2((enemies[k].y+enemies[k].j - center_y ),(enemies[k].x+enemies[k].i - center_x )))          
+            if (newAngle <= midArcAngle+Math.PI/3 && newAngle > midArcAngle-Math.PI/3)
+            {
+            if (dist < ballRadius + 75 && dist > ballRadius + 65)
+            {
+                enemies[k] = new Enemy((Math.random() * 2)*Math.PI,(Math.random() * 7)+4);
+                enemies[k].draw();
+                collided_count +=1
+            }
+            }
+        }
+        for(var k = 0; k < energies.length; k++)
+        {
+            var dist =  Math.sqrt(Math.pow(energies[k].x+energies[k].i - center_x , 2) + Math.pow(energies[k].y+energies[k].j - center_y ,2))
+            newAngle = (Math.atan2((energies[k].y+energies[k].j - center_y ),(energies[k].x+energies[k].i - center_x )))          
+            if (newAngle < midArcAngle+Math.PI/3 && newAngle > midArcAngle-Math.PI/3)
+            {
+            if (dist < ballRadius + 75 && dist > ballRadius + 65){
+                energies[k] = new Enemy((Math.random() * 2)*Math.PI,(Math.random() * 7)+4);
+                enemies[k].draw();
+            }
+            }
+        }  
+    }
+    function GameOver(){
+        if (coreRadius <=4)
+        {
+            Quit = true
+            canvas.clear();
+            canvas.drawText(center_x-300, center_y, "Congratulations Your Score is " + score, fontSize = 50)
+        }
+    }
+
+    function display_score(x,y)
+    {   
+        score = collided_count*100;
+        canvas.drawText(x, y, "Score: " + score, fontSize = 30);
+
+    }
+
+    function main() 
+    {
+         center_x = 926.5;
+        center_y = 475.5;  
+        if(!Quit)
+        {
         canvas.clear();
-
+        document.addEventListener('mousemove', mouseControl);
+        gradientBackground();
+        core();
+        drawEnemy_circle();
+        shield();
+        drawEnemies();
+        drawEnergies();
+        redrawEnemies_Energies();
+        coreCollision();
+        arcCollision();
+        display_score(50,50);
+        GameOver();
+        }
+        else{
+            
+        }
     }
-
     // Override functions here; 
     canvas.mainFunction = main;
+    // canvas.setupFunction = setup;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
-
+    
 </script>

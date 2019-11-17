@@ -1,0 +1,26 @@
+﻿					Project Report
+
+Introduction:
+Our Project is a game based on javascript and html canvas,It is made with the help of the canvas file made by zense.
+
+Program Description:
+Its a fun game in which a nucleus is protected by an arc which can be controlled by the user using either the mouse pointer or the left and right keys on the keyboard.
+Absorbing  a red ball shrinks the nucleus while absorbing a green ball increases the size of the nucleus.
+
+Steps involved:
+1)It involves the use of functions and ctx for rendering a gradient.
+2)It also allows involves usage of classes and list of objects to render multiple enemies and energie balls.
+3)It has multiple functions which detects collisions between the balls ,the arc and the nucleus.
+
+Conclusion:
+It allowed us to get a deeper understanding of javascript and canvas , the time limit also showed us how to handle tough bu
+gs in the code and also allowed  us to take better decisions for the final Program.
+
+References:
+1.Zense Canvas : https://github.com/zense/Canvas-Competition
+2.HTML Canvas : https://www.w3schools.com/html/html5_canvas.asp
+
+Team Members:
+Team Name: Hack O’ Holics
+1)Gagan Agarwal(IMT2019031)
+2)Divyam Agrawal(IMT2019028)
