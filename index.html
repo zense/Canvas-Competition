@@ -1,7 +1,11 @@
 <html>
 
 <body onload="canvas.setup()">
-    <canvas id="canvasArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -9,6 +13,7 @@
 <script>
 
     // Declare all global variables here
+
     var cir1_x,cir1_y;  //center coordinates of circle 1
     var cir2_x,cir2_y;  //center coordinates of circle 2
     var ang1, ang2;
@@ -23,6 +28,7 @@
     var collision;
     var u1,u2;
     var cnt=0;
+
     // Declare custom functions here
     function setup()
     {
@@ -195,6 +201,7 @@
 
     }
 
+
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
@@ -279,10 +286,6 @@
 
     var timeStep = 50;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
