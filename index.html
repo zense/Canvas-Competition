@@ -15,19 +15,22 @@
     boundarray=[]
     rays=[]
     dummys=[]
-    vision=45;
+    vision=90;
+    v_multiplier=20;
+    angle_mul=20;
 
     function start() // intiallization person boundary ray
     {
         person1= new Person(50,canvas.height/2,20);
-        fin=new Finish(900,600,50,50);
+        fin=new Finish(850,600,325,150);
+
         bound1=new boundary(500,0,500,canvas.height/2,"leftV");
         bound1Back= new boundary(530,0,530,canvas.height/2,"rightV");
         bound1W1=new boundary(500,canvas.height/2,530,canvas.height/2,"upH");
 
-        bound2=new boundary(500,canvas.height,500,(canvas.height/2)+300,"leftV");
-        bound2Back= new boundary(530,canvas.height,530,canvas.height/2+300,"rightV");
-        bound2W1=new boundary(500,canvas.height/2+300,530,canvas.height/2+300,"upH");
+        bound2=new boundary(500,canvas.height,500,(canvas.height/2)+200,"leftV");
+        bound2Back= new boundary(530,canvas.height,530,canvas.height/2+200,"rightV");
+        bound2W1=new boundary(500,canvas.height/2+200,530,canvas.height/2+200,"upH");
 
         bound3=new boundary(800,canvas.height-100,800,150,"leftV");
         bound3Back= new boundary(830,canvas.height-100,830,200,"rightV");
@@ -36,6 +39,18 @@
         bound3Anex2= new boundary(1000,canvas.height-715,830,canvas.height-715,"upH");
         bound3End= new boundary(1000,canvas.height-715,1000,canvas.height-765,"upH");
 
+
+
+        bound4=new boundary(1200,canvas.height-100,1200,150,"leftV");
+        bound4Back= new boundary(1240,canvas.height-100,1240,150,"rightV");
+        bound4W1=new boundary(1240,canvas.height-100,1200,canvas.height-100,"upH");
+        bound4W2=new boundary(1240,150,1200,150,"upH");
+        bound4W3=new boundary(1200,canvas.height-100,830,canvas.height-100,"upH");
+        bound4W4=new boundary(1200,canvas.height-150,830,canvas.height-150,"upH");
+
+        bound5=new boundary(1400,0,1400,canvas.height/1.2,"leftV");
+        bound5Back= new boundary(1440,0,1440,canvas.height/1.2,"rightV");
+        bound5W1=new boundary(1400,canvas.height/1.2,1440,canvas.height/1.2,"upH");
         // bound4=new boundary(800,canvas.height-100,800,200,"leftV");
 
         boundRightBound=new boundary(canvas.width,0,canvas.width,canvas.height,"Bound");
@@ -43,9 +58,9 @@
         boundLeftBound=new boundary(0,0,0,canvas.height,"Bound");
         boundUpBound=new boundary(0,0,canvas.width,0,"Bound");
 
-        for(let i=0;i<vision;i+=0.5)
+        for(let i=0;i<v_multiplier* vision;i++)
         {
-            rays.push(new ray(person1,(i*Math.PI/180)));//4000 100
+            rays.push(new ray(person1,(i*Math.PI/(angle_mul*180))));//4000 100
         }
         // for(let i=0;i<360;i+=0.5)
         // {
@@ -317,13 +332,13 @@
     canvas.keyDownCallback=function(e){
 
         if(e.code=="KeyD"){
-            for(let i=0;i<2*vision;i++)
+            for(let i=0;i<v_multiplier*vision;i++)
            {
                rays[i].shift(0.05);
            }     
         }
         if(e.code=="KeyA"){
-            for(let i=0;i<2*vision;i++)
+            for(let i=0;i<v_multiplier *vision;i++)
            {
                rays[i].shift(-0.05);
            }     
@@ -355,18 +370,18 @@
     
     function render()
     {
-        disx=canvas.width/4;
-        disy=canvas.height/6;
+        disx=0;
+        disy=0;
         for(let i=distance.length;i>=0;i--)
         {
             //console.log(distance[i]);
             canvas.setDrawMode("fill");
-            var col=`rgb(${distance[i]*distance[i]/2000},${distance[i]*distance[i]/2000},${distance[i]*distance[i]/2000})`;
+            var col=`rgb(${distance[i]*distance[i]/8000},${distance[i]*distance[i]/8000},${distance[i]*distance[i]/8000})`;
             canvas.setColor(col);
             //console.log(col);
-            canvas.drawRectangle(disx, disy,10, (1/distance[i])*200000);
+            canvas.drawRectangle(disx, disy,2, (1/distance[i])*300000);
             
-            disx+=10;
+            disx+=2;
         }
         canvas.setDrawMode("stroke");
     }
@@ -382,7 +397,7 @@
         canvas.clear();
         person1.show();
         fin.check(person1);
-        fin.move(1);
+        //fin.move(1);
         console.log(fin.x);
         if(fin.x<=0){
             gameOver();
@@ -390,7 +405,7 @@
 
         for(i in boundarray){
             boundarray[i].show();
-            boundarray[i].move(1);
+            //boundarray[i].move(1);
         }
         if(person1.collide()){
             canvas.clear();
@@ -440,7 +455,7 @@
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 1;
     canvas.startMain(timeStep);
     
 </script>
