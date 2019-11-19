@@ -388,7 +388,6 @@
 
     function gameOver(){
         document.location.reload();
-        break;
     }
 
     // Function while will be called repeatedly 
@@ -402,6 +401,7 @@
         console.log(fin.x);
         if(fin.x<=0){
             gameOver();
+            return;
         }
 
         for(i in boundarray){
