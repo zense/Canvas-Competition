@@ -1,36 +1,462 @@
 <html>
-
-<body onload="canvas.setup()">
-
+<body onload="canvas.setup(),start()">
+    
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
+    <canvas id="canvasArea2" style=" position: absolute; left: 50%; top: 0; z-index: 0; width:50%;height:50%"></canvas>
+	<style>
+    body{
+    background-color: white;}</style>
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
+    boundarray=[]
+    rays=[]
+    dummys=[]
+    vision=90;
+    v_multiplier=20;
+    angle_mul=20;
+
+    function start() // intiallization person boundary ray
+    {
+        person1= new Person(50,canvas.height/2,20);
+        fin=new Finish(850,600,325,150);
+
+        bound1=new boundary(500,0,500,canvas.height/2,"leftV");
+        bound1Back= new boundary(530,0,530,canvas.height/2,"rightV");
+        bound1W1=new boundary(500,canvas.height/2,530,canvas.height/2,"upH");
+
+        bound2=new boundary(500,canvas.height,500,(canvas.height/2)+200,"leftV");
+        bound2Back= new boundary(530,canvas.height,530,canvas.height/2+200,"rightV");
+        bound2W1=new boundary(500,canvas.height/2+200,530,canvas.height/2+200,"upH");
+
+        bound3=new boundary(800,canvas.height-100,800,150,"leftV");
+        bound3Back= new boundary(830,canvas.height-100,830,200,"rightV");
+        bound3W1=new boundary(830,canvas.height-100,800,canvas.height-100,"upH");
+        bound3Anex1=new boundary(1000,canvas.height-765,800,canvas.height-765,"upH");
+        bound3Anex2= new boundary(1000,canvas.height-715,830,canvas.height-715,"upH");
+        bound3End= new boundary(1000,canvas.height-715,1000,canvas.height-765,"upH");
+
+
+
+        bound4=new boundary(1200,canvas.height-100,1200,150,"leftV");
+        bound4Back= new boundary(1240,canvas.height-100,1240,150,"rightV");
+        bound4W1=new boundary(1240,canvas.height-100,1200,canvas.height-100,"upH");
+        bound4W2=new boundary(1240,150,1200,150,"upH");
+        bound4W3=new boundary(1200,canvas.height-100,830,canvas.height-100,"upH");
+        bound4W4=new boundary(1200,canvas.height-150,830,canvas.height-150,"upH");
+
+        bound5=new boundary(1400,0,1400,canvas.height/1.2,"leftV");
+        bound5Back= new boundary(1440,0,1440,canvas.height/1.2,"rightV");
+        bound5W1=new boundary(1400,canvas.height/1.2,1440,canvas.height/1.2,"upH");
+        // bound4=new boundary(800,canvas.height-100,800,200,"leftV");
+
+        boundRightBound=new boundary(canvas.width,0,canvas.width,canvas.height,"Bound");
+        boundLowBound=new boundary(0,canvas.height,canvas.width,canvas.height,"Bound");
+        boundLeftBound=new boundary(0,0,0,canvas.height,"Bound");
+        boundUpBound=new boundary(0,0,canvas.width,0,"Bound");
+
+        for(let i=0;i<v_multiplier* vision;i++)
+        {
+            rays.push(new ray(person1,(i*Math.PI/(angle_mul*180))));//4000 100
+        }
+        // for(let i=0;i<360;i+=0.5)
+        // {
+        //     dummys.push(new DummyRay(person1,(i*Math.PI/180)));
+        // }
+    }
 
     // Declare all global variables here
     function setup() {
         // Initialize variables here
     }
 
+    class Finish{
+        constructor(x,y,w,h){
+            this.x=x;
+            this.y=y;
+            this.w=w;
+            this.h=h;
+            canvas.setDrawMode("stroke");
+            //canvas.drawRectangle(this.x,this.y,this.w,this.h);
+        }
+        check(person)
+        {   //canvas.drawRectangle(this.x,this.y,this.w,this.h);
+            if(person.x>this.x && person.x<this.x+this.w && person.y>this.y && person.y<this.y+this.h )
+            {
+                canvas.clear();
+                canvas.drawText(900, 600, "Level Cleared", fontSize = 30);
+            }
+        }
+        move(step){
+            this.x-=step;
+
+        }
+    }
+    class boundary{
+        constructor(x1,y1,x2,y2,orientation)
+        {
+            this.x1=x1;
+            this.y1=y1;
+            this.x2=x2;
+            this.y2=y2;
+            this.orientation=orientation; 
+            boundarray.push(this);
+        }
+        show()
+        {
+         //canvas.drawLine(this.x1,this.y1,this.x2,this.y2);
+        }
+
+        move(step){
+            if(this.orientation!="Bound"){
+                this.x1-=step;
+                this.x2-=step;
+            }
+        }
+    }
+
+
+    class Person{
+        constructor(x,y,r)
+        {
+            this.x=x;
+            this.y=y;
+            this.radius=r;
+            this.prevX
+
+        }
+        show()
+        {
+            canvas.setDrawMode("fill");
+            canvas.setColor("black");
+            //canvas.drawCircle(this.x,this.y,this.radius);
+            canvas.setDrawMode("stroke");
+        }
+        move_x_front()
+        {
+            this.x+=10;
+           
+        }
+        move_y_front()
+        {
+            this.y+=10;
+        }
+        move_x_back()
+        {
+            this.x-=10;
+           
+        }
+        move_y_back()
+        {
+            this.y-=10;
+        }
+
+        collide()
+        {
+            for(i in distance){
+                if(this.radius>=distance[i]){
+                    //alert("Game Over");
+                    //document.location.reload();
+                       return true      
+                    // // alert("boi u fucced");
+                    // var orient= rays[i].boundOrient;
+                    // console.log(orient)
+                    // if(orient=="leftV"){
+                    //     this.move_x_back();
+                    // }
+                    // else if(orient=="rightV"){
+                    //     this.move_x_front();
+                    // }
+                    // else if(orient=="downH"){
+                    //     this.move_y_back();
+                    // }
+                    // else if(orient=="upH"){
+                    //     this.move_y_front();
+                    // }
+
+                }
+
+            }
+
+            return false
+        }
+
+
+    }
+    distance=[];
+
+    // class DummyRay{
+    //     constructor(person,angle)
+    //     {
+    //         this.x1=person.x;
+    //         this.y1=person.y;
+    //         this.x2=person.x+100*Math.sin(angle);
+    //         this.y2=person.y+100*Math.cos(angle);
+    //         this.angle=angle;
+
+    //     }
+    //     show(person)
+    //     {
+    //         this.x1=person.x;
+    //         this.y1=person.y;
+    //         this.x2=person.x+100*Math.sin(this.angle);
+    //         this.y2=person.y+100*Math.cos(this.angle);
+    //         canvas.drawLine(this.x1,this.y1,this.x2,this.y2);
+    //     }
+    //     cast(boun)
+    //     {
+    //      const x1 = boun.x1;
+    //      const y1 = boun.y1;
+    //      const x2 = boun.x2;
+    //      const y2 = boun.y2;
+  
+    //      const x3 = this.x1;
+    //      const y3 = this.y1;
+    //      const x4 = this.x2;
+    //      const y4 = this.y2;
+
+    //      const den = (x1-x2)*(y3-y4) -(y1-y2)*(x3-x4);
+
+    //      if(den==0)
+    //      {
+    //          return ;
+    //      }
+    //      const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/den;
+    //      const u=-((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/den;
+    //      if(t>0 && t<1 && u>0)
+    //         {
+    //             const pt={
+    //                 x:x1 + t* (x2-x1),
+    //                 y:y1 + t* (y2-y1)
+    //             };
+    
+    //             return pt;
+    //         }
+    //         else{
+    //             return ;
+    //         }
+    //     }
+    //     dist(pt,j,bound)
+    //     {
+    //         this.boundOrient=bound.orientation;
+    //         //console.log(bound.orientation);
+    //         var a = this.x1 - pt.x;
+    //         var b = this.y1 - pt.y;
+    //         //console.log("a",a,"b",b);
+
+    //         // distance[j] = Math.sqrt( a*a + b*b );
+    //         return Math.sqrt( a*a + b*b );
+    //     }
+    //     shift(rad)
+    //     {
+    //         //console.log(this.x2,this.y2);
+    //         this.x2=this.x1+100*Math.sin((this.angle+rad));
+    //         this.y2=this.y1+100*Math.cos((this.angle+rad));
+    //         //console.log(this.x2,this.y2);
+    //         this.angle=this.angle+rad;
+    //     }
+    // }
+
+
+    class ray{
+        constructor(person,angle)
+        {
+            this.x1=person.x;
+            this.y1=person.y;
+            this.x2=person.x+100*Math.sin(angle);
+            this.y2=person.y+100*Math.cos(angle);
+            this.angle=angle;
+
+        }
+        show(person)
+        {
+            this.x1=person.x;
+            this.y1=person.y;
+            this.x2=person.x+100*Math.sin(this.angle);
+            this.y2=person.y+100*Math.cos(this.angle);
+            //canvas.drawLine(this.x1,this.y1,this.x2,this.y2);
+        }
+        cast(boun)
+        {
+         const x1 = boun.x1;
+         const y1 = boun.y1;
+         const x2 = boun.x2;
+         const y2 = boun.y2;
+  
+         const x3 = this.x1;
+         const y3 = this.y1;
+         const x4 = this.x2;
+         const y4 = this.y2;
+
+         const den = (x1-x2)*(y3-y4) -(y1-y2)*(x3-x4);
+
+         if(den==0)
+         {
+             return ;
+         }
+         const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/den;
+         const u=-((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/den;
+         if(t>0 && t<1 && u>0)
+            {
+                const pt={
+                    x:x1 + t* (x2-x1),
+                    y:y1 + t* (y2-y1)
+                };
+    
+                return pt;
+            }
+            else{
+                return ;
+            }
+        }
+        dist(pt,j,bound)
+        {
+            this.boundOrient=bound.orientation;
+            //console.log(bound.orientation);
+            var a = this.x1 - pt.x;
+            var b = this.y1 - pt.y;
+            //console.log("a",a,"b",b);
+
+            // distance[j] = Math.sqrt( a*a + b*b );
+            return Math.sqrt( a*a + b*b );
+        }
+        shift(rad)
+        {
+            //console.log(this.x2,this.y2);
+            this.x2=this.x1+100*Math.sin((this.angle+rad));
+            this.y2=this.y1+100*Math.cos((this.angle+rad));
+            //console.log(this.x2,this.y2);
+            this.angle=this.angle+rad;
+        }
+    }
+    canvas.keyDownCallback=function(e){
+
+        if(e.code=="KeyD"){
+            for(let i=0;i<v_multiplier*vision;i++)
+           {
+               rays[i].shift(0.05);
+           }     
+        }
+        if(e.code=="KeyA"){
+            for(let i=0;i<v_multiplier *vision;i++)
+           {
+               rays[i].shift(-0.05);
+           }     
+        }
+           if(e.code=="ArrowUp"){
+               
+               person1.move_x_front();
+           
+          }
+          if(e.code=="ArrowDown"){
+               
+               person1.move_x_back();
+           
+          }
+          if(e.code=="ArrowLeft"){
+               
+               person1.move_y_back();
+           
+          }
+          if(e.code=="ArrowRight"){
+               
+               person1.move_y_front();
+           
+          }
+}
+   
+
     // Declare custom functions here
+    
+    function render()
+    {
+        disx=0;
+        disy=0;
+        for(let i=distance.length;i>=0;i--)
+        {
+            //console.log(distance[i]);
+            canvas.setDrawMode("fill");
+            var col=`rgb(${distance[i]*distance[i]/8000},${distance[i]*distance[i]/8000},${distance[i]*distance[i]/8000})`;
+            canvas.setColor(col);
+            //console.log(col);
+            canvas.drawRectangle(disx, disy,2, (1/distance[i])*300000);
+            
+            disx+=2;
+        }
+        canvas.setDrawMode("stroke");
+    }
+
+    function gameOver(){
+        document.location.reload();
+    }
 
 
     // Function while will be called repeatedly 
+
+
     function main() {
         canvas.clear();
+        person1.show();
+        fin.check(person1);
+        fin.move(1);
+        console.log(fin.x);
+        if(fin.x<=0){
+            gameOver();
+            return;
+        }
 
+        for(i in boundarray){
+            boundarray[i].show();
+            boundarray[i].move(1);
+        }
+        if(person1.collide()){
+            canvas.clear();
+            canvas.drawText(900, 600, "Game Over", fontSize = 30);
+            setTimeout(gameOver,3000);
+            return;
+
+        }
+        
+            
+           for(j in rays) //let j=0;j<2*vision;j++
+           {
+
+               min=1000000;
+               rays[j].show(person1);
+               for(i in boundarray){
+                   let pt=rays[j].cast(boundarray[i]);
+                   if(pt)
+                   {
+                    //canvas.drawCircle(pt.x, pt.y, 10);
+                    let dist=rays[j].dist(pt,j,boundarray[i]);
+                    if(dist<min){
+                        min=dist;
+                    }
+
+                    
+                   }
+                   // let pt2=rays[j].cast(boundHor);
+                   // if(pt2)
+                   // {
+                   //  canvas.drawCircle(pt2.x, pt2.y, 10);
+                   //  rays[j].dist(pt2,j);
+                    
+                   // }
+
+                }
+                distance[j]=min;
+
+
+           }
+           render();
     }
+
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 1;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
-
 </script>
