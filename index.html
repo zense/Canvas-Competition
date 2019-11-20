@@ -11,26 +11,234 @@
 
 </html>
 <script>
+    var striker_x ;
+    var striker_y ;
+    var coin_x ;
+    var coin_y ;
+    var p ;
+    var q ;
+    var x1 ;
+    var y1 ;
+    var x2 ;
+    var y2 ;
+    var m_striker ;
+    var m_coin ; 
+    var d ;
+    var e ;
+    var a ;
+    var b ; 
+
 
     // Declare all global variables here
-    function setup() {
+    function setup() 
+    {
+        striker_x = canvas.width*0.50
+        striker_y = canvas.height*0.82
+        coin_x = canvas.width*0.50
+        coin_y = canvas.height*0.50
+        m_coin = 1
+        m_striker = 2 
+        p = 0 ;
+        q = 0 ;
+        a = 0 ;
+        b = 0 ;
+        e = 0.5 ;
         // Initialize variables here
     }
 
-    // Declare custom functions here
+    function striker_draw()
+    {
+        canvas.setColor("rgb(255,99,71)")
+        canvas.drawCircle(striker_x, striker_y, canvas.height*0.04)
+        canvas.setColor("rgb(0,0,0)")
+        canvas.drawCircle(striker_x, striker_y, canvas.height*0.03)
+    }
 
+    function coins_draw()
+    {
+        canvas.setColor("rgb(255,248,220)")
+        canvas.drawCircle(coin_x, coin_y, canvas.height*0.03)
+    }
 
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+    
+    function update_striker()
+    {
+        striker_x = striker_x - p ;
+        striker_y = striker_y - q ;
+
+        if(striker_x - canvas.height*0.03 >= canvas.width*0.1 && striker_x -canvas.height*0.03 - p <= canvas.width*0.1)
+        {
+            p = -0.6*p ; 
+        }
+
+        else if(striker_x + canvas.height*0.03 <= canvas.width*0.9 && striker_x + canvas.height*0.03 -p >= canvas.width*0.9)
+        {
+              p = -0.6*p ;
+        }
+        else if(striker_y + canvas.height*0.03<= canvas.height*0.9 && striker_y + canvas.height*0.03 - q >= canvas.height*0.9)
+        {
+            q =- 0.6*q ;
+        }
+        else if(striker_y - canvas.height*0.03 >= canvas.height*0.1 && striker_y -canvas.height*0.03 - q <= canvas.height*0.1)
+        {
+            q = -0.6*q ;
+        }      
 
     }
 
+    function move_coin()
+    {
+        coin_x = coin_x - a ;
+        coin_y = coin_y - b ;
+
+        if(coin_x - canvas.height*0.04 >= canvas.width*0.1 && coin_x -canvas.height*0.04 - a <= canvas.width*0.1)
+        {
+            a = -0.6*a ; 
+        }
+
+        else if(coin_x + canvas.height*0.04 <= canvas.width*0.9 && coin_x + canvas.height*0.04 -a >= canvas.width*0.9)
+        {
+            a = -0.6*a ;
+        }
+        else if(coin_y + canvas.height*0.04 <= canvas.height*0.9 && coin_y + canvas.height*0.04 - b >= canvas.height*0.9)
+        {
+            b =- 0.6*b ;
+        }
+        else if(coin_y - canvas.height*0.04 >= canvas.height*0.1 && coin_y - canvas.height*0.04 - b <= canvas.height*0.1)
+        {
+            b = -0.6*b ;
+        }      
+ 
+    }
+
+    function striker_reset()
+    {
+        striker_x = canvas.width*0.50 ; 
+        striker_y = canvas.height*0.82 ;
+        p = 0 ;
+        q = 0 ;
+    }
+
+    function striker_inside_pocket()
+    {
+        if (((striker_x -canvas.width*0.15)*(striker_x -canvas.width*0.15) + (striker_y - canvas.height*0.15)*(striker_y - canvas.height*0.15 ) + 10 <= (canvas.height*0.05- canvas.height*0.04)*(canvas.height*0.05- canvas.height*0.04) || (striker_x - canvas.width*0.85)*(striker_x -canvas.width*0.85) + (striker_y - canvas.height*0.15)*(striker_y - canvas.height*0.15 ) + 10<= (canvas.height*0.05- canvas.height*0.04)*(canvas.height*0.05- canvas.height*0.04) || (striker_x -canvas.width*0.15)*(striker_x -canvas.width*0.15) + (striker_y - canvas.height*0.85)*(striker_y - canvas.height*0.85 ) +10 <= (canvas.height*0.05- canvas.height*0.04)*(canvas.height*0.05- canvas.height*0.04) || (striker_x -canvas.width*0.85)*(striker_x -canvas.width*0.85) + (striker_y - canvas.height*0.85)*(striker_y - canvas.height*0.85 ) +10 <= (canvas.height*0.05- canvas.height*0.04)*(canvas.height*0.05- canvas.height*0.04)))
+        {
+            striker_reset() ;
+            coin_reset() ;
+        }
+    }
+
+    function coin_reset()
+    {
+        coin_x = canvas.width*0.50 ;
+        coin_y = canvas.height*0.50 ;
+        a = 0 ;
+        b = 0 ;
+    }
+
+    function coin_inside_pocket()
+    {
+        if(((coin_x -canvas.width*0.15)*(coin_x -canvas.width*0.15) + (coin_y - canvas.height*0.15)*(coin_y - canvas.height*0.15 ) + 10 <= (canvas.height*0.05- canvas.height*0.03)*(canvas.height*0.05- canvas.height*0.03) || (coin_x - canvas.width*0.85)*(coin_x -canvas.width*0.85) + (coin_y - canvas.height*0.15)*(coin_y - canvas.height*0.15 ) + 10<= (canvas.height*0.05- canvas.height*0.03)*(canvas.height*0.05- canvas.height*0.03) || (coin_x -canvas.width*0.15)*(coin_x -canvas.width*0.15) + (coin_y - canvas.height*0.85)*(coin_y - canvas.height*0.85 ) +10 <= (canvas.height*0.05- canvas.height*0.03)*(canvas.height*0.05- canvas.height*0.04) || (coin_x -canvas.width*0.85)*(coin_x -canvas.width*0.85) + (coin_y - canvas.height*0.85)*(coin_y - canvas.height*0.85 ) +10 <= (canvas.height*0.05- canvas.height*0.03)*(canvas.height*0.05- canvas.height*0.03)))
+        {
+            coin_reset(); 
+            striker_reset() ;
+        }
+
+    }
+
+    function striker_coin_collision()
+    {
+        console.log("a");
+        if(((striker_x - coin_x)*(striker_x - coin_x) + (striker_y - coin_y)*(striker_y - coin_y)) <= ((canvas.height*0.04 + canvas.height*0.03)*(canvas.height*0.04 + canvas.height*0.03)))
+        {
+     
+            console.log("a");
+            striker_x = striker_x + 0.1*(striker_x/6 + (striker_x*Math.pow((0.1*b - striker_y),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) - (striker_y*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) + (0.1*a*Math.pow((striker_x - 0.1*a),2)/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) + (0.1*b*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6)))
+
+            striker_y = striker_y + 0.1*(striker_y/6 +(striker_y*Math.pow((0.1*a - striker_x),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) - (striker_x*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) + (0.1*a*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6) + (b*Math.pow((0.1*b - striker_y),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*6))
+
+            b = b + 0.1*b/3 + 0.1*((0.1*b*Math.pow((0.1*a - striker_x),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) - (0.1*a*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) + (striker_y*Math.pow((0.1*b - striker_y),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) + (striker_x*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3))
+
+            a = a + 0.1*a/3 + 0.1*((0.1*a*Math.pow((0.1*b - striker_y),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) - (0.1*b*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) + (striker_y*(striker_x - 0.1*a)*(striker_y - 0.1*b))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3) + (striker_x*Math.pow((0.1*a - striker_x),2))/((Math.pow((striker_x - 0.1*a),2) + Math.pow((striker_y - 0.1*b),2))*3))
+        }
+    }
+      
+
+    function draw_board()
+    {
+        canvas.setDrawMode("fill") 
+        canvas.setColor("rgb(222,184,135)")
+        canvas.drawRectangle(0 , 0 , canvas.width, canvas.height)
+        
+        canvas.setColor("rgb(47,79,79)")
+        canvas.drawCircle(canvas.width*0.15, canvas.height*0.15 ,canvas.height*0.05)
+        canvas.drawCircle(canvas.width*0.85, canvas.height*0.15 ,canvas.height*0.05)
+        canvas.drawCircle(canvas.width*0.15, canvas.height*0.85,canvas.height*0.05)
+        canvas.drawCircle(canvas.width*0.85, canvas.height*0.85,canvas.height*0.05)
+
+        canvas.setColor("rgb(139,69,19)")
+        canvas.drawRectangle(canvas.width*0.2, canvas.height*0.15 , canvas.width*0.6, canvas.height*0.05)
+        canvas.drawRectangle(canvas.width*0.15, canvas.height*0.2 , canvas.width*0.05, canvas.height*0.6)
+        canvas.drawRectangle(canvas.width*0.2, canvas.height*0.8 , canvas.width*0.6, canvas.height*0.05)
+        canvas.drawRectangle(canvas.width*0.8, canvas.height*0.2 , canvas.width*0.05, canvas.height*0.6)
+        
+        canvas.setDrawMode("stroke")
+
+        canvas.setColor("rgb(0,0,0)")
+        canvas.setLineThickness(5)
+        canvas.drawRectangle(canvas.width*0.1, canvas.height*0.1 ,canvas.width*0.8, canvas.height*0.8)
+
+        canvas.setLineThickness(1)
+        
+        canvas.drawCircle(canvas.width*0.50, canvas.height*0.50,canvas.height*0.15)
+
+        canvas.setDrawMode("fill")
+        canvas.setColor("rgb(128,128,0)")
+        canvas.drawCircle(canvas.width*0.50, canvas.height*0.50,canvas.height*0.05)
+    }
+
+    canvas.mouseDownCallback = function()
+    {
+        x1 = canvas.mouseX ;
+        y1 = canvas.mouseY ;
+        canvas.setDrawMode("stroke");
+      
+    } 
+
+    canvas.mouseUpCallback = function()
+    {
+        x2 = canvas.mouseX ;
+        y2 = canvas.mouseY ;
+
+        d = (Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)))*0.1 ;
+        p = (x2-x1)*0.1 ;
+        q = (y2-y1)*0.1 ;
+    }
+
+    // Declare custom functions here
+    // Function while will be called repeatedly 
+    function main() 
+    {
+        canvas.clear();
+        draw_board();
+        striker_draw();
+        coins_draw();
+        update_striker();
+        striker_inside_pocket(); 
+        if(canvas.mouseDown)
+        {
+            canvas.drawLine(x1, y1, -canvas.mouseX , -canvas.mouseY) ;
+        }
+        move_coin() ;
+        striker_coin_collision();
+        coin_inside_pocket() ;
+        
+    }
+
+    
     // Override functions here; 
     canvas.mainFunction = main;
-
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
-
 </script>
