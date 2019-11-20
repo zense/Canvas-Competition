@@ -11,26 +11,100 @@
 
 </html>
 <script>
-
     // Declare all global variables here
     function setup() {
         // Initialize variables here
+        h=canvas.height;
+        w=canvas.width;
+        x=50;
+        y=h/2;
+        x1=[0,100,200,500,700,1200,1500,0,150,400,600,800,900,1125,1200,1400,1600,1800];
+        y1=[h,h,h,h,h,h,h,0,0,0,0,0,0,0,0,0,0,0];
+        x2=[50,150,250,550,800,1350,1600,50,250,450,650,850,950,1150,1300,1450,1700,1850];
+        y2=[3*h/4,h/2+50,h/2+50,h/2+150,h/2+100,h/2+200,h/2,h/4,h/4+100,h-300,h/2,h/2-50,h/2,h/2+100,h/2-200,h/2,h/2-100,h/2-200];
+        x3=[100,200,300,600,900,1450,1700,100,300,500,700,900,1050,1200,1400,1500,1800,1900];
+        y3=[h,h,h,h,h,h,h,0,0,0,0,0,0,0,0,0,0,0];
+            }
+    // Declare custom functions here
+    function TriangleUpper(x,y,x1,y1,x2,y2,x3,y3)    {
+        canvas.setColor("Black");
+        canvas.ctx.beginPath();
+        canvas.ctx.moveTo(x1,y1);
+        canvas.ctx.lineTo(x2,y2);
+        canvas.ctx.lineTo(x3,y3);
+        canvas.ctx.fill();
+        m=(y2-y1)/(x2-x1);
+        c=(y2*(x2-x1)-x2*(y2-y1))/(x2-x1);
+        d=Math.abs((y-m*x-c)/Math.sqrt(1+m*m));
+        if(d<=10 && y<=y2)   {
+            return 1;
+        }
+        else    {
+            return 0;
+        }
+    }
+    function TriangleLower(x,y,x1,y1,x2,y2,x3,y3)    {
+        canvas.setColor("Black");
+        canvas.ctx.beginPath();
+        canvas.ctx.moveTo(x1,y1);
+        canvas.ctx.lineTo(x2,y2);
+        canvas.ctx.lineTo(x3,y3);
+        canvas.ctx.fill();
+        m=(y2-y1)/(x2-x1);
+        c=(y2*(x2-x1)-x2*(y2-y1))/(x2-x1);
+        d=Math.abs((y-m*x-c)/Math.sqrt(1+m*m));
+        if(d<=10 && y>=y2)   {
+            return 1;
+        }
+        else    {
+            return 0;
+        }
+    }
     }
 
     // Declare custom functions here
 
 
     // Function while will be called repeatedly 
+    
     function main() {
         canvas.clear();
 
-    }
+        canvas.setColor("Yellow");
+        canvas.drawCircle(x,y,10);
+        canvas.ctx.fill();
+        x+=1;
+        if(canvas.isKeyDown("KeyW")==true)  {
+            y-=1;
+        }
+        if(canvas.isKeyDown("KeyS")==true)  {
+            y+=1;
+        }
+   
+        for(var i=0; i<7;i++)  {
+            if(TriangleLower(x,y,x1[i],y1[i],x2[i],y2[i],x3[i],y3[i]))  {
+                canvas.clear();
+                alert("      GAME OVER\nPress CTRL+R to Restart");
+            }
+        }
+        for(var i=7; i<18;i++)  {
+            if(TriangleUpper(x,y,x1[i],y1[i],x2[i],y2[i],x3[i],y3[i]))  {
+                canvas.clear();
+                alert("      GAME OVER\nPress CTRL+R to Restart");
+            }
+        }  
+        if(x>w)  {
+            canvas.clear();
+            canvas.drawText(w/3,h/2,"YOU WON THE GAME!!!",fontSize = 50);
+        }          
 
+    }
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 10;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+</script>
 
 </script>
+
