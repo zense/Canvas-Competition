@@ -162,6 +162,13 @@ canvas.drawRectangle = function(x, y, width, height) {
 
 //Draws Ellipse 
 canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
+    var temp = 0;
+    if(radiusY > radiusX){
+        temp = radiusX;
+        radiusX = radiusY;
+        radiusY = temp;
+    }
+    
     endAngle = (endAngle/180.0)*Math.PI;
     this.ctx.beginPath();
     this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
@@ -238,7 +245,7 @@ canvas.startListeners = function () {
 
 // Checks if keyboard key is pressed. Example KeyA for A. 
 canvas.isKeyDown = function(key) {
-    return keysDown[key] == true;
+    return this.keysDown[key] == true;
 }
 
 

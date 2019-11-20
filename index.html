@@ -1,12 +1,13 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 	<link rel = "stylesheet" type = "text/css" href="style.css">
 	<script src="./canvas.js"></script>
 	<script src="./additional.js"></script>
+
 </body>
 </html>
 <script>
@@ -67,7 +68,6 @@
         {   
             j-=15;   
 		}
-
         		if(e.code=="Enter")
         		{   
 					h = 1;	
@@ -200,6 +200,3 @@
     canvas.startMain(timeStep);
     
 </script>
-
-
-
