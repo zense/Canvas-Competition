@@ -60,10 +60,16 @@
             return 0;
         }
     }
+    }
+
+    // Declare custom functions here
+
+
     // Function while will be called repeatedly 
     
     function main() {
         canvas.clear();
+
         canvas.setColor("Yellow");
         canvas.drawCircle(x,y,10);
         canvas.ctx.fill();
@@ -91,6 +97,7 @@
             canvas.clear();
             canvas.drawText(w/3,h/2,"YOU WON THE GAME!!!",fontSize = 50);
         }          
+
     }
     // Override functions here; 
     canvas.mainFunction = main;
@@ -98,3 +105,6 @@
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 </script>
+
+</script>
+
