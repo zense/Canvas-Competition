@@ -1,36 +1,152 @@
 <html>
 
 <body onload="canvas.setup()">
-
+    
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
+	const constants={
+		metre:10,
+		timeStep:5,
+		g:9.8,
+		e:0.9
+	}
 
+	var globalList={
+		balls:[]
+	}
+
+	class ball{
+		constructor(x1=0,y1=0,mass=3.0){
+			this.vx=0;
+			this.vy=2;
+			this.x1=x1;
+			this.y1=y1;
+		
+			globalList.balls.push(this);
+		}
+		move(t){
+			var r=Math.sqrt((this.x1-x)*(this.x1-x)+(this.y1-y)*(this.y1-y));
+			console.log(this.y1-y/10);
+			let comp = this.y1 - (y/10);
+			if(comp > 0.0 && comp < 0.5){
+				console.log("Entered");
+				if((this.x1-(x/10))<0){
+				console.log("1");
+				this.vx=r/100;}
+				else if((this.x1-(x/10))>0){
+					console.log("2");
+					this.vx=-r/10;
+				}
+		//		else{
+		//			vx=0;
+		//		}
+			}
+			if(this.y1*constants.metre < 3*(canvas.height/4)){
+			this.vx=this.vx;
+			this.vy=this.vy+constants.g*t;
+			this.x1+=this.vx*t;
+			this.y1+=this.vy*t+(constants.g*t*t)/2;}
+
+			else if(this.y1*constants.metre > 3*(canvas.height/4)) {
+				this.vx=this.vx;
+                        	this.vy=constants.e*(-this.vy)+constants.g*t;
+                                this.x1+=this.vx*t;
+				this.y1-=((-this.vy)*t-(constants.g*t*t)/2);}
+//			else{
+//				this.vx=this.vx;
+//				this.vy=this.vy;
+//				this.y=this.y;
+//			}
+		}
+
+	render() {
+		var x1=constants.metre*this.x1;
+		var y1=constants.metre*this.y1;
+		var r=canvas.height/20;
+			canvas.drawCircle(x1,y1,r);
+	}
+		follow(){
+			this.x1=canvas.mouseX/constants.metre;
+			this.y1=canvas.mouseY/constants.metre;
+		}
+	}
+
+	function basic() {
+		ball=new ball(canvas.width/20,0);
+	}
+	
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
+	var x;
+	var y;
+	var a;
+	var b;
+	var sa;
+	var ea;
+	var angle;
+
+
 
     // Declare custom functions here
+	function setup(){
+	x=canvas.width/2;
+        y=4*(canvas.height/5);
+        a=canvas.width/3;
+        b=canvas.height/20;
+        sa=Math.PI*0;
+        ea=Math.PI*2;
+        angle=0;
+	width=canvas.width/2;
+	height=canvas.height/20;
+	basic();
+	}
 
-
+	var check1=0;
+	var check2=0;
+    canvas.keyDownCallback = function(e){
+	    if(e.code === "Space"){
+		    globalList.balls[0].vx=10;
+		    check2=1;
+	    }
+    }
+    
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
+	    canvas.clear();
+	    
+	    canvas.drawEllipse(x,y,a,b,angle,sa,ea);
+	   if(check1===0){
+	    for(var i=0;i<globalList.balls.length;i++)
+                    globalList.balls[i].follow();
+	    for(var i=0;i<globalList.balls.length;i++)
+	       	    globalList.balls[i].render();
+		if(check2===1){
+			console.log("space");
+			check1=1;
+		}
+	    }
 
+	if(check1===1){
+	    for(var i=0;i<globalList.balls.length;i++)
+	            globalList.balls[i].move(constants.timeStep/1000);
+	    for(var i=0;i<globalList.balls.length;i++)
+		    globalList.balls[i].render();
+	}
     }
 
-    // Override functions here; 
+		// Override functions here; 
     canvas.mainFunction = main;
+    canvas.setupFunction=setup;
+    canvas.startMain(constants.timeStep);
 
-    var timeStep = 50;
-    canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
 
+    
 </script>
+
+
+
