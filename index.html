@@ -11,26 +11,105 @@
 
 </html>
 <script>
-
+    var player_pos_x;
+    var player_pos_y;
+    var obs_v_x=80;
+    var obs_v_y=-50;
+    var obs_pos_x;
+    var obs_pos_y;
+    var score=0;
+    var gameOver=false;
     // Declare all global variables here
     function setup() {
-        // Initialize variables here
+                player_pos_x=10;
+                player_pos_y=canvas.height/2; 
+                obs_pos_y=canvas.height/2; 
+                obs_pos_x=canvas.width/2;                                                                           // Initialize variables here
     }
 
     // Declare custom functions here
+    canvas.keyDownCallback=function(e){
+       //console.log("hi")
+        if(e.code==="ArrowUp")
+        {
+            player_pos_y-=0.01*canvas.width;
+            if(player_pos_y<=0)
+            {
+                player_pos_y=10;
+            }
+        }
+        else if(e.code==="ArrowDown")
+        {
+            player_pos_y+=0.01*canvas.width;
+            if(player_pos_y+canvas.height*0.2>=canvas.height)
+            {
+                player_pos_y=canvas.height*0.8;
+            }
+        }
+        else if(e.code==="KeyR")
+        {
+            location.reload();
+        }
+    }
+    function ball(){
+        if(obs_pos_y-20<=0){
+            obs_v_y *=-1;
+            obs_pos_y+=obs_v_y;
+        }
+        if(obs_pos_x+20>=canvas.width){
+            obs_v_x=-obs_v_x;
+            obs_pos_x+=obs_v_x;
+        }
+        if(obs_pos_y+20>=canvas.height){
+            obs_v_y=-obs_v_y;
+            obs_pos_y+=obs_v_y;
+        }
+        if(obs_pos_x+20<=canvas.width*0.045 && obs_pos_y>=player_pos_y && obs_pos_y<=player_pos_y+canvas.height*0.2){
+            obs_v_x=-obs_v_x;
+            obs_pos_x+=obs_v_x;
+        }
+        if(obs_pos_x<0){
+            canvas.clear();
+            canvas.drawRectangle(canvas.width/4,canvas.height/4,canvas.width*0.4,canvas.height*0.2);
+            var txt="GAME OVER:"+score+"  TRY AGAIN TO PRESS R"
+            canvas.drawText(canvas.width/4,canvas.height/4,txt, 30)
+            gameOver=true;
+            
 
+        }
+    }
+    function draw_rect(){
+        canvas.setDrawMode("fill");
+        canvas.setColor("rgb(71,209,73)");
+        canvas.drawRectangle(10,player_pos_y,canvas.width*0.02,canvas.height*0.2);
+    }
+    function draw_circle(){
+        canvas.setDrawMode("fill");
+        canvas.setColor("rgb(12,34,123)");
+        canvas.drawCircle(obs_pos_x,obs_pos_y,20);
+    }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-
+        var txt="Score:"+score;
+        canvas.drawText(canvas.width/3,40,txt, 20);
+        draw_rect();
+        ball();
+        draw_circle();
+        obs_pos_x += obs_v_x;
+        obs_pos_y += obs_v_y;
+        ball();
+        if(!gameOver){
+        score++;
+        }
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
-
+    canvas.setupFunction=setup;
+    
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
 
 </script>
