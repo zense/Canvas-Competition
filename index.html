@@ -3,34 +3,200 @@
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	<link rel = "stylesheet" type = "text/css" href="style.css">
+	<script src="./canvas.js"></script>
+	<script src="./additional.js"></script>
 
-    <script src="./canvas.js"></script>
 </body>
-
 </html>
 <script>
-
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
-
-    // Declare custom functions here
-
-
+	var h = 0;
+	var barh=3;
+	var barv=80;
+	var scoreA = 0;
+	var scoreB = 0;
+	var rBall= 10;
+	var speed= 5;
+	var c =0;
+	var c1=0;
+	// Declare custom functions here
+	function drawPlayers(x,y){
+		if(y<670-barv && y>270){
+			canvas.drawRectangle(x, y, barh,barv)
+		}
+		else if(y==670-barv){
+			canvas.drawRectangle(x, 670-barv, barh,barv)
+		}
+		else if(y==270){
+			canvas.drawRectangle(x, 270, barh,barv)
+		}
+		else if(y<270){
+			canvas.drawRectangle(x, 270, barh,barv)
+			if(x==630){
+				i+=15}
+			if(x==1220){
+				j+=15}
+		}
+		else if(y>670-barv){
+			canvas.drawRectangle(x, 670-barv, barh,barv)
+			if(x==630){
+				i-=15}
+			if(x==1220){
+				j-=15}
+		}
+	}	
+	i=0;
+	j=0;
+	m = 0;
+	d = 0;x=5;y=5;
+    canvas.keyDownCallback=function(e)
+    {
+        if(e.code=="KeyS" )
+        {   
+            i+=15;
+        }
+       	if(e.code=="KeyW")
+        {   
+            i-=15;   
+		}
+		if(e.code=="ArrowDown")
+        {   
+            j+=15;
+		}
+		if(e.code=="ArrowUp")
+        {   
+            j-=15;   
+		}
+        		if(e.code=="Enter")
+        		{   
+					h = 1;	
+            		// break;
+        		}
+	}
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
 
-    }
+	if(h==0)
+	{
+		canvas.setColor("white");
+		canvas.drawText(605, 450 ,"Press Enter to start the game", fontSize = 50)
+	}
+		if(h==1){
+		if(c>0){
+			c-=0.5;
+			canvas.clear()
+			canvas.drawRectangle(575, 270, 700, 400)
+			canvas.drawRectangle(525, 385, 50, 170)
+			canvas.drawRectangle(1275, 385, 50, 170)
+			drawPlayers(630,470+i)
+			drawPlayers(1220,470+j)
+			if(c==0.5)
+			{
+				scoreB+=1;
+				m=0;d=0;
+			}
+			return;
+		}
+		if(c1>0){
+			c1-=0.5;
+			canvas.clear()
+			canvas.drawRectangle(575, 270, 700, 400)
+			canvas.drawRectangle(525, 385, 50, 170)
+			canvas.drawRectangle(1275, 385, 50, 170)
+			drawPlayers(630,470+i)
+			drawPlayers(1220,470+j)
+			if(c1==0.5)
+			{
+				scoreA+=1;
+				m=0;d=0;
+			}
+			return;
+		}
+		if(scoreA>=5 || scoreB>=5)
+		{
+			canvas.clear();
+			if(scoreA>=5)
+			{
+				canvas.drawText(725, 500 ,"Player B won", fontSize = 50)
+			}
+			else{
+				canvas.drawText(725, 450 ,"Player A won", fontSize = 50)
 
+			}
+			canvas.drawText(670, 400 ,"Thank you for Playing", fontSize = 50)
+			return ;
+		}
+		var txtA="Score of A = "+scoreB;
+		var txtB="Score of B = "+scoreA;
+		canvas.clear();
+		canvas.drawText(795, 200 , "Air Hockey", fontSize = 50)
+		canvas.setDrawMode("stroke");
+		canvas.setColor("rgb(76,153,0)")
+		canvas.drawText(195, 500 ,txtA, fontSize = 30)
+		canvas.setDrawMode("stroke");
+		canvas.setColor("rgb(255,153,51)")
+		canvas.drawText(1400, 500 ,txtB, fontSize = 30)
+		canvas.setDrawMode("stroke"); 
+        canvas.setColor("white");
+        canvas.setLineThickness(5)
+		canvas.drawRectangle(575, 270, 700, 400)
+		for(var w=0;w<13;w++){ 			
+			canvas.setColor("rgb(76,170,153,0.2)"); 			
+			canvas.drawCircle(925,470,50+w*100) 		
+		}
+		canvas.setDrawMode("stroke"); 
+		canvas.setColor("rgb(0,191,230)");
+        canvas.setLineThickness(2)
+		canvas.drawRectangle(525, 385, 50, 170)
+		canvas.drawRectangle(1275, 385, 50, 170)
+		drawPlayers(630,470+i)
+		drawPlayers(1220,470+j)
+		XX=905-d;
+		YY=470-m;
+		if(XX>=1275-rBall && YY>=380 && YY<=555){
+			canvas.clear()
+			c=1;	
+		}
+		if(XX<=575+rBall && YY>=380 && YY<=555) 
+		{
+			canvas.clear()
+			c1=1;
+		}
+		canvas.setDrawMode("fill"); 
+        canvas.setColor("white");
+		canvas.drawCircle(905-d,470-m,rBall);
+		
+		if(470-m==270+rBall)
+        {
+           	y = -5;
+        }
+        if(470-m==670-rBall)
+        {
+           	y = 5;
+        }
+        if(905-d==575+rBall)
+        {
+            x = -5;
+        }
+        if(905-d==1275-rBall)
+        {
+            x = +5;
+        }
+        m+=y;
+		d+=x;
+		if((905-d<647) && ((470-m>450+i) && (470-m<550+i)))
+        {
+            x = -x;
+        }
+        if((905-d>1205) && ((470-m>450+j) && (470-m<550+j)))
+        {
+            x = -x;
+        }		
+	}}
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 25;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
-
+    
 </script>
