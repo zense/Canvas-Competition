@@ -4,16 +4,12 @@
              Shubhayu Das,
              Rohit Katlaa,
              Prajwal Agarwal
-
     Note - DO NOT CHANGE CONTENTS OF THIS FILE
-
     Instructions for users
-    1) You need not understand the code here to be able to use it. 
+    1) You need not understand the code here to be able to use it.
     2) Understanding the API below should be enough
     3) See examples to get started
-
     API Documentation
-
     Helpful Canvas Variables
         canvas.height // Height
         canvas.width // Width
@@ -23,31 +19,26 @@
         canvas.mouseDownX // Last Position of mouse press x coordinate
         canvas.mouseDownY // Last Position of mouse press y coordinate
         canvas.drawMode  // Fill in a shape or just draw the border
-
     Helpful Canvas Functions
         canvas.setDrawMode(mode)   // Set the drawMode variable to "stroke" or "fill"
         canvas.setColor(color)  // Set the color of the shape(s) to the given color. Default color is black(#000000)
-                                // Value can be any one of these types: 
+                                // Value can be any one of these types:
                                 //    1. "red"
                                 //    2. "#F54680"
                                 //    3. "rgb(100,100,100)"
                                 //    4. "rgba(100,100,101,0.3)"
-
         canvas.setLineThickness(width)  // Set the thickness of the lines while in "fill draw mode". Default value is 1.
-
         canvas.draw()   //  Draws the various shapes according to the drawing mode.
         canvas.drawLine(x1, y1, x2, y2) // Draws line from (x1, y1) to (x2, y2)
         canvas.drawCircle(x, y, r) // Draws circle with center (x, y) and radius r
         canvas.drawRectangle(x, y, width, height) // Draws rectangle with top left corner as (x, y) and of dimensions width * height
         canvas.drawEllipse(x, y, a, b, angle, startAngle, endAngle) // Draws an Ellipse with center(x,y) with major axis = a, minor axis = b at an angle theta given the startAngle And Endangle
         canvas.clear() // Clears the canvas
-        canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A. 
-        canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y) 
+        canvas.isKeyDown(key) // Checks if keyboard key is pressed. Example KeyA for A.
+        canvas.drawText(x, y, message, fontSize = 30) // Draws <message> at (x, y)
         canvas.activateDoubleBuffer() //call in setup to use double buffering in your program.
         canvas.update()  // updates the screen with changes made on canvas(use only with double buffering).
         canvas.drawImg(path,x,y,width,height) // Draws an image at (x,y). "path" argument is used to mention the path of the image (width and height of the image are optional)
-
-
     Optionally Override the following functions
         canvas.mouseDownCallback() // Called when mouse is pressed
         canvas.mouseUpCallback() // Called when mouse is released
@@ -56,10 +47,9 @@
         canvas.keyUpCallback() // Called when mouse is released
         canvas.keyUpCallback() // Called when mouse is released
         canvas.mainFunction() // Called when mouse is released
-        
+
    Note:(Regarding double buffering) Double buffering is entirely optional, you may not need it in your program. It is only required if
    you face flickering issues.
-
 */
 
 // Canvas State Variables
@@ -81,7 +71,7 @@ canvas = {
 // Canvas Setup function
 canvas.setup = function () {
     // extract canvas object and set attributes correctly
-    
+
     this.buffers.push(document.getElementById("canvasArea1").getContext("2d"));
     this.buffers.push(document.getElementById("canvasArea2").getContext("2d"));
     this.ctx = this.buffers[this.activeBuffer];
@@ -113,7 +103,7 @@ canvas.setDrawMode = function(mode = "stroke") {
 
 // Set the color of the shape(s) for drawing
 canvas.setColor = function(color) {
-    
+
     this.buffers[1].fillStyle = color;
     this.buffers[0].fillStyle = color;
     this.buffers[1].strokeStyle = color;
@@ -126,7 +116,7 @@ canvas.setLineThickness = function(width = 1) {
 
     this.buffers[1].lineWidth = width;
     this.buffers[0].lineWidth = width;
-    
+
 };
 
 // Draws the shape according to the drawMode(solid fill or border stroke style)
@@ -160,7 +150,7 @@ canvas.drawRectangle = function(x, y, width, height) {
     this.draw();
 }
 
-//Draws Ellipse 
+//Draws Ellipse
 canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
     var temp = 0;
     if(radiusY > radiusX){
@@ -168,7 +158,6 @@ canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngl
         radiusX = radiusY;
         radiusY = temp;
     }
-    
     endAngle = (endAngle/180.0)*Math.PI;
     this.ctx.beginPath();
     this.ctx.ellipse(x, y, radiusX, radiusY, angle, startAngle, endAngle, true);
@@ -176,7 +165,7 @@ canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngl
     this.ctx.closePath();
 }
 
-// Draws <message> at (x, y) 
+// Draws <message> at (x, y)
 canvas.drawText = function(x, y, message, fontSize = 30) {
     this.ctx.font = fontSize + "px Arial";
     this.ctx.fillText(message, x, y);
@@ -187,7 +176,7 @@ canvas.clear = function() {
 
     this.buffers[1].clearRect(0, 0, this.width, this.height);
     this.buffers[0].clearRect(0, 0, this.width, this.height);
-    
+
 }
 
 //update the canvas to display changes made( use only with double buffering).
@@ -197,7 +186,7 @@ canvas.update = function(){
     this.buffers[this.activeBuffer].canvas.style.visibility = 'visible';
     this.activeBuffer = 1 - this.activeBuffer;
 
-    this.buffers[this.activeBuffer].clearRect(0, 0, this.width, this.height);    
+    this.buffers[this.activeBuffer].clearRect(0, 0, this.width, this.height);
     this.ctx = this.buffers[this.activeBuffer];
 
 }
@@ -208,7 +197,7 @@ canvas.startMain =  function(timeStep = 50) {
 }
 
 // Will start event listeners
-// An event listener is a procedure or function in a computer program that waits for an event to occur. 
+// An event listener is a procedure or function in a computer program that waits for an event to occur.
 // Examples of an event are the user clicking or moving the mouse, pressing a key on the keyboard
 canvas.startListeners = function () {
 
@@ -219,13 +208,13 @@ canvas.startListeners = function () {
     });
 
     window.addEventListener("mousedown", () => {
-        this.mouseDownX = this.mouseX; 
-        this.mouseDownY = this.mouseY; 
+        this.mouseDownX = this.mouseX;
+        this.mouseDownY = this.mouseY;
         this.mouseDown = true;
         this.mouseDownCallback();
     });
 
-    window.addEventListener("mouseup", () => { 
+    window.addEventListener("mouseup", () => {
         this.mouseDown = false;
         this.mouseUpCallback();
     });
@@ -243,7 +232,7 @@ canvas.startListeners = function () {
     });
 }
 
-// Checks if keyboard key is pressed. Example KeyA for A. 
+// Checks if keyboard key is pressed. Example KeyA for A.
 canvas.isKeyDown = function(key) {
     return this.keysDown[key] == true;
 }

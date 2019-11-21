@@ -2,7 +2,7 @@
 
 <body onload="canvas.setup()">
 
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea1" style="position: absolute; left: 12.5%; top: 0; z-index: 0; width: 75%; height: 100%; border: 3px solid black;"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
@@ -11,10 +11,139 @@
 
 </html>
 <script>
+    class Bat{
+        constructor(){
+            this.length = 0.152 * canvas.width;
+            this.width = 20;
+            this.x = (canvas.width - this.length)/2;
+            this.y = 0.9 * canvas.height;
+            this.vel = 0;
+            this.dir = 0;
+            this.score = 0;
+        }
+        render(){
+            (color_Scheme === 0) ? canvas.setColor("white") : canvas.setColor("black");
+            canvas.setDrawMode("fill");
+            canvas.drawRectangle(this.x, this.y, this.length, this.width);
+        }
+    }
+
+    class Ball{
+        constructor(){
+            this.rad = 0.006 * canvas.width;
+            this.x = canvas.width / 2;
+            this.y = (0.9 * canvas.height) - this.rad;
+            var arr_xVel = [3, 5, 7];
+            var arr_yVel = [-18, -20, -23, -25, -27]
+            this.vel_x = arr_xVel[Math.floor(3 * Math.random())];
+            this.vel_y = arr_yVel[Math.floor(5 * Math.random())];
+            this.dir = 1;
+        }
+        render(){
+            (color_Scheme === 0) ? canvas.setColor("red") : canvas.setColor("purple");
+            canvas.setDrawMode("fill");
+            canvas.drawCircle(this.x, this.y, this.rad);
+            (color_Scheme === 0) ? canvas.setColor("white") : canvas.setColor("black");
+            canvas.setDrawMode();
+            canvas.setLineThickness(0.4);
+            canvas.drawCircle(this.x, this.y, this.rad);
+        }
+        move(){
+            this.x += this.dir * this.vel_x * timeStep;
+            this.y += this.vel_y * timeStep;
+            if(this.x + this.rad >= canvas.width) this.dir = -1;
+            if(this.x - this.rad <= 0) this.dir = 1;
+            if(this.y - this.rad <= 0) this.vel_y = - this.vel_y;
+            if(this.y + this.rad >= canvas.height) game_State = 1;
+            if(this.y + this.rad >= bat.y && this.y + this.rad <= bat.y + bat.width && this.x + this.rad >= bat.x - 0.05 * bat.length && this.x - this.rad <= bat.x + 1.05 * bat.length){
+                this.vel_y = - this.vel_y;
+                this.vel_x += 0.07 * this.vel_x;
+            }
+            for(var i = 0; i < 16; i++){
+                for(var j = 0; j < 10; j++){
+                    if(tiles[i][j].inGame === 1) {
+                        if (this.x - this.rad <= tiles[i][j].x + tiles[i][j].width && this.x + this.rad >= tiles[i][j].x && this.y - this.rad <= tiles[i][j].y + tiles[i][j].height && this.y + this.rad >= tiles[i][j].y) {
+                            bat.score += 1;
+                            tiles[i][j].inGame = 0;
+                            var ang = Math.atan2(tiles[i][j].height, tiles[i][j].width);
+                            var test_ang = Math.atan2(this.y - tiles[i][j].y - (tiles[i][j].height / 2), this.x - tiles[i][j].x - (tiles[i][j].width / 2));
+                            console.log(ang, test_ang);
+                            if ((test_ang <= ang && test_ang >= -ang)) {
+                                this.dir = 1;
+                            } else if ((test_ang > ang && test_ang < Math.PI - ang) || (test_ang < -ang && test_ang > ang - Math.PI)) {
+                                this.vel_y *= -1;
+                            } else if (test_ang >= Math.PI - ang || test_ang <= ang - Math.PI){
+                                this.dir = -1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    class Tile{
+
+        constructor(x, y){
+            this.width = canvas.width / 15;
+            this.height = 0.025 * canvas.height;
+            this.x = (canvas.width/6) + (x * this.width);
+            this.y = (y * this.height);
+            this.inGame = 1;
+            this.color = "";
+        }
+
+        render(){
+            switch(this.y / this.height) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    (color_Scheme === 0) ? this.color = "#A6CFD5" : this.color = "#1B998B";
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    (color_Scheme === 0) ? this.color = "#FFFCF7" : this.color = "#FF8C42";
+                    break;
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    (color_Scheme === 0) ? this.color = "#A1B5D8" : this.color = "#698F3F";
+                    break;
+                default:
+                    (color_Scheme === 0) ? this.color = "#05A8AA" : this.color = "#555B6E";
+                    break;
+            }
+            canvas.setDrawMode("fill");
+            canvas.setColor(this.color);
+            canvas.drawRectangle(this.x, this.y, this.width, this.height);
+            canvas.setDrawMode();
+            canvas.setLineThickness(0.4);
+            canvas.setColor("black");
+            canvas.drawRectangle(this.x, this.y, this.width, this.height);
+        }
+    }
+
+    var tiles = [];
+    var color_Scheme = 0;
+    var game_Start = 0;
+
 
     // Declare all global variables here
     function setup() {
-        // Initialize variables here
+        bat = new Bat();
+        ball = new Ball();
+        for(var i = 0; i < 16; i++){
+            tiles.push([]);
+            for(var j = 0; j < 10; j++){
+                var tile = new Tile(j, i);
+                tiles[i].push(tile);
+            }
+        }
+
     }
 
     // Declare custom functions here
@@ -23,13 +152,82 @@
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
+        if (color_Scheme === 0) {
+            canvas.setDrawMode("fill");
+            canvas.setColor("#0A2E36");
+            canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+        } else {
+            canvas.setDrawMode("fill");
+            canvas.setColor("#F7EDE2");
+            canvas.drawRectangle(0, 0, canvas.width, canvas.height);
+        }
+        if(game_Start === 1 && bat.score < 160) {
 
+            if (game_State === 0) {
+                ball.render();
+                bat.render();
+                ball.move();
+                for (let i = 0; i < 16; i++) {
+                    for (let j = 0; j < 10; j++) {
+                        if (tiles[i][j].inGame === 1) tiles[i][j].render();
+                    }
+                }
+            } else {
+                (color_Scheme === 0) ? canvas.setColor("white") : canvas.setColor("black");
+                canvas.drawText(canvas.width / 2.5, canvas.height / 2, "GAME OVER!!!", fontSize = 50);
+                canvas.drawText(canvas.width / 3, canvas.height / 1.66, "RELOAD THE PAGE TO START AGAIN!", fontSize = 30);
+                canvas.drawText(canvas.width / 2.25, canvas.height / 3.5, `SCORE: ${bat.score}`, fontSize = 40);
+            }
+        }else if(bat.score < 160){
+            (color_Scheme === 0) ? canvas.setColor("white") : canvas.setColor("black");
+            canvas.drawText(canvas.width / 2.66, canvas.height / 9, "BRICK BREAKER", fontSize = 50);
+            canvas.drawText(canvas.width / 3.5, canvas.height / 3.55, "INSTRUCTIONS:", fontSize = 30);
+            canvas.drawText(canvas.width / 3, canvas.height / 2.66, "1) USE ARROW KEYS TO MOVE.", fontSize = 25);
+            canvas.drawText(canvas.width / 3, canvas.height / 2.33, "2) USE 'T' TO CHANGE THE COLOR SCHEME.", fontSize = 25);
+            canvas.drawText(canvas.width / 3, canvas.height / 2.08, "3) USE 'R' TO RELOAD PAGE.", fontSize = 25);
+            canvas.drawText(canvas.width / 4, canvas.height / 1.5, "PRESS 'S' TO START THE GAME. ENJOY!!", fontSize = 40);
+            canvas.drawText(canvas.width / 1.25, canvas.height / 1.11, "BY: VIGNESH AND VENKAT", fontSize = 20);
+        }else{
+            (color_Scheme === 0) ? canvas.setColor("white") : canvas.setColor("black");
+            canvas.drawText(canvas.width / 2.5, canvas.height / 2, "YOU WON!!!", fontSize = 50);
+            canvas.drawText(canvas.width / 3, canvas.height / 1.66, "TAKE A SCREENSHOT AND DAB!", fontSize = 30);
+            canvas.drawText(canvas.width / 2.25, canvas.height / 3.5, `SCORE: ${bat.score}`, fontSize = 40);
+        }
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    canvas.keyDownCallback = function(e) {
+        if(e.code === "ArrowLeft"){
+            bat.vel = 150;
+            bat.dir = -1;
+            if(bat.x > 0) {
+                bat.x += bat.dir * bat.vel * timeStep;
+            }
+            bat.vel = 0;
+        }
+        if(e.code === "ArrowRight"){
+            bat.vel = 150;
+            bat.dir = 1;
+            if(bat.x + bat.length < canvas.width) {
+                bat.x += bat.dir * bat.vel * timeStep;
+            }
+            bat.vel = 0;
+        }
+        if(e.code === "KeyT"){
+            (color_Scheme === 0) ? color_Scheme = 1 : color_Scheme = 0;
+        }
+        if(e.code === "KeyS"){
+            game_Start = 1;
+        }
+        if(e.code === "KeyR"){
+            location.reload();
+        }
+    }
+
+    var game_State = 0;
+    var timeStep = 0.1;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
