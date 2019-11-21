@@ -1,19 +1,25 @@
 <html>
 
 <body onload="canvas.setup()">
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     
     <script src="./canvas1.js"></script>
+
 </body>
 
 </html>
 <script>
 
     // Declare all global variables here
+    function setup() {
+        // Initialize variables here
+    }
 
     // Declare custom functions here
+
 
     // Function while will be called repeatedly 
     
@@ -55,6 +61,7 @@
     count=0;
     
     function main() {
+
         //canvas.activateDoubleBuffer();
         //canvas.clear();
         canvas.drawImg("background.jpg",10,40,1300,730)
@@ -221,10 +228,6 @@
 
     var timeStep = 25;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
