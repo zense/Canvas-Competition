@@ -1,36 +1,143 @@
 <html>
+  <body onload="canvas.setup(),myfunction()">
+    <canvas
+      id="canvasArea1"
+      style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"
+    ></canvas>
+    <canvas
+      id="canvasArea2"
+      style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"
+    ></canvas>
 
-<body onload="canvas.setup()">
-
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
     <script src="./canvas.js"></script>
-</body>
-
+  </body>
 </html>
 <script>
 
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+  function myfunction() {
+    //This program is used to create a game which is as close as possible to space invaders.The arcade classic.
+    pla = new player(canvas.width / 2, canvas.height - 100, 50);
+  }
+  var count = 0;
+  var arr = [];
+  var bull = 0;
+  var encount = 0;
+  var enemies = [];
+  var ecount = 0;
+  var count1 = 0;
+  class enemy {
+    //Class for the enemy items.
+    constructor() {
+      this.length = 50;
+      this.x = Math.random() * 2000;
+      this.y = -50;
+
     }
-
-    // Declare custom functions here
-
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
+    create() {
+      canvas.setDrawMode("stroke");
+      canvas.drawRectangle(this.x, this.y, this.length, this.length);
     }
+    move() {
+      this.y += 5;
+    }
+  }
 
-    // Override functions here; 
-    canvas.mainFunction = main;
 
-    var timeStep = 50;
-    canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
+  class bullets {
+    //Class for the laser bullets.
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.length = 10;
+      this.vely = 300;
+    }
+    move() {
+      this.y -= (this.vely * 50) / 100;
+    }
+    show() {
+      canvas.setDrawMode("fill");
+      canvas.drawRectangle(this.x, this.y, this.length, this.length);
+    }
+  }
 
+  class player {
+    //Class for the player character.
+    constructor(x, y, r) {
+      this.x = x;
+      this.y = y;
+      this.length = r;
+      this.velx = 0;
+      this.vely = 10;
+    }
+    show() {
+      canvas.setDrawMode("fill");
+      canvas.drawRectangle(this.x, this.y, this.length, this.length);
+    }
+    move() {
+      if (this.x <= canvas.width && count == 0 && this.x > 0) {
+        this.x += (this.velx * 50) / 1000;
+        this.velx = 0;
+      } else if (this.x <= canvas.width && count == 1 && this.x > 0) {
+        this.x -= (this.velx * 50) / 1000;
+        this.velx = 0;
+      }
+    }
+  }
+  canvas.keyDownCallback = function(e) {
+    if (e.code == "KeyD") {
+      pla.velx = 600;
+      count = 0;
+    } else if (e.code == "KeyA") {
+      pla.velx = 600;
+      count = 1;
+    } else if ((e.code = "Space")) {
+      arr[bull] = new bullets(pla.x, pla.y);
+      bull += 1;
+      return arr;
+    }
+  };
+  let Score = 0;
+  function intersects(a, b) {
+    return (
+      a.x < b.x + b.length &&
+      a.x + a.length < b.length &&
+      a.y < b.y + b.length &&
+      a.y + a.length < b.length
+    );
+  }
+  function main() {
+    canvas.clear();
+    if (ecount >= 5) {
+      enemies[encount] = new enemy();
+      ecount = 0;
+      encount += 1;
+    }
+    pla.move();
+    pla.show();
+    for (var i = 0; i < bull; i++) {
+      arr[i].move();
+      arr[i].show();
+    }
+    for (var j = 0; j < encount; j++) {
+      enemies[j].move();
+      enemies[j].create();
+    }
+    for (var k = 0; k < encount; k++) {
+      if (
+        pla.x <= enemies[k].x + 50 &&
+        pla.x >= enemies[k].x - 50 &&
+        pla.y - enemies[k].y <= 25 + 25 &&
+        pla.y - enemies[k].y > 0
+      ) {
+        alert("Game Over");
+      }
+    }
+    ecount += 1;
+  }
+  // Override functions here;
+  canvas.mainFunction = main;
+  var timeStep = 60;
+  canvas.startMain(timeStep);
 </script>
+
