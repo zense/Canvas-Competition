@@ -11,25 +11,110 @@
 
 </html>
 <script>
+    var x;
+    var y;
+    var i=0;
+    var a;
+    var b;
+    var list=[];
+    var scorenew=0;
+    var c = 100;
+    var distance;
+    var name;
+    var flag;
+    var score = 0;
+    var count = 0;
+    
+    function draw_circle() {
+        canvas.setDrawMode("fill");
+        canvas.setColor("purple");
+        canvas.drawCircle(a, b, canvas.height * 0.04);
+    }
+
+    //var array=[1,2,3,4,5,6,7,8,9,10];
 
     // Declare all global variables here
+
+    function draw_rect() {
+        canvas.setDrawMode("fill");
+        console.log(x - 0.16 * canvas.height / 2);
+        canvas.setColor("rgb(255, 0, 0)");
+        canvas.drawRectangle(x - 0.16 * canvas.height / 2, y - 0.16 * canvas.height / 2, 0.16 * canvas.height, 0.16 * canvas.height);
+        //canvas.setColor("rgb(255, 0, 0)");
+    }
+    function draw_line() {
+        canvas.setDrawMode("stroke");
+        canvas.setColor("rgb(0, 0 , 0)");
+        canvas.drawLine(x - 0.16 * canvas.height / 2, y + 0.16 * canvas.height / 2, 0, canvas.height);
+
+    }
+
+
+
+
+
+
     function setup() {
-        // Initialize variables here
+        x = canvas.width / 2;
+        y = canvas.height / 2;
+        flag = 200;
+        a = 100;
+        b = 100;
+        c = 100;
     }
-
     // Declare custom functions here
+    // Function while will be called repeatedly
 
-
-    // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
+
+        if (c > 0) {
+            canvas.clear();
+            draw_rect();
+            draw_line();
+            draw_circle();
+            if (count ===20) {
+                a = (Math.random() * canvas.width);
+                b = (Math.random() * canvas.height);
+                count = 0;
+            }
+            distance = Math.sqrt(Math.pow((x + canvas.height * 0.16 / 2 - a), 2) + Math.pow(y + canvas.height * 0.16 / 2 - b, 2));
+            if (distance <= canvas.height * 0.16 / 1.4 + canvas.height * 0.04) {
+                score=score+1;
+                
+            }
+            count++;
+            c--;
+        } else {
+            
+            
+            alert("SCORE IS " + score + " Press OK to restart the game ");
+            //canvas.clear();
+            //canvas.drawText(canvas.width/4,canvas.height/4,"You have scored " + score ,fontsize=40 );
+            c=100;
+            main();
+        }
+
+        canvas.keyDownCallback = function (e) {
+            if (e.which === 37) {
+                x -= 0.03 * canvas.width;
+            }
+            else if (e.which === 39) {
+                x += 0.03 * canvas.width;
+            }
+            else if (e.which === 38) {
+                y -= 0.03 * canvas.height;
+            }
+            else if (e.which === 40) {
+                y += 0.03 * canvas.height;
+            }
+        }
 
     }
+
 
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 100;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
