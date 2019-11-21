@@ -1,0 +1,98 @@
+<html>
+
+<body onload="canvas.setup()">
+    
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	
+    <script src="./canvas1.js"></script>
+</body>
+
+</html>
+<script>
+
+    // Declare all global variables here
+
+    // Declare custom functions here
+
+    // Function while will be called repeatedly 
+    
+    obs_x=1000;
+    obs_y=500;
+    block_width=100;
+    block_height=89;
+    obs_width=100;
+    obs_height=100;
+    block_y=500;
+    block_x=50;
+    speed=10;
+    points=0;
+    var images=["1.png","2.png","3.png","4.png"];
+    var i=0;
+    function main() {
+        canvas.clear();
+        canvas.drawImg("background.jpg",10,40,1300,730)
+        //canvas.drawImg("tree.png",300,200,459,536);
+        //canvas.drawRectangle(block_x,block_y,100,100); //main block
+        //canvas.drawRectangle(obs_x,obs_y,100,100);
+        canvas.drawImg("pokemon.png",block_x,block_y,block_width,block_height);
+        canvas.drawImg("fireball.png",obs_x,obs_y,obs_width,obs_height);
+        obs_x-=speed;
+        points+=1;
+        canvas.drawText(600,30,"Points: "+points,fontSize=30);
+        console.log(points);
+        if (obs_x<-obs_width)
+        {
+            obs_x=1300;
+            speed+=1;
+        }
+        if ((obs_x<block_x+block_width-10 && obs_x>block_x-obs_width) && (block_y<obs_y+obs_height && block_y>obs_y-block_height+10))
+        {
+            alert("Crash!!!\nYour Score: "+(points-1));
+            points=0;
+            speed=10;
+            //setTimeout(3000);
+            obs_x=1000;
+            obs_y=500;
+            block_y=500;
+            block_x=50;
+        }
+
+        canvas.keyDownCallback=function(e)
+        {
+            if (e.which===38){
+                if (block_y>0)
+                   block_y-=10;
+            }
+            else if (e.which==40)
+            {
+                if (block_y<650)
+                    block_y+=10
+            }
+            else if (e.which==39 || ((e.which==38 || e.which==40) && e.which==39))
+                block_x+=10;
+            else if (e.which==37 || ((e.which==38 || e.which==40) && e.which==37))
+                block_x-=10;
+            else if (e.which==32)
+            {
+                alert("Game Paused!!!");
+            }
+
+        }
+
+
+        
+    }
+
+    // Override functions here; 
+    canvas.mainFunction = main;
+
+    var timeStep = 25;
+    canvas.startMain(timeStep);
+
+
+    
+</script>
+
+
+

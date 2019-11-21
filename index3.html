@@ -1,32 +1,22 @@
 <html>
 
 <body onload="canvas.setup()">
-
+    
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     
     <script src="./canvas1.js"></script>
-
 </body>
 
 </html>
 <script>
 
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
 
     // Declare custom functions here
 
-
     // Function while will be called repeatedly 
     
-    function setup()
-    {
-        canvas.activateDoubleBuffer();
-    }
     obs_x=1000;
     obs_y=500;
     block_width=100;
@@ -34,10 +24,10 @@
     obs_width=100;
     obs_height=100;
     block_y=500;
-    block_x=450;
+    block_x=440;
     speed=10;
     points=0;
-    water_balls=10;
+    water_balls=20;
     ball_width=50;
     ball_height=50;
     obs_y=Math.floor((Math.random()*600) + 40);
@@ -61,9 +51,8 @@
     count=0;
     
     function main() {
-
         //canvas.activateDoubleBuffer();
-        //canvas.clear();
+        canvas.clear();
         canvas.drawImg("background.jpg",10,40,1300,730)
         //canvas.drawImg("tree.png",300,200,459,536);
         //canvas.drawRectangle(block_x,block_y,100,100); //main block
@@ -115,7 +104,6 @@
         
 
         canvas.drawText(600,30,"Points: "+points,fontSize=30);
-        canvas.drawText(900,30,"Press S to shoot",fontSize=30);
         canvas.drawText(200,30,"Waterballs remaining: "+water_balls,fontSize=30);
         console.log(points);
         //canvas.drawImg("waterball.png",100,100,100,100);
@@ -144,7 +132,7 @@
             obs_x=1000;
             obs_y=500;
             block_y=500;
-            block_x=450;
+            block_x=50;
             water_balls=5;
         }
         
@@ -167,7 +155,7 @@
         
 
 
-        if (frame_delay_coin%100==0)
+        if (frame_delay_coin%200==0)
         {
                coin_x=1300;
                coin_y=Math.floor((Math.random()*(600-250) + 40))+250;
@@ -196,7 +184,7 @@
               }
             else if (e.which==37 || ((e.which==38 || e.which==40) && e.which==37))
              {
-                if (block_x>450)
+                if (block_x>350)
                     block_x-=20;
             }
             else if (e.which===32)
@@ -212,22 +200,23 @@
                     canvas.drawImg("waterball.png",ball_x,ball_y,ball_width,ball_height);
                     water_balls-=1;
                 }
-                ball_signal=1;
             }
 
         }
 
-    canvas.update();
 
         
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
-    canvas.setupFunction = setup;
 
     var timeStep = 25;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
 
+
+    
 </script>
+
+
+
