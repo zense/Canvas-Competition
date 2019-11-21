@@ -5,12 +5,14 @@
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
     // Declare all global variables here
+
     //setting up inclined plane using ref vars stored here
     var center_x;
     var center_y;
@@ -68,13 +70,17 @@
         flag = false;
 
 
+
+
     }
 
     // Declare custom functions here
+
     // Function while will be called repeatedly 
     function main() 
     {
         canvas.clear();
+
         canvas.setColor("black");
         canvas.setDrawMode("stroke");
         canvas.drawLine(x1,y1,x3,y3) // line along y
@@ -137,6 +143,7 @@
 
         time += timeStep;
 
+
     }
 
     // Override functions here; 
@@ -147,3 +154,4 @@
 
 
 </script>
+
