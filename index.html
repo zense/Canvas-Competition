@@ -1,15 +1,17 @@
 <html>
 
 <body onload="canvas.setup()" bgcolor= '#87ceeb'>
-    
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
 </html>
 <script>
+
 	var center_x;
 	var center_y;
 	var topx;
@@ -76,6 +78,7 @@
     	}
     }
 
+
     // Function while will be called repeatedly 
     canvas.keyUpCallback=function(e)
     {
@@ -90,6 +93,7 @@
     }
 
     function main() {
+
         canvas.setDrawMode("fill");
 		canvas.setColor("red");
         canvas.drawCircle(center_x, center_y, radius);
@@ -130,7 +134,6 @@
 
 
 
-        
     }
 
     // Override functions here; 
@@ -139,10 +142,6 @@
     var timeStep = 25;
     canvas.setupFunction = setup;
     canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
 
-
-    
 </script>
-
-
-
