@@ -1,6 +1,6 @@
 <html>
 
-<body onload="canvas.setup()">
+<body onload="canvas.setup()" bgcolor= '#87ceeb'>
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
@@ -12,24 +12,135 @@
 </html>
 <script>
 
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
+	var center_x;
+	var center_y;
+	var topx;
+	var topy;
+	var radius;
+	var angle;
+	var speed = 0;
+	var time;
+	var gravity;
+	var x;
+	var y;
+	var pi;
+	var t;
+	var img =["crow.jpg"];
+	var score = 0;
+	var distance;
+	var gameover=false;
+	var theta;
+	// Declare all global variables here
 
     // Declare custom functions here
 
+    function setup()
+    {
+    	center_x = canvas.width/45;
+    	center_y = canvas.height/1.25;
+    	topx = 0;
+    	topy = canvas.height /1.25 + canvas.height/50;
+    	radius = canvas.height/50;
+    	pi = Math.PI;
+    	time=0;
+    	t=0;
+    	speed = 0.1;
+    	gravity = -0.1;
+    	theta=pi/6;
+    	angle = theta-(pi/2);
+    	x = Math.random()*(canvas.width/2.5,canvas.width/2);
+    	y = Math.random()*canvas.height/2;
+    	canvas.activateDoubleBuffer()
+    }
+
+    function change_center()
+    {
+    	t=t+1;
+    	if (t==10)
+    	{
+    		time=time+0.5;
+
+    		t=0;
+    	}
+
+    	center_x = center_x+speed*Math.cos(angle)*time;
+    	center_y = center_y+speed*Math.sin(angle)*time-0.5*gravity*time*time;
+    	
+    	
+
+    }
+    function crow_move()
+    {
+    	x = x + 2;
+    	if(x>=canvas.width)
+    	{
+    		gameover = true;
+    	}
+    }
+
 
     // Function while will be called repeatedly 
+    canvas.keyUpCallback=function(e)
+    {
+    	if(e.code=="Space")
+    	{
+    		speed = speed + 0.5;
+    	}
+    	if(e.code=="Enter")
+    	{
+    		speed=speed-0.5;
+    	}
+    }
+
     function main() {
-        canvas.clear();
+
+        canvas.setDrawMode("fill");
+		canvas.setColor("red");
+        canvas.drawCircle(center_x, center_y, radius);
+        canvas.setDrawMode("fill");
+		canvas.setColor("green");
+        canvas.drawRectangle(topx,topy,canvas.width,canvas.height-topy);
+        canvas.drawText(50,50, speed, fontsize = 30);
+        canvas.drawText(50,100, Math.ceil(theta*180/pi), fontsize = 30);
+
+        if(!gameover)
+        {
+        change_center();
+        crow_move();
+    }
+        canvas.drawImg(img[0] , x,  y,50,50);
+        distance = Math.sqrt((center_x-x)*(center_x-x)+(center_y-y)*(center_y-y));
+        if(distance<3*radius)
+        {
+        score = score + 1;
+        center_x = canvas.width/45;
+    	center_y = canvas.height/1.25;
+    	gameover=true;
+    	alert("You Win!!");
+        }
+        console.log(score);
+
+
+
+        canvas.update();
+
+
+        if(gameover == true)
+        {
+        	alert("Game Over!");
+        }
+
+
+
+
 
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 25;
+    canvas.setupFunction = setup;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
