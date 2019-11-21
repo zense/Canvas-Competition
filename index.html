@@ -3,8 +3,9 @@
 <body onload="canvas.setup()">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
 
     <script src="./canvas.js"></script>
 </body>
@@ -13,24 +14,166 @@
 <script>
 
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
+
+  //  var game_over=false;
+    var screen_width;
+    var screen_height;
+    var snake_x;
+    var snake_y;
+    var snake_size;
+    var food_x;
+    var food_y;
+    var vel_x;
+    var vel_y;
+    var init_vel;
+    var min;
+    var score;
+    var snake_length;
+    var snake_list;
+    var running;
+
 
     // Declare custom functions here
+    function setup()
+    {
+      count=0;
+      snake_list=[[canvas.width/6,canvas.height/6]];
+      score=0;
+      init_vel=10;
+      vel_x=0;
+      vel_y=0;
+      min=70;
+      screen_width=canvas.width/1.2;
+      screen_height=canvas.height/1.2;
+      snake_size=15;
+      snake_x=canvas.width/6;
+      snake_y=canvas.height/6;
+      snake_length=1;
+      food_x=Math.random() * (+screen_width - +min) + +min;
+      food_y=Math.random() * (+screen_height - +min) + +min;
+      running = 1;
 
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+      canvas.activateDoubleBuffer();
 
     }
 
-    // Override functions here; 
+    function draw_snake(snake_list)
+    {
+      canvas.setDrawMode("fill");
+      canvas.setColor("black");
+      snake_x += vel_x;
+      snake_y += vel_y;
+      for(var i=0;i<snake_list.length;i++)
+        canvas.drawRectangle(snake_list[i][0],snake_list[i][1],snake_size,snake_size);
+    }
+    function draw_food()
+    {
+
+      canvas.setDrawMode("fill");
+      canvas.setColor("red");
+      canvas.drawCircle(food_x,food_y,8);
+    }
+    function reDraw_food(){
+      food_x=Math.random() * (+screen_width/1.2 - +min) + +min;
+      food_y=Math.random() * (+screen_height/1.2 - +min) + +min;
+      canvas.setDrawMode("fill");
+      canvas.setColor("green");
+      canvas.drawCircle(food_x,food_y,8);
+      score+=10;
+      snake_length+=4;
+     }
+
+     function game_over(){
+       canvas.drawImg("3.jpeg",10,10,screen_width*1.2,screen_height*1.2);
+       canvas.setColor("black")
+       canvas.drawText(300,300," GAME OVER ",fontSize = 90);
+       canvas.drawText(130,400," Press Space to start again ",fontSize = 70);
+           //canvas.update();
+           running = 0;
+           vel_x = 0;
+           vel_y = 0;
+     }
+
+
+
+    // Function while will be called repeatedly
+    function main() {
+        if(running == 0){
+          game_over();
+          return;
+        }
+        canvas.setColor("rgb(139,0,139)");
+        canvas.drawText(50,50,"Score : " + score,fontSize = 30);
+        canvas.drawImg("3.jpeg",10,10,screen_width*1.2,screen_height*1.2);
+
+        if (snake_list.length>snake_length){
+          snake_list.shift();
+        }
+        draw_snake(snake_list);
+       for(var i=1;i<snake_list.length;i++){
+         if(snake_list[i][0]===snake_x && snake_list[i][1]===snake_y){
+           // console.log()
+            game_over();
+          }
+        }
+
+        snake_list.push([snake_x,snake_y]);
+        draw_food();
+        if (Math.abs(food_x-snake_x)<15 && Math.abs(food_y-snake_y)<15){
+            reDraw_food();
+        }
+        if (snake_x<0 || snake_x>canvas.width || snake_y<0 || snake_y>canvas.height){
+          game_over();
+        }
+        canvas.update();
+
+    }
+
+    canvas.keyDownCallback = function(e) {
+
+		if (e.code === "ArrowRight" && vel_x===0 ) {
+			vel_y=0;
+      vel_x=init_vel;
+		} else if (e.code === "ArrowLeft" && vel_x===0) {
+			vel_y=0;
+      vel_x=-init_vel;
+		}else if(e.code==="ArrowUp" && vel_y === 0){
+      vel_x=0;
+      vel_y=-init_vel;
+    }else if(e.code==="ArrowDown" && vel_y===0){
+      vel_x=0;
+      vel_y=init_vel;
+    }else if(e.code==="Space"){
+      var x = prompt("Press Y for new game and C for continue")
+      if (x==="Y"){
+        snake_list=[];
+        vel_x=0;
+        vel_y=0;
+        score=0;
+        init_vel=10;
+        min=70;
+        snake_x=canvas.width/6;
+        snake_y=canvas.height/6;
+        snake_size=15;
+        snake_length=1;
+        food_x=parseInt((Math.random() * (+screen_width - +min) + +min)/10, 10)*10;
+        food_y=parseInt((Math.random() * (+screen_height - +min) + +min)/10,10)*10;
+        running = 1;
+      }
+      else if(x==="C") {
+
+
+      }
+    }
+	};
+    // Override functions here;
     canvas.mainFunction = main;
+    canvas.setupFunction = setup;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+
+
 
 </script>
