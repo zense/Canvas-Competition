@@ -5,6 +5,7 @@
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 	<center><p id="demo" style="color:aqua;" style="font-size:40;"></p></center>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -12,6 +13,7 @@
 <script>
 
     // Declare all global variables here
+
    var x;
    var y;
    var x2;
@@ -70,10 +72,12 @@
     else if (y1 >350 && e.code === "ArrowRight" && x5<=845 ){
         x4+=1
     }
+
     // Function while will be called repeatedly 
 }
     function main() {
         canvas.clear();
+
         canvas.setColor("greenyellow");
         canvas.drawRectangle(500,100 , 400, 500);
         canvas.drawLine(500,570,900,570);
@@ -98,6 +102,7 @@
         
         canvas.drawCircle(400,570-i*10,5);
         
+
 
         x1-=velocity_x/15
         y1+=velocity_y/15
@@ -149,11 +154,8 @@
     canvas.setupFunction=setup;
     var timeStep = 10;
     canvas.startMain(timeStep);
-
-
+    canvas.setupFunction = setup;
     
 </script>
-
-
 
 
