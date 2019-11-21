@@ -1,6 +1,8 @@
 <html>
 
-<body onload="canvas.setup()">
+<meta charset="utf-8">
+<body onload="canvas.setup()" background="bg.jpg" >
+    
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
@@ -12,25 +14,106 @@
 </html>
 <script>
 
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+    function setup()
+    {
+
+       a = 0.1;
+       X= canvas.width/5;
+       Y= 3*canvas.height/5;
+       ball_x=X
+       ball_y=Y
+       ball_radius=7;
+       f=0
     }
 
-    // Declare custom functions here
 
 
-    // Function while will be called repeatedly 
+    canvas.mouseMoveCallback = function()
+    {
+        if(canvas.mouseDown)
+        {
+            ball_x=canvas.mouseX;
+            ball_y=canvas.mouseY;
+        }
+    }
+
+    canvas.mouseUpCallback = function()
+    {
+        x_init=ball_x
+        y_init=ball_y
+        f=1
+        exertForces();
+    }
+
+    function distance()
+    {
+            return Math.sqrt((ball_x-X)*(ball_x-X) + (ball_y-Y)*(ball_y-Y));
+    }
+
+    function angle()
+    {
+        return Math.atan((ball_y-Y)/(ball_x - X));
+
+    }
+
+    function exertForces()
+    {
+        d=distance();
+        ang = angle(); 
+        v=0.1*d;
+    }
+
     function main() {
+
+
         canvas.clear();
 
-    }
+        canvas.setColor("Black");
+        canvas.drawText(100,100,"SLING-SHOT",fontSize=100);
+        canvas.drawText(150,150,"AIM BY DRAGGING THE BALL AND SHOOT BY RELEASING",fontSize=30);
+        canvas.drawText(200,200,"The more you drag away from point, more is the power",fontSize=30);
+        
+        canvas.setColor("Red");
+        canvas.setDrawMode("fill");
+        canvas.drawCircle(X,Y,2); //Fixed Point
+        
+        if(f==1)
+        {
+            a += 0.2 ;
+            if(x_init < X){
+                ball_x += Math.cos(ang)*v;
+                ball_y += Math.sin(ang)*v + Math.abs(a*Math.sin(ang));
+            }
 
-    // Override functions here; 
+
+            else{
+                ball_x -= Math.cos(ang)*v;
+                ball_y -= Math.sin(ang)*v - Math.abs(a*Math.sin(ang));
+            }            
+        }
+        canvas.drawCircle(ball_x,ball_y,ball_radius)
+
+        if((ball_x > canvas.width) || (ball_y > canvas.height) || (ball_x < 0 || (ball_y < 0)))
+        {
+            ball_x=X;
+            ball_y=Y;
+            f=0;
+            a=0.1;
+        }
+
+       }
+
+    // Override functions here;
+    canvas.setupFunction = setup; 
     canvas.mainFunction = main;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
+
+    
 
 </script>
+
+
+
+
