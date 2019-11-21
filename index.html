@@ -34,6 +34,7 @@
     //var array=[1,2,3,4,5,6,7,8,9,10];
 
     // Declare all global variables here
+
     function draw_rect() {
         canvas.setDrawMode("fill");
         console.log(x - 0.16 * canvas.height / 2);
@@ -45,6 +46,7 @@
         canvas.setDrawMode("stroke");
         canvas.setColor("rgb(0, 0 , 0)");
         canvas.drawLine(x - 0.16 * canvas.height / 2, y + 0.16 * canvas.height / 2, 0, canvas.height);
+
     }
 
 
@@ -115,4 +117,5 @@
     var timeStep = 100;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+
 </script>
