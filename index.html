@@ -1,10 +1,13 @@
 <html>
+
 <meta charset="utf-8">
 <body onload="canvas.setup()" background="bg.jpg" >
     
+
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-	
+    <canvas id="canvasArea2"
+        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
     <script src="./canvas.js"></script>
 </body>
 
@@ -22,6 +25,7 @@
        ball_radius=7;
        f=0
     }
+
 
 
     canvas.mouseMoveCallback = function()
@@ -59,11 +63,11 @@
         v=0.1*d;
     }
 
-        
     function main() {
 
 
         canvas.clear();
+
         canvas.setColor("Black");
         canvas.drawText(100,100,"SLING-SHOT",fontSize=100);
         canvas.drawText(150,150,"AIM BY DRAGGING THE BALL AND SHOOT BY RELEASING",fontSize=30);
@@ -80,6 +84,7 @@
                 ball_x += Math.cos(ang)*v;
                 ball_y += Math.sin(ang)*v + Math.abs(a*Math.sin(ang));
             }
+
 
             else{
                 ball_x -= Math.cos(ang)*v;
@@ -104,9 +109,11 @@
 
     var timeStep = 50;
     canvas.startMain(timeStep);
+
     
 
 </script>
+
 
 
 
