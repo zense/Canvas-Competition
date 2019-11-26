@@ -53,7 +53,6 @@
 - **canvas.mouseMoveCallback()**: Called when mouse is moved
 - **canvas.keyDownCallback()**: Called when key is pressed
 - **canvas.keyUpCallback()**: Called when mouse is released
-- **canvas.keyUpCallback()**: Called when mouse is released
-- **canvas.mainFunction()**: Called when mouse is released
+- **canvas.mainFunction()**: Called after every timeStep
     
 ### Note:(Regarding double buffering) Double buffering is entirely optional, you may not need it in your program. It is only required if you face flickering issues.
