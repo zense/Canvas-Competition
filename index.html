@@ -25,20 +25,21 @@
         obj_y2 = canvas.height/2;
     }
 
-    canvas.drawDottedLine = function(x1, y1, x2, y2) {
-    this.ctx.beginPath();
-    this.ctx.setLineDash([5,5]);
-    this.ctx.moveTo(x1, y1);
-    this.ctx.lineTo(x2, y2);
-    this.draw();
-}
+    function drawDottedLine (x1, y1, x2, y2) 
+    {
+      canvas.ctx.beginPath();
+      canvas.ctx.setLineDash([5,5]);
+      canvas.ctx.moveTo(x1, y1);
+      canvas.ctx.lineTo(x2, y2);
+      canvas.draw();
+    }
 
     // Declare custom functions here
 
     function draw_convex_lens(){
       canvas.drawLine(0, canvas.height/2, canvas.width, canvas.height/2);
-
       canvas.drawLine(canvas.width/2, 0, canvas.width/2, canvas.height);
+      
 
       canvas.drawEllipse(canvas.width/2, canvas.height/2, 20,100, Math.PI/2, 0, 2*Math.PI);
     }
@@ -76,9 +77,9 @@
         var intercept = (canvas.height/2 - slope*(canvas.width/2 + focus));
         canvas.drawLine(canvas.width/2 + focus, canvas.height/2, canvas.width, slope*canvas.width + intercept);
         
-        if(canvas.mouseX > canvas.width/2 - focus)
+        if(canvas.mouseX > (canvas.width/2 - focus))
         {
-          canvas.drawDottedline(canvas.width/2, canvas.mouseY, 0, slope*0 + intercept);
+          drawDottedLine(canvas.width/2, canvas.mouseY, 0, slope*0 + intercept);
         }
       }
       else 
