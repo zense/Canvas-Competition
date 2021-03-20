@@ -2,7 +2,8 @@
 
 <body onload="canvas.setup()">
 
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
+    </canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
@@ -13,23 +14,70 @@
 <script>
 
     // Declare all global variables here
-    function setup() {
+    var focus;
+
+    function setup() 
+    {
         // Initialize variables here
+        obj_x1 = 0;
+        obj_y1 = canvas.height/2;
+        obj_x2 = canvas.width;
+        obj_y2 = canvas.height/2;
     }
 
     // Declare custom functions here
 
+    function draw_convex_lens(){
+      canvas.drawLine(0, canvas.height/2, canvas.width, canvas.height/2);
+
+      canvas.drawLine(canvas.width/2, 0, canvas.width/2, canvas.height);
+
+      canvas.drawEllipse(canvas.width/2, canvas.height/2, 20,100, Math.PI/2, 0, 2*Math.PI);
+    }
+
+    function object(){
+      canvas.drawLine(canvas.mouseX ,canvas.height/2, canvas.mouseX, canvas.mouseY);
+    }
+
+    function ray_through_origin()
+    {
+      if (canvas.mouseX <= canvas.width/2)
+      {
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
+        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
+        var intercept = (canvas.height/2 - slope*canvas.width/2);
+        canvas.drawLine(canvas.width/2, canvas.height/2, canvas.width, slope*canvas.width + intercept);
+      }
+      else 
+      {
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
+        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
+        var intercept = (canvas.height/2 - slope*canvas.width/2);
+        canvas.drawLine(canvas.width/2, canvas.height/2, 0, slope*0 + intercept);
+      }
+    }
+
+    function ray_through_focus()
+    {
+      canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.mouseY);
+
+
+    }
 
     // Function while will be called repeatedly 
-    function main() {
+    function main() 
+    {
         canvas.clear();
-
+        draw_convex_lens();
+        canvas.mouseMoveCallback = object();
+        canvas.mouseMoveCallback = ray_through_origin();
+        canvas.mouseMoveCallback = ray_through_focus();
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 1;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
