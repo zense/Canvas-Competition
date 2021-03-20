@@ -342,7 +342,6 @@
     , 1000);
     
     var number = 0;
-    var number2=0;
     function animate()
     {
         requestAnimationFrame(animate);
@@ -465,10 +464,8 @@
             {
                 if(EndCircle[i].finalX + EndCircle[i].radius >= canvas.width || EndCircle[i].finalX - EndCircle[i].radius <= 0 || EndCircle[i].finalY - EndCircle[i].radius <= 0 || EndCircle[i].finalY + EndCircle[i].radius >= canvas.height)
                 {
-                    number2=EndCircle[i].radius*0.5;
-                    for(var k = 0; k < number2; k++) {
-                        
-                        radius=Math.random()*(EndCircle[i].radius/4)+3;
+                    for(var k = 0; k < 6; k++) {
+                        radius=Math.random()*(EnemyCircle[i].radius/3)+3;
                         y = (EndCircle[i].y);
                         x = (EndCircle[i].x);
                         vx = (Math.random()-0.5)*7;
