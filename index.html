@@ -13,8 +13,26 @@
 <script>
 
     // Declare all global variables here
+    var t1,t2,x1,x2,y1,y2,r1,r2, c_x, c_y;
+    var t1_v, t2_v, t1_a, t2_a;
+    var m1, m2, g;
+    var num11, num12, num13,num14, den1, num2, den2;
     function setup() {
         // Initialize variables here
+        r1 = 125;
+        r2 = 125;
+        t1 = 0.5*(Math.PI);
+        t2 = 0.5*(Math.PI);
+        c_x = canvas.width/2;
+        c_y = canvas.width/4;
+        t1_v = 0;
+        t1_a = 0;
+        t2_v = 0;
+        t2_a = 0;
+        m1 = 10;
+        m2 = 10;
+        g = 1;
+          
     }
 
     // Declare custom functions here
@@ -23,6 +41,42 @@
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
+        
+
+        num1 = -g * (2 * m1 + m2) * Math.sin(t1);
+        num2 = -m2 * g * Math.sin(t1 - 2 * t2);
+        num3 = -2 * Math.sin(t1 - t2) * m2;
+        num4 = t2_v * t2_v * r2 + t1_v * t1_v * r1 * Math.cos(t1 - t2);
+        den = r1 * (2 * m1 + m2 - m2 * Math.cos(2 * t1 - 2 * t2));
+        t1_a = (num1 + num2 + num3 * num4) / den;
+
+        num1 = 2 * Math.sin(t1 - t2);
+        num2 = (t1_v * t1_v * r1 * (m1 + m2));
+        num3 = g * (m1 + m2) * Math.cos(t1);
+        num4 = t2_v * t2_v * r2 * m2 * Math.cos(t1 - t2);
+        den = r2 * (2 * m1 + m2 - m2 * Math.cos(2 * t1 - 2 * t2));
+        t2_a = (num1 * (num2 + num3 + num4)) / den;
+
+
+        x1 = r1*Math.sin(t1);
+        y1 = r1*Math.cos(t1);
+        x2 = c_x-x1+r2*Math.sin(t2);
+        y2 = y1+c_y+r2*Math.cos(t2);
+
+    
+
+        canvas.drawLine(c_x, c_y, c_x-x1, y1+c_y); 
+        canvas.drawCircle(c_x-x1, y1+c_y, 10);
+        canvas.drawLine(c_x-x1, y1+c_y, x2, y2);
+        canvas.drawCircle(x2, y2, 10);
+
+
+        t1_v += t1_a;
+        t2_v += t2_a;
+
+        t1 += t1_v;
+        t2 += t2_v;
+        
 
     }
 
