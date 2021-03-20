@@ -27,6 +27,8 @@
     var can_draw = false;
     var erase = false;
     var can_erase = false;
+    var screen_clear = false;
+    var inside_canvas = false;
 
     var tool_color1 = "#EEEEEE";
     var tool_color2 = "#EEEEEE";
@@ -55,6 +57,9 @@
 
     var arrow_up_img = document.createElement('img');
     arrow_up_img.src = 'arrow_up_green.png';
+
+    var clear_img = document.createElement('img');
+    clear_img.src = 'clear_img.png';
 
     var color_selected;
 
@@ -137,6 +142,9 @@
         c.fillStyle = "#EEEEEE";
         c.fillRect(width*25/40 , height*37/40 , width/36 , height/20);//toolbar_button6
 
+        c.fillStyle = "#EEEEEE";
+        c.fillRect(width*35/40 , height*37/40 , width/36 , height/20);//clear button
+
         c.drawImage(brush_tool_img , width*15/40 , height*37/40 , width/36 , height/20);//brush_img added
 
         c.drawImage(eraser_tool_img , width*17/40 , height*37/40 , width/36 , height/20);//eraser_img
@@ -148,6 +156,8 @@
         c.drawImage(square_img , width*23/40 , height*37/40 , width/36 , height/20);//square_img
 
         c.drawImage(circle_img , width*25/40 , height*37/40 , width/36 , height/20);//circle_tool_img
+
+        c.drawImage(clear_img , width*35/40 , height*37/40 , width/36 , height/20);//clear_img
 
         
 
@@ -194,7 +204,18 @@
 
         if(can_draw==true){
             drawing = true;
-            draw(event);
+            if ((event.clientX > line_width && event.clientX < window.innerWidth - line_width)&&(event.clientY > line_width && event.clientY < window.innerHeight*4/5 - line_width)){
+                inside_canvas = true;
+                c.lineWidth = line_width;
+                c.lineCap = 'round';
+                c.strokeStyle = rgba;  
+                c.beginPath();              
+                c.lineTo(event.clientX,event.clientY);
+                c.stroke();
+            }
+            else{
+                inside_canvas = false;
+            }
         }
        
         if ((event.clientX > width*17/40 && event.clientX < width*17/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
@@ -238,6 +259,14 @@
             c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
             alpha = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10),'a');
         }
+
+        if ((event.clientX > width*35/40) && (event.clientX < width*35/40 + width/36) && (event.clientY > height*37/40) && (event.clientY < (height*37/40) + (height/20))){
+            screen_clear = true;
+            c.fillStyle = "#121212";
+            c.fillRect(0,0,width,height*4/5);
+            screen_clear = false;
+            
+        }//clearing screen
         
         rgba = 'rgba('+red+','+green+','+blue+','+alpha+')';
     }
@@ -254,17 +283,18 @@
     }
 
     function draw(event){
-        if(drawing == true && can_draw == true){
-            if ((event.clientX > 0 && event.clientX < window.innerWidth) && (event.clientY >0 && event.clientY < window.innerHeight * 4/5)){
-                c.lineWidth = line_width;
-                c.lineCap = 'round';
-                c.strokeStyle = rgba;
+        if(drawing == true && can_draw == true && inside_canvas == true){
+            c.lineWidth = line_width;
+            c.lineCap = 'round';
+            c.strokeStyle = rgba;                
                 
-                c.lineTo(event.clientX,event.clientY);
-                c.stroke();
-                // c.beginPath();
-                // c.moveTo(event.clientX,event.clientY);
-            }
+            var x = Math.min(Math.max(event.clientX,line_width),window.innerWidth - line_width);
+            var y = Math.min(Math.max(event.clientY,line_width),window.innerHeight * 4/5 - line_width);
+            
+            c.lineTo(x,y);
+            c.stroke();
+            c.beginPath();
+            c.moveTo(x,y);
         }
         if(erase == true && can_erase == true){
             if ((event.clientX > 0 && event.clientX < window.innerWidth) && (event.clientY >0 && event.clientY < window.innerHeight * 4/5)){
