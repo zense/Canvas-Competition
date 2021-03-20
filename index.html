@@ -462,7 +462,9 @@
             c.globalAlpha=1;
             c.font = "30px Arial";
             c.fillStyle = 'white';
-            c.fillText(score, Math.floor(window.innerWidth/2), Math.floor(window.innerHeight/2));
+            c.fillText("Game Over! Final Score: ", Math.floor(window.innerWidth/2)-300, Math.floor(window.innerHeight/2));
+            c.fillText(score, Math.floor(window.innerWidth/2)+100, Math.floor(window.innerHeight/2));
+
 
         } 
     }
