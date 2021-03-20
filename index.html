@@ -342,7 +342,6 @@
     , 1000);
     
     var number = 0;
-    var number2=0;
     function animate()
     {
         requestAnimationFrame(animate);
@@ -422,8 +421,7 @@
                         var acc_r = Math.random();
                         var color = EnemyCircle[i].color;
                         var vel_theta = Math.random()*0.004 + 0.003;
-                        EndCircle.push(new endCircles(r, theta, radius, acc_theta, vel_theta, acc_r, color))
-                        console.log(r, theta, radius, acc_theta, acc_r, color, vel_theta);
+                        EndCircle.push(new endCircles(r, theta, radius, acc_theta, vel_theta, acc_r, color));
                         EnemyCircle.splice(i,1);
                         pel.splice(j,1);
                         score += 10;
@@ -461,36 +459,6 @@
             {
                 EndCircle[i].update();
             }
-            for(var i = 0; i < EndCircle.length; i++)
-            {
-                if(EndCircle[i].finalX + EndCircle[i].radius >= canvas.width || EndCircle[i].finalX - EndCircle[i].radius <= 0 || EndCircle[i].finalY - EndCircle[i].radius <= 0 || EndCircle[i].finalY + EndCircle[i].radius >= canvas.height)
-                {
-                    number2=EndCircle[i].radius*0.5;
-                    for(var k = 0; k < number2; k++) {
-                        
-                        radius=Math.random()*(EndCircle[i].radius/4)+3;
-                        y = (EndCircle[i].y);
-                        x = (EndCircle[i].x);
-                        vx = (Math.random()-0.5)*7;
-                        vy = (Math.random()-0.5)*8;
-                        acc = 0.1;
-                        ShatterEnd.push(new shatterCircles(x,y,vx,vy,acc,radius,EndCircle[i].color, 0, 0.5));
-                    }
-                } 
-                for(var k = 0; k < ShatterEnd.length; k++)
-                {
-                    ShatterEnd[k].update();
-                    if(ShatterEnd[k].y + ShatterEnd[k].radius >= window.innerHeight) 
-                    {
-                        ShatterEnd[k].hop += 1;
-                    }
-                    if(ShatterEnd[k].hop == 2) 
-                    {
-                        ShatterEnd.splice(k,1);
-                    }
-                }
-            }
-
             c.globalAlpha=1;
             c.font = "30px Arial";
             c.fillStyle = 'white';
