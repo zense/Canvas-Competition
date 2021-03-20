@@ -14,7 +14,7 @@
 <script>
 
     // Declare all global variables here
-    var focus;
+    var focus = 50;
 
     function setup() 
     {
@@ -24,6 +24,14 @@
         obj_x2 = canvas.width;
         obj_y2 = canvas.height/2;
     }
+
+    canvas.drawDottedLine = function(x1, y1, x2, y2) {
+    this.ctx.beginPath();
+    this.ctx.setLineDash([5,5]);
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.draw();
+}
 
     // Declare custom functions here
 
@@ -41,16 +49,16 @@
 
     function ray_through_origin()
     {
+      canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
+
       if (canvas.mouseX <= canvas.width/2)
       {
-        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
         var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
         var intercept = (canvas.height/2 - slope*canvas.width/2);
         canvas.drawLine(canvas.width/2, canvas.height/2, canvas.width, slope*canvas.width + intercept);
       }
       else 
       {
-        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
         var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
         var intercept = (canvas.height/2 - slope*canvas.width/2);
         canvas.drawLine(canvas.width/2, canvas.height/2, 0, slope*0 + intercept);
@@ -61,7 +69,25 @@
     {
       canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.mouseY);
 
-
+      if (canvas.mouseX <= canvas.width/2)
+      { 
+        canvas.drawLine(canvas.width/2, canvas.mouseY, canvas.width/2 + focus, canvas.height/2 )
+        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 + focus - canvas.width/2);
+        var intercept = (canvas.height/2 - slope*(canvas.width/2 + focus));
+        canvas.drawLine(canvas.width/2 + focus, canvas.height/2, canvas.width, slope*canvas.width + intercept);
+        
+        if(canvas.mouseX > canvas.width/2 - focus)
+        {
+          canvas.drawDottedline(canvas.width/2, canvas.mouseY, 0, slope*0 + intercept);
+        }
+      }
+      else 
+      {
+        canvas.drawLine(canvas.width/2, canvas.mouseY, canvas.width/2 - focus, canvas.height/2 )
+        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - focus - canvas.width/2);
+        var intercept = (canvas.height/2 - slope*(canvas.width/2 - focus));
+        canvas.drawLine(canvas.width/2 - focus, canvas.height/2, 0, slope*0 + intercept);
+      }
     }
 
     // Function while will be called repeatedly 
