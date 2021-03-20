@@ -11,19 +11,291 @@
 
 </html>
 <script>
-
     // Declare all global variables here
+    var canv = document.getElementById("canvasArea1");
+    var c = canv.getContext("2d");
+
+    var red = 255;
+    var green = 255;
+    var blue = 255;
+    var alpha = 1;
+    var rgba = '';
+
+    var line_width = 10;
+    
+    var drawing = false;
+    var can_draw = false;
+    var erase = false;
+    var can_erase = false;
+
+    var tool_color1 = "#EEEEEE";
+    var tool_color2 = "#EEEEEE";
+    var tool_color3 = "#EEEEEE";
+    var tool_color4 = "#EEEEEE";
+    var tool_color5 = "#EEEEEE";
+    var tool_color6 = "#EEEEEE";
+
+    var brush_tool_img = document.createElement('img');
+    brush_tool_img.src = 'brush_img.png';
+
+    var eraser_tool_img = document.createElement('img');
+    eraser_tool_img.src = 'eraser_img.png';
+
+    var textbox_tool_img = document.createElement('img');
+    textbox_tool_img.src = 'textbox_img.png';
+
+    var line_img = document.createElement('img');
+    line_img.src = 'line_img.png';
+
+    var square_img = document.createElement('img');
+    square_img.src = 'square_img.png';
+
+    var circle_img = document.createElement('img');
+    circle_img.src = 'circle_img.png';
+
+    var arrow_up_img = document.createElement('img');
+    arrow_up_img.src = 'arrow_up_green.png';
+
+    var color_selected;
+
+    
+
+    color_selected = '#FFFFFF';//comment out later
+
     function setup() {
         // Initialize variables here
+        layout();
+        arrows_init();
+    }
+
+    function col_value(value,offset,ch){
+        if (ch==='a'){
+            return((value - offset) / 110);
+        }
+        else{
+            return((value - offset) * 255 / 110);
+        }
+    }
+
+    function slider() {
+        var rgradient = c.createLinearGradient(width*10/40,height*34/40,(width*10/40) + 110,height*34/40);
+        rgradient.addColorStop(0, "black");
+        rgradient.addColorStop(1, "red");
+        c.fillStyle = rgradient;
+        c.fillRect(width*10/40 , height*34/40 , 110, height/50);
+        
+        var ggradient = c.createLinearGradient(width*10/40 + 110 + 10, 0, width*10/40 + 110 + 10 + 110, 0);
+        ggradient.addColorStop(0, "black");
+        ggradient.addColorStop(1, "green");
+        c.fillStyle = ggradient;
+        c.fillRect(width*10/40 + 110 + 10 , height*34/40 , 110, height/50);
+
+        var bgradient = c.createLinearGradient(width*10/40 + (110 + 10) + (110 + 10), 0, width*10/40 + (110 + 10) + (110 + 10) + 110, 0);
+        bgradient.addColorStop(0, "black");
+        bgradient.addColorStop(1, "blue");
+        c.fillStyle = bgradient;
+        c.fillRect(width*10/40 + (110 + 10) + (110 + 10) , height*34/40 , 110, height/50);
+
+        var agradient = c.createLinearGradient(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10), 0, width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 110, 0);
+        agradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+        agradient.addColorStop(1, "white");
+        c.fillStyle = agradient;
+        c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) , height*34/40 , 110, height/50);
+
+        c.fillStyle = rgba;//color to be changed later
+        c.fillRect(width*8/40 , height*34/40 , height/50 , height/50)
     }
 
     // Declare custom functions here
+    function layout(){
+        canvas.clear();
+        height = window.innerHeight;
+        width = window.innerWidth;
+        c.fillStyle = "#121212";
+        c.fillRect(0,0,width,height*4/5);
+        c.fillStyle = "#212121";
+        c.fillRect(0 ,height*4/5 , width , height*1/5);
+    }
+    
+    function tools(){
+        //brush , rubber , textbox, line , sqaure , circle
+        c.fillStyle = tool_color1;
+        c.fillRect(width*15/40 , height*37/40 , width/36 , height/20);//toolbar_button1
 
+        c.fillStyle = tool_color2;
+        c.fillRect(width*17/40 , height*37/40 , width/36 , height/20);//toolbar_button2
+
+        c.fillStyle = "#EEEEEE";
+        c.fillRect(width*19/40 , height*37/40 , width/36 , height/20);//toolbar_button3
+
+        c.fillStyle = "#EEEEEE";
+        c.fillRect(width*21/40 , height*37/40 , width/36 , height/20);//toolbar_button4
+
+        c.fillStyle = "#EEEEEE";
+        c.fillRect(width*23/40 , height*37/40 , width/36 , height/20);//toolbar_button5
+
+        c.fillStyle = "#EEEEEE";
+        c.fillRect(width*25/40 , height*37/40 , width/36 , height/20);//toolbar_button6
+
+        c.drawImage(brush_tool_img , width*15/40 , height*37/40 , width/36 , height/20);//brush_img added
+
+        c.drawImage(eraser_tool_img , width*17/40 , height*37/40 , width/36 , height/20);//eraser_img
+
+        c.drawImage(textbox_tool_img , width*19/40 , height*37/40 , width/36 , height/20);//textbox_img
+
+        c.drawImage(line_img , width*21/40 , height*37/40 , width/36 , height/20);//line_img
+
+        c.drawImage(square_img , width*23/40 , height*37/40 , width/36 , height/20);//square_img
+
+        c.drawImage(circle_img , width*25/40 , height*37/40 , width/36 , height/20);//circle_tool_img
+
+        
+
+        
+    }
+
+    function arrows_init(){
+        c.drawImage(arrow_up_img , width*10/40 + 110 - 13 ,height*34/40 + 20 , 20 , 20 );
+        c.drawImage(arrow_up_img , (width*10/40 + 110 + 10 + 110) - 13 ,height*34/40 + 20 , 20 , 20 );
+        c.drawImage(arrow_up_img ,(width*10/40 + (110 + 10) + (110 + 10)) + 110 - 13 ,height*34/40 + 20 , 20 , 20 );
+        c.drawImage(arrow_up_img , (width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) + 110 - 13 ,height*34/40 + 20 , 20 , 20 );
+        c.fillStyle = "white";
+        c.fillRect(width*8/40 , height*34/40 , height/50 , height/50);
+
+
+    }
+
+    function draw_off(){
+        can_draw = false;
+        tool_color1 = "#EEEEEE";
+    }
+    
+    function erase_off(){
+        can_erase = false;
+        tool_color2 = "#EEEEEE";
+    }
+
+    function select(event){
+        
+        height = window.innerHeight;
+        width = window.innerWidth;
+        
+        if ((event.clientX > width*15/40 && event.clientX < width*15/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
+                
+            if(can_draw==false){
+                can_draw = true;
+                tool_color1 = "#9E9E9E";
+                erase_off();
+            }
+            else{
+                draw_off();
+            }
+        }
+
+        if(can_draw==true){
+            drawing = true;
+            draw(event);
+        }
+       
+        if ((event.clientX > width*17/40 && event.clientX < width*17/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
+            
+            if(can_erase==false){
+                can_erase = true;
+                tool_color2 = "#9E9E9E";
+                draw_off();
+            }
+            else{
+                erase_off();
+            }
+        }
+
+        if(can_erase==true){
+            erase = true;
+            draw(event);
+        }
+
+        if ((event.clientX > width*10/40) && (event.clientX < (width*10/40) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 -10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+            red = col_value(event.clientX,width*10/40,'r');
+        }
+        if ((event.clientX > width*10/40 + 110 + 10) && (event.clientX < (width*10/40 + 110 + 10) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + 110 + 10 -10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+            green = col_value(event.clientX,width*10/40 + 110 + 10,'g');
+        }
+        if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10)) && (event.clientX < (width*10/40 + (110 + 10) + (110 + 10)) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+            blue = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10),'b');
+        }
+        if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) && (event.clientX < (width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+            alpha = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10),'a');
+        }
+        
+        rgba = 'rgba('+red+','+green+','+blue+','+alpha+')';
+    }
+
+    function finish_drawing(event){
+        if(can_draw == true){
+            drawing = false;
+            c.beginPath();
+        }
+        if(can_erase == true){
+            erase = false;
+            c.beginPath();
+        }
+    }
+
+    function draw(event){
+        if(drawing == true && can_draw == true){
+            if ((event.clientX > 0 && event.clientX < window.innerWidth) && (event.clientY >0 && event.clientY < window.innerHeight * 4/5)){
+                c.lineWidth = line_width;
+                c.lineCap = 'round';
+                c.strokeStyle = rgba;
+                
+                c.lineTo(event.clientX,event.clientY);
+                c.stroke();
+                // c.beginPath();
+                // c.moveTo(event.clientX,event.clientY);
+            }
+        }
+        if(erase == true && can_erase == true){
+            if ((event.clientX > 0 && event.clientX < window.innerWidth) && (event.clientY >0 && event.clientY < window.innerHeight * 4/5)){
+                c.lineWidth = line_width;
+                c.lineCap = 'round';
+                c.strokeStyle = "#121212";
+                
+                c.lineTo(event.clientX,event.clientY);
+                c.stroke();
+                c.beginPath();
+                c.moveTo(event.clientX,event.clientY);
+            }
+        }
+    }
+
+    window.addEventListener('resize',function(){
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+    })
+
+    window.addEventListener('mousedown',select);
+
+    window.addEventListener('mouseup',finish_drawing);
+
+    window.addEventListener('mousemove',draw);
 
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
-
+        //canvas.clear();
+        tools();
+        slider();
     }
 
     // Override functions here; 
