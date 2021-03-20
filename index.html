@@ -9,26 +9,48 @@
     <script src="./canvas.js"></script>
 </body>
 
+<div>
+    <input id="text_inp1" type="text" style="position:absolute; left:5%;top:84.5%" placeholder="Type Here ...." />
+
+</div>
+
 </html>
 <script>
     // Declare all global variables here
     var canv = document.getElementById("canvasArea1");
     var c = canv.getContext("2d");
 
+    var tex_inp = document.getElementById("text_inp1");
+    var tex_inp_show = document.getElementById("text_inp1").style.display;
+    document.getElementById("text_inp1").style.display = "none";
+    document.getElementById("text_inp1").style.backgroundColor = "#A6A6A6";
+
     var red = 255;
     var green = 255;
     var blue = 255;
     var alpha = 1;
-    var rgba = '';
+    var rgba = 'rgba(255,255,255,1)';
 
-    var line_width = 10;
-    
+    var line_width = 1;
+
+    var init_rect_x;
+    var init_rect_y;
+    var final_rect_x;
+    var final_rect_y;
+
     var drawing = false;
     var can_draw = false;
     var erase = false;
     var can_erase = false;
     var screen_clear = false;
     var inside_canvas = false;
+    var text_box_on = false;
+    var rect_on = false;
+    var recting = false;
+    var ellipse_on = false;
+    var ellipsing = true;
+    var line_on = false;
+    var drawing_line = false;
 
     var tool_color1 = "#EEEEEE";
     var tool_color2 = "#EEEEEE";
@@ -60,6 +82,12 @@
 
     var clear_img = document.createElement('img');
     clear_img.src = 'clear_img.png';
+    
+    var plus_img = document.createElement('img');
+    plus_img.src = 'plus_img.png';
+
+    var minus_img = document.createElement('img');
+    minus_img.src = 'minus_img.png';
 
     var color_selected;
 
@@ -71,15 +99,35 @@
         // Initialize variables here
         layout();
         arrows_init();
+        width_update();
     }
 
     function col_value(value,offset,ch){
         if (ch==='a'){
             return((value - offset) / 110);
         }
+        else if (ch=='l'){
+            if((((value-offset)/110) * 30) < 1){
+                return 1
+            }
+            else{
+                return ((value-offset)/110) * 30;
+            }
+        }
         else{
             return((value - offset) * 255 / 110);
         }
+    }
+
+    function width_update(){
+        c.lineWidth = line_width;
+        c.lineCap = 'round';
+        c.strokeStyle = rgba;  
+        c.beginPath();
+        c.moveTo(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 + 30, height*34/40 + 6);              
+        c.lineTo(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 + 30, height*34/40 + 6);
+        c.stroke();
+        c.beginPath();
     }
 
     function slider() {
@@ -107,8 +155,23 @@
         c.fillStyle = agradient;
         c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) , height*34/40 , 110, height/50);
 
+        c.fillStyle = "white";
+        c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110, height*34/40 , 110, height/50);
+
+        c.drawImage(minus_img , width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 , height*34/40 ,height/50 , height/50 );
+        c.drawImage(plus_img , width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 - (height/50) , height*34/40 ,height/50 , height/50 );
+        
+        // c.beginPath();
+        // c.arc(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 + 20 , height*34/40 + 10 ,  line_width/2 , 0 , 2 * Math.PI , false);
+        // c.fillStyle = rgba;
+        // c.fill();
+        // c.stroke();
+        // c.beginPath();
+        
+        
+
         c.fillStyle = rgba;//color to be changed later
-        c.fillRect(width*8/40 , height*34/40 , height/50 , height/50)
+        c.fillRect(width*8/40 , height*34/40 , height/50 , height/50);
     }
 
     // Declare custom functions here
@@ -130,16 +193,16 @@
         c.fillStyle = tool_color2;
         c.fillRect(width*17/40 , height*37/40 , width/36 , height/20);//toolbar_button2
 
-        c.fillStyle = "#EEEEEE";
+        c.fillStyle = tool_color3;
         c.fillRect(width*19/40 , height*37/40 , width/36 , height/20);//toolbar_button3
 
-        c.fillStyle = "#EEEEEE";
+        c.fillStyle = tool_color4;
         c.fillRect(width*21/40 , height*37/40 , width/36 , height/20);//toolbar_button4
 
-        c.fillStyle = "#EEEEEE";
+        c.fillStyle = tool_color5;
         c.fillRect(width*23/40 , height*37/40 , width/36 , height/20);//toolbar_button5
 
-        c.fillStyle = "#EEEEEE";
+        c.fillStyle = tool_color6;
         c.fillRect(width*25/40 , height*37/40 , width/36 , height/20);//toolbar_button6
 
         c.fillStyle = "#EEEEEE";
@@ -158,9 +221,6 @@
         c.drawImage(circle_img , width*25/40 , height*37/40 , width/36 , height/20);//circle_tool_img
 
         c.drawImage(clear_img , width*35/40 , height*37/40 , width/36 , height/20);//clear_img
-
-        
-
         
     }
 
@@ -171,6 +231,7 @@
         c.drawImage(arrow_up_img , (width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) + 110 - 13 ,height*34/40 + 20 , 20 , 20 );
         c.fillStyle = "white";
         c.fillRect(width*8/40 , height*34/40 , height/50 , height/50);
+        c.drawImage(arrow_up_img ,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 - 5 - 4, height*34/40 + 20 , 20 , 20 );
 
 
     }
@@ -185,6 +246,27 @@
         tool_color2 = "#EEEEEE";
     }
 
+    function tb_off(){
+        text_box_on = false;
+        tool_color3 = "#EEEEEE";
+        document.getElementById("text_inp1").style.display = "none";
+    }
+
+    function rect_off(){
+        rect_on = false;
+        tool_color5 = "#EEEEEE";
+    }
+
+    function ellipse_off(){
+        ellipse_on = false;
+        tool_color6 = "#EEEEEE";
+    }
+
+    function line_off(){
+        line_on = false;
+        tool_color4 = "#EEEEEE";
+    }
+
     function select(event){
         
         height = window.innerHeight;
@@ -196,6 +278,10 @@
                 can_draw = true;
                 tool_color1 = "#9E9E9E";
                 erase_off();
+                tb_off();
+                rect_off();
+                ellipse_off();
+                line_off();
             }
             else{
                 draw_off();
@@ -224,6 +310,10 @@
                 can_erase = true;
                 tool_color2 = "#9E9E9E";
                 draw_off();
+                tb_off();
+                rect_off();
+                ellipse_off();
+                line_off();
             }
             else{
                 erase_off();
@@ -233,6 +323,93 @@
         if(can_erase==true){
             erase = true;
             draw(event);
+        }
+        
+        if ((event.clientX > width*21/40 && event.clientX < width*21/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
+            
+            if(line_on == false){
+                line_on = true;
+                tool_color4 = "#9E9E9E";
+                draw_off();
+                erase_off();
+                tb_off();
+                ellipse_off();
+                rect_off();
+            }
+            else{
+                line_off();
+            }
+        }
+
+        if ((event.clientX > width*23/40 && event.clientX < width*23/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
+            
+            if(rect_on == false){
+                rect_on = true;
+                tool_color5 = "#9E9E9E";
+                draw_off();
+                erase_off();
+                tb_off();
+                ellipse_off();
+                line_off();
+            }
+            else{
+                rect_off();
+            }
+        }
+
+        if ((event.clientX > width*25/40 && event.clientX < width*25/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
+            
+            if(ellipse_on == false){
+                ellipse_on = true;
+                tool_color6 = "#9E9E9E";
+                draw_off();
+                erase_off();
+                tb_off();
+                rect_off();
+                line_off();
+            }
+            else{
+                ellipse_off();
+            }
+        }
+
+        if(rect_on==true){
+            if ((event.clientX > line_width && event.clientX < window.innerWidth - line_width)&&(event.clientY > line_width && event.clientY < window.innerHeight*4/5 - line_width)){
+                inside_canvas = true;
+                init_rect_x = event.clientX;
+                init_rect_y = event.clientY;
+                recting = true;
+            }
+            else{
+                recting = false;
+                inside_canvas = false;
+            }
+        }
+        
+        if(ellipse_on==true){
+            if ((event.clientX > line_width && event.clientX < window.innerWidth - line_width)&&(event.clientY > line_width && event.clientY < window.innerHeight*4/5 - line_width)){
+                inside_canvas = true;
+                init_rect_x = event.clientX;
+                init_rect_y = event.clientY;
+                ellipsing = true;
+            }
+            else{
+                ellipsing = false;
+                inside_canvas = false;
+            }
+        }
+
+        if(line_on==true){
+            if ((event.clientX > line_width && event.clientX < window.innerWidth - line_width)&&(event.clientY > line_width && event.clientY < window.innerHeight*4/5 - line_width)){
+                inside_canvas = true;
+                init_rect_x = event.clientX;
+                init_rect_y = event.clientY;
+                drawing_line = true;
+            }
+            else{
+                drawing_line = false;
+                inside_canvas = false;
+            }
         }
 
         if ((event.clientX > width*10/40) && (event.clientX < (width*10/40) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
@@ -260,6 +437,16 @@
             alpha = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10),'a');
         }
 
+        if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110) && (event.clientX < width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110) && (event.clientY > height*34/40) &&(event.clientY < (height*34/40) + (height/50))){
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 - 5 , height*34/40 + 20  - 5, 118 , height/50 + 8);
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 + 10 , height*34/40 - 15 , 45 ,40);
+            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20);
+            line_width = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110,'l');
+            width_update();
+
+        }
+
         if ((event.clientX > width*35/40) && (event.clientX < width*35/40 + width/36) && (event.clientY > height*37/40) && (event.clientY < (height*37/40) + (height/20))){
             screen_clear = true;
             c.fillStyle = "#121212";
@@ -267,7 +454,34 @@
             screen_clear = false;
             
         }//clearing screen
+
+        if ((event.clientX > width*19/40) && (event.clientX < width*19/40 + width/36) && (event.clientY > height*37/40) &&(event.clientY < height*37/40 + height/20)){
+            if (text_box_on){
+
+                document.getElementById("text_inp1").style.display = "none";
+                text_box_on = false;
+                tb_off();
+            }
+            else{
+                draw_off();
+                erase_off();
+                ellipse_off();
+                rect_off();
+                line_off();
+                document.getElementById("text_inp1").style.display = "block";
+                tool_color3 = "#9E9E9E";
+                text_box_on = true;
+            }
+        }
         
+        if(text_box_on == true){
+            if ((event.clientX > 0 && event.clientX < window.innerWidth)&&(event.clientY > 0 && event.clientY < window.innerHeight*4/5 - line_width*1.75)){
+                c.fillStyle = rgba;
+                c.font = line_width*8 + "px Georgia"
+                c.fillText(document.getElementById("text_inp1").value, event.clientX, event.clientY);
+            }
+        }
+
         rgba = 'rgba('+red+','+green+','+blue+','+alpha+')';
     }
 
@@ -279,6 +493,34 @@
         if(can_erase == true){
             erase = false;
             c.beginPath();
+        }
+        if(rect_on == true && recting == true){
+            c.strokeStyle = rgba;
+            c.beginPath();
+            final_rect_x = Math.min(Math.max(event.clientX,line_width),window.innerWidth - line_width);
+            final_rect_y = Math.min(Math.max(event.clientY,line_width),window.innerHeight * 4/5 - line_width);
+            c.rect(init_rect_x,init_rect_y,final_rect_x-init_rect_x,final_rect_y-init_rect_y);
+            c.stroke();
+            recting = false;
+        }
+        if(ellipse_on == true && ellipsing == true){
+            c.strokeStyle = rgba;
+            c.beginPath();
+            final_rect_x = Math.min(Math.max(event.clientX,line_width),window.innerWidth - line_width);
+            final_rect_y = Math.min(Math.max(event.clientY,line_width),window.innerHeight * 4/5 - line_width);
+            c.ellipse((init_rect_x+final_rect_x)/2, (init_rect_y+final_rect_y)/2, Math.abs(final_rect_x-init_rect_x)/2, Math.abs(final_rect_y-init_rect_y)/2, 0, 0, 2 * Math.PI);
+            c.stroke();
+            ellipsing = false;
+        }
+        if(line_on == true && drawing_line == true){
+            c.strokeStyle = rgba;
+            c.beginPath();
+            final_rect_x = Math.min(Math.max(event.clientX,line_width),window.innerWidth - line_width);
+            final_rect_y = Math.min(Math.max(event.clientY,line_width),window.innerHeight * 4/5 - line_width);
+            c.moveTo(init_rect_x,init_rect_y);
+            c.lineTo(final_rect_x,final_rect_y);
+            c.stroke();
+            drawing_line = false;
         }
     }
 
@@ -308,6 +550,7 @@
                 c.moveTo(event.clientX,event.clientY);
             }
         }
+    
     }
 
     window.addEventListener('resize',function(){
