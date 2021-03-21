@@ -2,7 +2,7 @@
 # DESCRIPTION
 Our project uses a technique known as 'ray-tracing,' to render 3-dimensional video games.
 Rays that imitiate light (can be thought of as reversed light rays) are shot from a point (behaviour of an eye) to a window that represents the screen.
-These rays return the combined pixel data of surfaces it collides with.
+These rays return the combined pixel data of surfaces they collide with.
 
 # WHAT IT DOES
 The user can add any number of spheres or sources of light (objects) along with their properties while they are being 3D rendered.
