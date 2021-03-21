@@ -180,7 +180,7 @@ function rotateZ(theta){
 
 function trace(ray, depth){
 
-    if(depth > 3) return;
+    if(depth > 3) return {r: 0, g: 0, b: 0};
 
     ray.V.normalize();
 
@@ -192,7 +192,7 @@ function trace(ray, depth){
 
         let distance = ray.collision(global.balls[i]); 
 
-        if(distance < minDistance && distance > 0){
+        if(distance < minDistance && distance > 0.0000001){
 
             minDistance = distance; 
             nearest = global.balls[i];
@@ -242,8 +242,16 @@ function surface(ray, normal, ball, pointOfContact, depth){
     diffuseAmount = Math.min(diffuseAmount, 1);
 
     //yet to code specular
+    var reflectedColour = {r: 0, g: 0, b: 0};
 
-    return {r: ball.colour.r*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient), g: ball.colour.g*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient), b: ball.colour.b*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient)};
+    if(ball.surfaceProperties.specular){
+
+        let reflectedRay = new Ray(pointOfContact, ray.V.reflect(normal));
+        reflectedColour = trace(reflectedRay, depth+1);
+    }
+
+
+    return {r: (reflectedColour.r * ball.surfaceProperties.specular) + ball.colour.r*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient), g: (reflectedColour.r * ball.surfaceProperties.specular) + ball.colour.g*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient), b: (reflectedColour.r * ball.surfaceProperties.specular) + ball.colour.b*((diffuseAmount * ball.surfaceProperties.diffuse) + ball.surfaceProperties.ambient)};
 }
 
 

@@ -33,7 +33,7 @@ settings.height = 200;
 
 var cam = new Camera(undefined, new Vector(0, 0, 1));   
 
-var demoBall1 = new Ball(new Vector(7, 0, 30), 5, {r: 0, g: 200, b: 0}, {ambient: 0, diffuse: 1, specular: 0});
+var demoBall1 = new Ball(new Vector(7, 0, 30), 5, {r: 0, g: 200, b: 0}, {ambient: 0, diffuse: 1, specular: 0.2});
 var demoBall2 = new Ball(new Vector(-7, 0, 30), 5, {r: 200, g: 0, b: 0}, {ambient: 0, diffuse: 1, specular: 0});
 var demoLight1 = new Light(new Vector(20, -20, -5), new Vector(0, 0, 0), new Vector(0, 1, 0));
 
@@ -173,12 +173,3 @@ canvas.keyDownCallback = function (e) {
 
 canvas.mainFunction = main;
 canvas.startMain(1);
-
-
-// var b1 = new Ball(new Vector(0, 0, 30), 5, {r: 0, g: 0, b: 200}, {ambient: 0, diffuse: 1, specular: 0});
-// var b2 = new Ball(new Vector(0, 0, 30), 5, {r: 200, g: 0, b: 0}, {ambient: 0, diffuse: 1, specular: 0});
-
-// global.balls.push(b1);
-
-// var l1 = new Light(new Vector(30, 0, 10));
-// global.lights.push(l1);
