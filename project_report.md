@@ -24,10 +24,26 @@ It includes 2 different simulators:-
       
 ![Screenshot (100)](https://user-images.githubusercontent.com/63835433/111919216-ce98e000-8aae-11eb-9cbc-91be9a341b6c.png)
 
+*Color Mode with thickness = 1*
+
 ![Screenshot (101)](https://user-images.githubusercontent.com/63835433/111919217-d062a380-8aae-11eb-82a2-581f93a57b2c.png)
 
+*Black Mode with thickness = 1*
+
 ![Screenshot (102)](https://user-images.githubusercontent.com/63835433/111919218-d0fb3a00-8aae-11eb-90e7-337028973eb2.png)     
+
+*Color Mode with thickness = 5*
       
+## System Requirements
+Any latest updated web browser will work.
+
+***IMPORTANT*** - View the project in maximised window of browser for best experience.
+
+## Aim
+* To have fun.
+* Learn how to code complex ideas in limited time, thereby developing a long coding sitting habit.
+* Learning a new language (Javascript)
+
 ## What I learned?
 
 Learning Javascript for the first time and working with HTML was a challenge for sure but I now know that adopting to new programming languages after learning any one is not that big a task ;)
