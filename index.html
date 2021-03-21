@@ -29,7 +29,7 @@
     var globalList = {
         balls: [],
         ropes: [],
-        block: [],
+        blocks: [],
         eggs: []
     }
 
@@ -159,7 +159,7 @@
             this.fx = 0;
             this.mass = mass;
             this.fy = this.mass * constants.gravity;
-            globalList.block.push(this);
+            globalList.blocks.push(this);
         }
 
         render(){
@@ -199,7 +199,7 @@
             this.fx = 0;
             this.mass = mass;
             this.fy = this.mass * constants.gravity;
-            globalList.block.push(this);
+            globalList.blocks.push(this);
         }
 
         render(){
@@ -287,11 +287,25 @@
 
     function setup() {
         // Initialize variables here
+        width = canvas.width / constants.metre;
+        height = canvas.height / constants.metre;
         x1=60;
         y1=100;
         ballwidth=50;
         ballheight=50;
         canvas.activateDoubleBuffer();
+        var wblock1= new Block1(width/10, 7.5*height/10, width/20, height/10);
+        var wblock1= new Block1(9*width/10, 7.5*height/10, width/20, height/10);
+        var wblock1= new Block1(2*width/10, 7.5*height/10, width/20, height/10);
+        var wblock1= new Block1(8*width/10, 7.5*height/10, width/20, height/10);
+        var wblock1= new Block1(2*width/10, 6*height/10, width/20, height/10);
+        var wblock1= new Block1(8*width/10, 6*height/10, width/20, height/10);
+        var wblock1= new Block1(2*width/10, 4.5*height/10, width/20, height/10);
+        var wblock1= new Block1(8*width/10, 4.5*height/10, width/20, height/10);
+        var wblock1= new Block1(2*width/10, 3*height/10, width/20, height/10);
+        var wblock1= new Block1(8*width/10, 3*height/10, width/20, height/10);
+        var wblock1= new Block1(width/10, 1.5*height/10, width/20, height/10);
+        var wblock1= new Block1(9*width/10, 1.5*height/10, width/20, height/10);
     }
 
     // Declare custom functions here
@@ -326,8 +340,21 @@
             globalList.balls[1].type = ballType.NORMAL;
             setTimeout(function(){globalList.ropes[0].elasticity = 0, 10})
         }
-
-
+        //canvas.drawCircle(width, 7.5*height, 30);
+        //canvas.drawCircle(width*9, 7.5*height, 30);
+        //canvas.drawCircle(width*2, 7.5*height, 30);
+        //canvas.drawCircle(width*8, 7.5*height, 30);
+        //canvas.drawCircle(width*2, 6*height, 30);
+        //canvas.drawCircle(width*8, 6*height, 30);
+        //canvas.drawCircle(width*2, 5*height, 30);
+        //canvas.drawCircle(width*8, 5*height, 30);
+        //canvas.drawCircle(width*2, 4*height, 30);
+        //canvas.drawCircle(width*8, 4*height, 30);
+        //canvas.drawCircle(width, 3*height, 30);
+        //canvas.drawCircle(width*9, 3*height, 30);
+        for( var i=0; i< globalList.blocks.length; i++){
+            globalList.blocks[i].render();
+        }
 
 
         
