@@ -46,7 +46,6 @@
         hand_4 = canvas.height * 0.18;
         i=0;
         j=0;
-        alert("Press Space to jump!");
     }
 
     function jump()
@@ -266,8 +265,12 @@
       canvas.drawRectangle(1200,100,100,100);
       canvas.setColor("white");
       canvas.drawText(1240, 160, score, fontSize = 30)
-      if(x<0)
-      x=0;
+      if(x<=0)
+      {
+        canvas.setColor("red");
+        canvas.drawText(1040, 560, "Press Spacebar to start!", fontSize = 30)
+        x=0;
+      }
 }
     // Override functions here; 
     canvas.mainFunction = main;
