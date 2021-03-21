@@ -17,10 +17,17 @@ Up Arrow Key to move forward.
 
 # HOW IT WAS BUILT
 We used 'canvas.js,' a framework provided by Zense for controls and writing pixel data.
-We created 'Vector' and 'Ray' classes that allow us to compute 3-dimensional mathematics.
+We created 'Vector' and 'Ray' classes that easened 3-dimensional mathematics.
+We created 'Ball', 'Camera' and 'Light' classes to represent the objects.
+
+# CHALLENGES
+Debugging proved to be much harder than writing the code itself. 
 
 # INSPIRATION
 We drew inspiration from a youtube video (https://www.youtube.com/watch?v=QkETiyYWh2o) where ray-tracing was done on the console using ASCII.
 
+# TEAM: FLAMERIDERS
+Sriram Munagala
+Amar Pratap Singh
 
 
