@@ -5,7 +5,6 @@
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
     <script src="./canvas.js"></script>
 </body>
 
@@ -20,6 +19,8 @@
     var i=0,j=0,k=0,l=0,p=0,q=0,m=0,n=0;
     var x1=500,y1=380;//520 for stand
     var x2=950,y2=352;//508 for stand, diff =12
+
+    var start_game;
 
     var nar_stand=["nar_stand_resize/1.png","nar_stand_resize/2.png","nar_stand_resize/3.png","nar_stand_resize/4.png",'nar_stand_resize/5.png',"nar_stand_resize/6.png"]
 
@@ -46,6 +47,8 @@
     function setup() {
         // Initialize variables here
         canvas.activateDoubleBuffer();
+        start_game=false;
+        //canvas.drawImg("game_opening.jpg",230,0)
     }
 
     // Declare custom functions here
@@ -79,30 +82,38 @@
       else if(k==9)canvas.drawImg(nar_rasengan[9],x1,y1)
       else if(k==10)canvas.drawImg(nar_rasengan[10],x1,y1)
       else if(k==11)canvas.drawImg(nar_rasengan[11],x1,y1-20)
-      else if(k==12)canvas.drawImg(nar_rasengan[12],x2-200,y1-20)
-      else if(k==13)canvas.drawImg(nar_rasengan[13],x2-200,y1-20)
-      else if(k==14)canvas.drawImg(nar_rasengan[14],x2-200,y1-20)
-      else if(k==15)canvas.drawImg(nar_rasengan[15],x2-200,y1-20)
-      else if(k==16)canvas.drawImg(nar_rasengan[16],x2-200,y1-20)
-      else if(k==17)canvas.drawImg(nar_rasengan[17],x2-200,y1-20)
-      else if(k==18)canvas.drawImg(nar_rasengan[18],x2-200,y1-20)
-      else if(k==19)canvas.drawImg(nar_rasengan[19],x2-200,y1-140)
-      else if(k==20)canvas.drawImg(nar_rasengan[20],x2-200,y1-140)
-      else if(k==21)canvas.drawImg(nar_rasengan[21],x2-200,y1-140)
-      else if(k==22)canvas.drawImg(nar_rasengan[22],x2-200,y1-140)
-      else if(k==23)canvas.drawImg(nar_rasengan[23],x2-200,y1-140)
-      else if(k==24)canvas.drawImg(nar_rasengan[24],x2-200,y1-140)
-      else if(k==25)canvas.drawImg(nar_rasengan[25],x2-200,y1-140)
-      else if(k==26)canvas.drawImg(nar_rasengan[26],x2-200,y1-140)
-      else if(k==27)canvas.drawImg(nar_rasengan[27],x2-200,y1-140)
-      else if(k==28)
+      else if(k==12)canvas.drawImg(nar_rasengan[12],x1,y1-20)
+      else if(k==13)canvas.drawImg(nar_rasengan[13],x1,y1-20)
+      else if(k==14)canvas.drawImg(nar_rasengan[14],x1,y1-20)
+      else if(k==15)canvas.drawImg(nar_rasengan[15],x1,y1-20)
+      else if(k==16)canvas.drawImg(nar_rasengan[16],x1,y1-20)
+      else if(k==17)canvas.drawImg(nar_rasengan[16],x2-200,y1-20)
+      else if(k==18)canvas.drawImg(nar_rasengan[17],x2-200,y1-20)
+      else if(k==19)canvas.drawImg(nar_rasengan[18],x2-200,y1-20)
+      else if(k==20)canvas.drawImg(nar_rasengan[19],x2-200,y1-140)
+      else if(k==21)canvas.drawImg(nar_rasengan[20],x2-200,y1-140)
+      else if(k==22)canvas.drawImg(nar_rasengan[21],x2-210,y1-140)
+      else if(k==23)canvas.drawImg(nar_rasengan[22],x2-210,y1-140)
+      else if(k==24)canvas.drawImg(nar_rasengan[20],x2-200,y1-140)
+      else if(k==25)canvas.drawImg(nar_rasengan[21],x2-210,y1-140)
+      else if(k==26)canvas.drawImg(nar_rasengan[22],x2-210,y1-140)
+      else if(k==27)canvas.drawImg(nar_rasengan[23],x2-210,y1-140)
+      else if(k==28)canvas.drawImg(nar_rasengan[24],x2-210,y1-140)
+      else if(k==29)canvas.drawImg(nar_rasengan[23],x2-210,y1-140)
+      else if(k==30)canvas.drawImg(nar_rasengan[24],x2-210,y1-140)
+      else if(k==31)canvas.drawImg(nar_rasengan[25],x2-210,y1-140)
+      else if(k==32)canvas.drawImg(nar_rasengan[26],x2-210,y1-145)
+      else if(k==33)canvas.drawImg(nar_rasengan[27],x2-160,y1-145)
+      else if(k==34)
       {
-        canvas.drawImg(nar_rasengan[28],x2-200,y1-140)
+        canvas.drawImg(nar_rasengan[28],x2-160,y1-145)
         canvas.drawImg(nar_rasengan[11],x1,y1-20)
       }
-      else if(k==29)canvas.drawImg(nar_rasengan[13],x1,y1-20)
-      else if(k==30)canvas.drawImg(nar_rasengan[14],x1,y1-20)
-      else if(k==31)
+      else if(k==35)canvas.drawImg(nar_rasengan[29],x2-160,y1-145)
+      else if(k==36)canvas.drawImg(nar_rasengan[13],x1,y1-20)
+      else if(k==37)canvas.drawImg(nar_rasengan[14],x1,y1-20)
+      else if(k==38)canvas.drawImg(nar_rasengan[14],x1,y1-20)
+      else if(k==39)
       {
         canvas.drawImg(nar_rasengan[15],x1,y1-20)
         k=-1;
@@ -234,52 +245,52 @@
       else if(n==5) 
       {
         canvas.drawImg(sas_ametarasu[5],x2,y2)
-        canvas.drawImg(sas_ametarasu[16],x1+20,y2-110)
+        canvas.drawImg(sas_ametarasu[16],x1,y2-110)
       }
       else if(n==6) 
       {
         canvas.drawImg(sas_ametarasu[6],x2,y2)
-        canvas.drawImg(sas_ametarasu[17],x1+20,y2-110)
+        canvas.drawImg(sas_ametarasu[17],x1,y2-110)
       }
       else if(n==7) 
       {
         canvas.drawImg(sas_ametarasu[7],x2,y2)
-        canvas.drawImg(sas_ametarasu[18],x1+20,y2-150)
+        canvas.drawImg(sas_ametarasu[18],x1,y2-150)
       }
       else if(n==8) 
       {
         canvas.drawImg(sas_ametarasu[8],x2,y2)//
-        canvas.drawImg(sas_ametarasu[19],x1+20,y2-150)
+        canvas.drawImg(sas_ametarasu[19],x1,y2-150)
       }
       else if(n==9) 
       {
         canvas.drawImg(sas_ametarasu[9],x2,y2)//
-        canvas.drawImg(sas_ametarasu[20],x1+20,y2-150)//
+        canvas.drawImg(sas_ametarasu[20],x1,y2-150)//
       }
       else if(n==10) 
       {
         canvas.drawImg(sas_ametarasu[10],x2,y2)//
-        canvas.drawImg(sas_ametarasu[21],x1+20,y2-150)//
+        canvas.drawImg(sas_ametarasu[21],x1,y2-150)//
       }
       else if(n==11) 
       {
         canvas.drawImg(sas_ametarasu[11],x2,y2)//
-        canvas.drawImg(sas_ametarasu[22],x1+20,y2-150)//
+        canvas.drawImg(sas_ametarasu[22],x1,y2-150)//
       }
       else if(n==12) 
       {
         canvas.drawImg(sas_ametarasu[12],x2,y2)//
-        canvas.drawImg(sas_ametarasu[23],x1+20,y2-180)
+        canvas.drawImg(sas_ametarasu[23],x1,y2-180)
       }
       else if(n==13) 
       {
         canvas.drawImg(sas_ametarasu[13],x2,y2)//
-        canvas.drawImg(sas_ametarasu[24],x1+20,y2-180)
+        canvas.drawImg(sas_ametarasu[24],x1,y2-180)
       }
       else if(n==14) 
       {
         canvas.drawImg(sas_ametarasu[14],x2,y2)//
-        canvas.drawImg(sas_ametarasu[25],x1+20,y2-180)
+        canvas.drawImg(sas_ametarasu[25],x1,y2-180)
         n=-1;
         sas_action = 0;
         nar_update += 1;
@@ -311,14 +322,49 @@
  
     function main() 
     {
-        //canvas.clear();
+          if (start_game==false)
+          {
+            canvas.drawImg("the_shinobi_clash.jpg",230,0)
+            canvas.drawText(420, 610 ,"Press Enter to start the game", fontSize = 50)
+            
+          }
+
+          canvas.keyDownCallback=function(e)
+          {
+            if(e.which==13)
+              start_game=true;
+          }
+          
+          if (start_game==true)
+          {
+          canvas.ctx.font = "20px Broadway";
+          canvas.ctx.fillStyle = "red";
           canvas.drawImg("new_back.png",300,0,928,564)
           canvas.drawImg(nar_health[nar_update],300,0)
           canvas.drawImg(sas_health[sas_update],1024,0)
           canvas.drawText(0,30,"Press KEY to attack :",fontSize=25); 
-          canvas.drawText(0,90,"KEY Attack ",fontSize=25);
+          canvas.drawText(0,90,"KEY Attack:",fontSize=25);
           canvas.drawText(0,120,"1.     Rasengan",fontSize=25);
           canvas.drawText(0,150,"2.     Tailed Beast Bomb ",fontSize=25);
+          canvas.drawText(0,240,"Possible Enemy Attacks:",fontSize=25);
+          canvas.drawText(0,270,"1.      Chidori Scream",fontSize=25);
+          canvas.drawText(0,300,"2.      Amaterasu:",fontSize=25);
+          canvas.ctx.fillStyle = "blue";
+          canvas.drawText(0,360,"NOTE:",fontSize=25);
+          canvas.drawText(0,390,"Press One key at a time. Let",fontSize=20);
+          canvas.drawText(0,410,"animation of player execute  ",fontSize=20);
+          canvas.drawText(0,430,"properly and after that give ",fontSize=20);
+          canvas.drawText(0,450,"machine chance to execute ",fontSize=20);
+          canvas.drawText(0,470,"its counter attack.",fontSize=20);
+          canvas.drawText(0,490,"Then you can again go for a kill.",fontSize=20);
+          
+          canvas.drawText(x1-10,y1+220,"Naruto",fontSize=40);
+          canvas.drawText(x2-20,y1+220,"Sasuke",fontSize=40);
+
+          canvas.ctx.fillStyle = "black";
+          canvas.drawText(391,90,"Player",fontSize=25);
+          canvas.drawText(928+300-130-55,90,"Computer",fontSize=25);
+          
 
           if(nar_update==5 && p<6)
             nar_action = -1;//State of naruto
@@ -326,10 +372,7 @@
             sas_action = -1;
           rand=Math.floor(Math.random() * 2) + 1;
 
-          /*if(rand)
-            sas_action=1;
-          else
-            sas_action=2*/
+
 
           canvas.keyDownCallback=function(e)
           {
@@ -368,18 +411,25 @@
 
 
           if(p==6 )
+          {
             canvas.drawImg(nar_death[5],x1,y1)
+            canvas.ctx.fillStyle = "white";
+            canvas.drawText(420,150,"Refresh the page to Play Again",fontSize=50)
+            canvas.drawImg("game_over.png",500,200);
+          }
           if(q==4 )
+          {
             canvas.drawImg(sas_death[3],x2,y2)
-
-          
+            canvas.drawImg("game_over.png",500,200);
+          }
+          }
           canvas.update();
-    }
+}
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 150;
+    var timeStep = 150;//before experimenting = 150 
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
