@@ -1,7 +1,15 @@
 <html>
 
-<body onload="canvas.setup()">
-
+<body style="background-color: #c5c5c5;" onload="canvas.setup()">
+  <style>
+      .title .instruction { float:right }
+      .title .heading { float:left }
+  </style>
+  <div class="title">
+    <span class="heading"><button style="height:30px;width:200px">Convex Lens Simulator</button></span>
+    <span class="instruction"><button style="height:30px;width:500px">Press Left Arrow / Right Arrow key to set Focal Point</button></span>
+  </div>
+  
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
     </canvas>
     <canvas id="canvasArea2"
@@ -14,17 +22,22 @@
 <script>
 
     // Declare all global variables here
+    var focus_X = 400;
     var focus = 50;
-
+    
+    
     function setup() 
     {
         // Initialize variables here
-        obj_x1 = 0;
-        obj_y1 = canvas.height/2;
-        obj_x2 = canvas.width;
-        obj_y2 = canvas.height/2;
+        
     }
 
+    function redeclare()
+    {
+      width = canvas.width;
+      height = canvas.height;
+    }
+    
     function drawDottedLine (x1, y1, x2, y2) 
     {
       canvas.ctx.beginPath();
@@ -32,79 +45,239 @@
       canvas.ctx.moveTo(x1, y1);
       canvas.ctx.lineTo(x2, y2);
       canvas.draw();
+      canvas.ctx.setLineDash([0,0]);
     }
 
     // Declare custom functions here
 
-    function draw_convex_lens(){
-      canvas.drawLine(0, canvas.height/2, canvas.width, canvas.height/2);
-      canvas.drawLine(canvas.width/2, 0, canvas.width/2, canvas.height);
-      
-
-      canvas.drawEllipse(canvas.width/2, canvas.height/2, 20,100, Math.PI/2, 0, 2*Math.PI);
+    function draw_focus()
+    {
+      focus = width/2 - focus_X;
+      canvas.setDrawMode(mode = "fill");
+      canvas.drawCircle(focus_X, height/2, 4);
+      canvas.drawCircle(width/2 + focus, height/2, 4);
+      canvas.drawText(focus_X - 21, height/2 + 40, "Focus", fontSize = 16);
+      canvas.drawText(width/2 + focus - 21, height/2 + 40, "Focus", fontSize = 16);
+      canvas.setDrawMode(mode = "stroke");
     }
 
-    function object(){
-      canvas.drawLine(canvas.mouseX ,canvas.height/2, canvas.mouseX, canvas.mouseY);
+    function set_focus(key)
+    {
+      if (key.code == "ArrowRight" && focus_X <= width/2)
+      {
+        focus_X += 5;
+      }
+
+      if(key.code == "ArrowLeft")
+      {
+        focus_X -= 5;
+      }
+    }
+
+
+    function draw_background()
+    {
+      canvas.drawLine(0, height/2, width, height/2);
+      canvas.drawLine(width/2, 0, width/2, height);
+      for(var i = 0, j = 0; i < width; i+=40, j++)
+      {
+        canvas.drawLine(width/2 + i, height/2 + 5, width/2 + i, height/2 - 5);
+        canvas.drawLine(width/2 - i, height/2 + 5, width/2 - i, height/2 - 5);
+        canvas.drawLine(width/2 - 5, height/2 + i, width/2 + 5, height/2 + i);
+        canvas.drawLine(width/2 - 5, height/2 - i, width/2 + 5, height/2 - i);
+        canvas.drawText(width/2 + i - 4, height/2 + 20, j , fontSize = 14);
+        canvas.drawText(width/2 - i - 40 - 9, height/2 + 20, -(j + 1) , fontSize = 14);
+        canvas.drawText(width/2 - 20, height/2 - i + 5 , j , fontSize = 14);
+        canvas.drawText(width/2 - 20, height/2 + i + 40 + 5 , -(j + 1) , fontSize = 14);
+      }
+
+      canvas.setDrawMode(mode = "fill");
+      canvas.setColor(color = "rgba(128,128,128,0.5");
+      canvas.drawEllipse(width/2, height/2, 25, 200, Math.PI/2, 0, 2*Math.PI);
+      canvas.setColor(color = "#000000");
+      canvas.setDrawMode(mode = "stroke");
+      
+    }
+
+    
+    function object()
+    {
+      canvas.setLineThickness(2);
+      canvas.drawLine(canvas.mouseX , height/2, canvas.mouseX, canvas.mouseY);
+      canvas.drawText(canvas.mouseX - 55, height/2 - 9, "Object", fontSize = 16);
+      if (canvas.mouseY < height/2)
+      {
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX + 10, canvas.mouseY + 10);
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX - 10, canvas.mouseY + 10);
+      }   
+      else 
+      {
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX + 10, canvas.mouseY - 10);
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX - 10, canvas.mouseY - 10);        
+      }
+      canvas.setLineThickness(1);
     }
 
     function ray_through_origin()
     {
-      canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.height/2);
+      canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, height/2);
 
-      if (canvas.mouseX <= canvas.width/2)
+      if (canvas.mouseX <= width/2)
       {
-        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
-        var intercept = (canvas.height/2 - slope*canvas.width/2);
-        canvas.drawLine(canvas.width/2, canvas.height/2, canvas.width, slope*canvas.width + intercept);
+        var slope = (height/2 - canvas.mouseY) / (width/2 - canvas.mouseX);
+        var intercept = (height/2 - slope*width/2);
+        canvas.drawLine(width/2, height/2, width, slope*width + intercept);
+        if(canvas.mouseX > (width/2 - focus))
+        {
+          drawDottedLine(canvas.mouseX, canvas.mouseY, 0, slope*0 + intercept);
+        }
       }
       else 
       {
-        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - canvas.mouseX);
-        var intercept = (canvas.height/2 - slope*canvas.width/2);
-        canvas.drawLine(canvas.width/2, canvas.height/2, 0, slope*0 + intercept);
+        var slope = (height/2 - canvas.mouseY) / (width/2 - canvas.mouseX);
+        var intercept = (height/2 - slope*width/2);
+        canvas.drawLine(width/2, height/2, 0, slope*0 + intercept);
+        if(canvas.mouseX < (width/2 + focus))
+        {
+          drawDottedLine(canvas.mouseX, canvas.mouseY, width, slope*width + intercept);
+        }
       }
     }
 
     function ray_through_focus()
     {
-      canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.width/2, canvas.mouseY);
+      canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, canvas.mouseY);
 
-      if (canvas.mouseX <= canvas.width/2)
+      if (canvas.mouseX <= width/2)
       { 
-        canvas.drawLine(canvas.width/2, canvas.mouseY, canvas.width/2 + focus, canvas.height/2 )
-        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 + focus - canvas.width/2);
-        var intercept = (canvas.height/2 - slope*(canvas.width/2 + focus));
-        canvas.drawLine(canvas.width/2 + focus, canvas.height/2, canvas.width, slope*canvas.width + intercept);
+        canvas.drawLine(width/2, canvas.mouseY, width/2 + focus, height/2 )
+        var slope = (height/2 - canvas.mouseY) / (width/2 + focus - width/2);
+        var intercept = (height/2 - slope*(width/2 + focus));
+        canvas.drawLine(width/2 + focus, height/2, width, slope*width + intercept);
         
-        if(canvas.mouseX > (canvas.width/2 - focus))
+        if(canvas.mouseX > (width/2 - focus))
         {
-          drawDottedLine(canvas.width/2, canvas.mouseY, 0, slope*0 + intercept);
+          drawDottedLine(width/2, canvas.mouseY, 0, slope*0 + intercept);
+
+          canvas.drawLine(width/2, canvas.mouseY, width/2 + focus, height/2 )
+          var slope = (height/2 - canvas.mouseY) / (focus_X - canvas.mouseX);
+          var intercept = (height/2 - slope*(focus_X));
+          canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
+          canvas.drawLine(width/2, slope*width/2 + intercept, width, slope*width/2 + intercept);
+
+          drawDottedLine(width/2, slope*width/2 + intercept, 0, slope*width/2 + intercept);
         }
+
+        var slope = (height/2 - canvas.mouseY) / (focus_X - canvas.mouseX);
+        var intercept = (height/2 - slope*(focus_X));
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
+        canvas.drawLine(width/2, slope*width/2 + intercept, width, slope*width/2 + intercept);
+      }
+
+      else 
+      {
+        canvas.drawLine(width/2, canvas.mouseY, width/2 - focus, height/2 )
+        var slope = (height/2 - canvas.mouseY) / (width/2 - focus - width/2);
+        var intercept = (height/2 - slope*(width/2 - focus));
+        canvas.drawLine(width/2 - focus, height/2, 0, slope*0 + intercept);
+
+        if(canvas.mouseX < (width/2 + focus))
+        {
+          drawDottedLine(width/2, canvas.mouseY, width, slope*width + intercept);
+
+          var slope = (height/2 - canvas.mouseY) / (width/2 + focus - canvas.mouseX);
+          var intercept = (height/2 - slope*(width/2 + focus));
+          canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
+          canvas.drawLine(width/2, slope*width/2 + intercept, 0, slope*width/2 + intercept);
+
+          drawDottedLine(width/2, slope*width/2 + intercept, width, slope*width/2 + intercept);
+        }
+
+        var slope = (height/2 - canvas.mouseY) / (width/2 + focus - canvas.mouseX);
+        var intercept = (height/2 - slope*(width/2 + focus));
+        canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
+        canvas.drawLine(width/2, slope*width/2 + intercept, 0, slope*width/2 + intercept);
+      }
+    }
+
+    function image()
+    {
+      var f = focus;
+      var u = width/2 - canvas.mouseX;
+      if ( u <= 0) u *= -1;
+
+      var v = (f*u)/(u - f);
+
+      var m = -1*(v/u);
+
+      var height_object = height/2 - canvas.mouseY;
+
+      canvas.setLineThickness(2);
+      if (canvas.mouseX < width/2)
+      {
+        if(canvas.mouseX < (width/2 - focus)) canvas.drawLine(v + width/2, height/2 , v + width/2, height/2 - height_object*m);
+         
+        else drawDottedLine(width/2 + v, height/2 ,width/2 + v, height/2 - height_object*m);
+
+        canvas.drawText(width/2 + v - 55, height/2 - 9, "Image", fontSize = 16);
       }
       else 
       {
-        canvas.drawLine(canvas.width/2, canvas.mouseY, canvas.width/2 - focus, canvas.height/2 )
-        var slope = (canvas.height/2 - canvas.mouseY) / (canvas.width/2 - focus - canvas.width/2);
-        var intercept = (canvas.height/2 - slope*(canvas.width/2 - focus));
-        canvas.drawLine(canvas.width/2 - focus, canvas.height/2, 0, slope*0 + intercept);
+        if(canvas.mouseX < width/2 + focus) drawDottedLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m); 
+
+        else canvas.drawLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m);
+
+        canvas.drawText(width/2 - v - 55, height/2 - 9, "Image", fontSize = 16);
       }
+
+      if (height/2 - height_object*m < height/2)
+      {
+        if(canvas.mouseX < width/2)
+        {
+          canvas.drawLine(width/2 + v, height/2 - height_object*m, width/2 + v + 10, height/2 - height_object*m + 10);
+          canvas.drawLine(width/2 + v, height/2 - height_object*m, width/2 + v - 10, height/2 - height_object*m + 10);
+        }
+
+        else
+        {
+          canvas.drawLine(width/2 - v, height/2 - height_object*m, width/2 - v + 10, height/2 - height_object*m + 10);
+          canvas.drawLine(width/2 - v, height/2 - height_object*m, width/2 - v - 10, height/2 - height_object*m + 10);
+        }
+      }   
+      else 
+      {
+        if(canvas.mouseX < width/2)
+        {
+          canvas.drawLine(width/2 + v, height/2 - height_object*m, width/2 + v + 10, height/2 - height_object*m - 10);
+          canvas.drawLine(width/2 + v, height/2 - height_object*m, width/2 + v - 10, height/2 - height_object*m - 10);
+        }
+        else
+        {
+          canvas.drawLine(width/2 - v, height/2 - height_object*m, width/2 - v + 10, height/2 - height_object*m - 10);
+          canvas.drawLine(width/2 - v, height/2 - height_object*m, width/2 - v - 10, height/2 - height_object*m - 10);        
+        }
+      }
+      canvas.setLineThickness(1);
     }
 
     // Function while will be called repeatedly 
     function main() 
     {
         canvas.clear();
-        draw_convex_lens();
+        redeclare();
+        draw_background();
+        draw_focus();
+        canvas.keyDownCallback = set_focus;
         canvas.mouseMoveCallback = object();
         canvas.mouseMoveCallback = ray_through_origin();
         canvas.mouseMoveCallback = ray_through_focus();
+        canvas.mouseMoveCallback = image();
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 1;
+    var timeStep = 0.1;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
