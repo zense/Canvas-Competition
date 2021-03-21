@@ -15,8 +15,8 @@
 </ul>
 <p> Note - Only one tool can be selected at once</p>
 
-<p>Default Screen Of Scribble Board</p>
 ![Default Screen Of Scribble Board](https://user-images.githubusercontent.com/34854802/111913173-f5491d80-8a92-11eb-9da0-a1c3956b8c74.PNG)
+<p align="center">Default Screen Of Scribble Board</p>
 
 <h3> Colours And Transparency</h3>
 <p> Our board provides a user with an option to choose from a total of 16,777,216 colour combinations. These combinations can be selected by chosing the respective RGB component by clicking on the red, green and blue bar provided above the tools. An arrow at the bottom of each bar indicates the current red, green, or blue component chosen. The left most position indicates a value of 0 and the right most position indicates a value of 255. The corresponding colour formed by selecting the RGB values is shown in a square, present at at the left of the red colour bar. The default colur on loading the scribble board is white.</p>
@@ -26,8 +26,8 @@
 <h3>Line Width</h3>
 <p> Our board also provides with an option to choose the line width while using brush tool, eraser tool, textbox tool, line tool, rectangle tool and ellipse tool. This width can range from 0.1 to 30. The default value for it is 0.1. To change the line width for any tool, click on the the bar containing '+' and '-' symbols at it's ends. An arrow at the bottom of the bar indicates the value chosen. The corresponding width along with the colour is previewed as a circle on the right of the bar.</p>
 
-<p>Different tools and features used in the board</p>
 ![Different tools used in the board](https://user-images.githubusercontent.com/34854802/111913377-e2831880-8a93-11eb-99e1-947773f5efed.PNG)
+<p align="center">Different tools and features used in the board</p>
 
 <h2>Implementation</h2>
 <p> We began implementing our project by dividing the canvas into 2 parts, one part for the board where the drawing occurs and the other for the tools and colour,transparency and line width selection. Then we made rectangles for each of the tools and selections and coloured them accordingly and added some images of different tools to the corresponding tools. We made an event listener which tracks the clicking down of mouse. It has various conditions for tracking where the mouse is clicked. If the mouse is clicked on a tool the tool gets selected, if it is clicked on the selection bars then relative to where it is clicked on the bar the RGB value, the transparency value and the line width is set. If the mouse is clicked on the scribbling area, then another event listener which gets activated whenever the mouse is moved checks which tool is currently selected and according to the properties of that tool action is taken on the scribbling board. Another event listener checks when the mouse click is released.</p>
