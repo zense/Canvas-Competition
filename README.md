@@ -54,4 +54,26 @@ We first made a rectangle using drawRect(in canvas.js) and then we fixed one poi
  Also the incidence angle can only vary from 0 to 90 degrees.
  <img src="Project Image/3.png" alt="">
  </p>
+ - Prism
+ <p>
+  Default Page is the set of two lines
+  <img src="Project Image/4.png" alt="">
+  
+  User first need to input refractive index,angle of prism and incidence angle. We made a triangle using drawLine(in canvas.js). Then we made a incident line and a normal to the side of a triangle. We used snell's law to calculate angle of refraction and draw the line of refraction. In the end by using coordinate geometry we calculated point of emergence and emergent ray. 
+  <img src="Project Image/5.png" alt="">
  
+### Problems we faced
+----------------------
+Making the incident ray in Glass Slab Refractor to be moved dynamically by the user with the help of mouse.
+- There are lot of cases in total internal refraction of Prism and Glass Slab. So we tried to cover as many cases 
+  as possible in the given time limit.
+- We also have to deal with the co-ordinate system in JS. As we have to calculate the point of intersections of 
+   incident rays which is new for us.
+   
+### What we learnt
+-----------------
+<p>
+Doing this project was great fun. We got to learn some things of a new language. We learnt various aspects of javascript,html and css and how to implement them. We also learnt the concepts of refraction.
+</p>
+  
+  
