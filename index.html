@@ -26,7 +26,7 @@
     var m1, m2, g;
     var num11, num12, num13,num14, den1;
     var coordinates1 = {
-        ps : [],   qs : []   //ARRAqs TO STORE FINAL COORDINATES OF BOB 
+        ps : [],   qs : []   //ARRAYs TO STORE FINAL COORDINATES OF BOB 
     }
 
     function setup() {
@@ -44,7 +44,7 @@
         m1 = 10;
         m2 = 10;
         g = 1;
-
+        //pendulum 2
         r1 = 125;
         r2 = 100;
         a1 = 1.49*Math.PI;
@@ -67,7 +67,7 @@
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-        
+        canvas.setColor("black");
 
         num1 = -g * (2 * m1 + m2) * Math.sin(t1);
         num2 = -m2 * g * Math.sin(t1 - 2 * t2);
@@ -91,9 +91,12 @@
         x2 = x1 + r2*Math.sin(t2);
         y2 = y1 + r2*Math.cos(t2);
 
-        canvas.drawLine(c_x, c_y, x1, y1);
-        canvas.drawCircle(x1, y1, 10);
+
+        canvas.setDrawMode("stroke");
         canvas.drawLine(x1, y1, x2, y2);
+        canvas.drawLine(c_x, c_y, x1, y1);
+        canvas.setDrawMode("fill");
+        canvas.drawCircle(x1, y1, 10);
         canvas.drawCircle(x2, y2, 10);
 
 
@@ -108,9 +111,13 @@
 
         for(var i=1 ; i<10000; i++)
         {
+          canvas.setColor("blue");
+          canvas.setDrawMode("stroke");
           canvas.drawLine(coordinates.xs[i] , coordinates.ys[i] ,coordinates.xs[i-1] , coordinates.ys[i-1]  ) ; //PATH TRACING
         }
         
+
+        //pendulum 2
 
         num11 = -g * (2 * m1 + m2) * Math.sin(a1);
         num12 = -m2 * g * Math.sin(a1 - 2 * a2);
@@ -134,9 +141,13 @@
         p2 = p1 + r2*Math.sin(a2);
         q2 = q1 + r2*Math.cos(a2);
 
-        canvas.drawLine(c1_x, c1_y, p1, q1);
-        canvas.drawCircle(p1, q1, 10);
+        canvas.setColor("brown");
+
+        canvas.setDrawMode("stroke");
         canvas.drawLine(p1, q1, p2, q2);
+        canvas.drawLine(c1_x, c1_y, p1, q1);
+        canvas.setDrawMode("fill");
+        canvas.drawCircle(p1, q1, 10);
         canvas.drawCircle(p2, q2, 10);
 
 
@@ -149,6 +160,7 @@
         coordinates1.ps.push(p2) ;
         coordinates1.qs.push(q2) ;
 
+        canvas.setColor("red");
         for(var i=1 ; i<10000; i++)
         {
           canvas.setDrawMode("stroke");
