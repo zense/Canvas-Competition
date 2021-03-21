@@ -213,8 +213,8 @@ canvas.startMain =  function(timeStep = 50) {
 canvas.startListeners = function () {
 
     window.addEventListener('mousemove', (e) => {
-        this.mouseX = e.clientX;
-        this.mouseY = e.clientY;
+        this.mouseX = e.clientX*10/9;
+        this.mouseY = e.clientY*10/9;
         this.mouseMoveCallback(e);
     });
 
