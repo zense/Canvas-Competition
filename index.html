@@ -1,35 +1,203 @@
 <html>
 
-<body onload="canvas.setup()">
+<body style="background:yellow;" onload="canvas.setup()">
+  <marquee width=cover direction="right" height="100px">
+ <h1 style="color:green";>Domino Simulation</h1>
+</marquee>
 
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	<canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	<canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
-    <script src="./canvas.js"></script>
+	<script src="./canvas.js">
+
+	</script>
 </body>
+
 
 </html>
 <script>
+	var ballX;
+  var ballY;
+  var ballR;
+  var count;
+  var angle;
+  var angle2;
+  //var angle = 0;
 
+  
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+    function setup() 
+    {
+      ballX = 30;
+      ballY = 100;
+      ballR = 30;  
+      angle=[0,0,0,0,0,0,0,0,0,0];
+      angle2 = [0,0,0,0,0,0,0,0,0,0]; 
+       // Initialize variables here
     }
 
     // Declare custom functions here
-
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+  class ball
+  {
+      constructor(x,y,r)
+      {
+        ballX = x;
+        ballY = y;
+        ballR = r;
+      }
+       draw_ball(color)
+        {  
+            canvas.setDrawMode("fill");
+            canvas.setColor(color);
+            canvas.drawCircle(ballX,ballY,ballR);
+        }
+        
+         move(key)
+        {
+          if(key.code == "ArrowRight")
+          {
+            if(ballX+ballR>=740)
+              return;
+            else if(ballX+ballR<740){
+            ballX+=5;}
+            else if(angle[0]==91){
+              ballX+=5;
+            }
+          }
+          if(key.code == "ArrowLeft")
+          {
+            ballX -= 5;
+          }
+          
+          }
+  }
+   
+  function free_fall(heightY)
+        {
+          if(ballY+ballR<=heightY)
+          {
+            ballY+=2;     
+          }
+        }
+           
+  class domino
+  {
+    constructor (x1,y1,x2,y2)
+    {
+      this.line_x1 = x1;
+      this.line_y1 = y1;
+      this.line_x2 = x2;
+      this.line_y2 = y2;
 
     }
+   draw_domino(color,an,code)
+    {
+      canvas.setColor(color);
+      canvas.setDrawMode("stroke");
+      if(code==0){
+      canvas.drawLine(this.line_x1,this.line_y1,this.line_x2+120*(Math.sin(an*Math.PI/180)),this.line_y2+(120-120*Math.cos(an*Math.PI/180)));}
+      if(code==1){
+       canvas.drawLine(this.line_x1,this.line_y1,this.line_x2-120*(Math.sin(an*Math.PI/180)),this.line_y2+(120-120*Math.cos(an*Math.PI/180))); 
+      }
+    }
+    }
+
+   // Function while will be called repeatedly 
+    function main() {
+        canvas.clear();
+        canvas.setColor("black");
+        canvas.ctx.lineWidth = 6;
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(0,220,680,220);
+        canvas.setColor("black");
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(0,400,800,400);
+        b1 = new ball(ballX,ballY,ballR);
+        b1.draw_ball("red");
+        free_fall(220);
+        var x1 = 100;
+        canvas.keyDownCallback = b1.move;
+        
+        
+        for(var i=0;i<8;i++) // run from 1
+        {
+        r1=new domino(x1+i*(60),220,x1+i*60,100);
+                r1.draw_domino("blue",angle[i],0);
+        if(ballX+ballR>=100 && angle[i]<=90  )
+        { 
+          if(i==0){
+          canvas.drawLine(r1.line_x1,r1.line_y1,r1.line_x2+120*(Math.sin(angle[i]*Math.PI/180)),r1.line_y2+(120-120*Math.cos(angle[i]*Math.PI/180)));
+          angle[i]++;}
+        if(r1.line_x2!=200  && i==2)
+        {
+          canvas.keyDownCallback = b1.move;
+          
+        }
+        if(i>0){
+          if(angle[i-1]>25){
+            canvas.drawLine(r1.line_x1,r1.line_y1,r1.line_x2+120*(Math.sin(angle[i]*Math.PI/180)),r1.line_y2+(120-120*Math.cos(angle[i]*Math.PI/180)));
+          angle[i]++;}
+        if(angle[i]==91)
+        {
+          canvas.keyDownCallback = b1.move;
+        }
+          }
+        }  
+        
+        }
+        var x=600;
+        for(var i=0;i<7;i++){
+          r2 = new domino(x-i*70,400,x-i*70,280);
+          r2.draw_domino("green",angle2[i],1);
+          if(ballX-ballR<=600 && angle2[i]<=90 && ballY+ballR>=390){
+            if(i==0){
+              canvas.drawLine(r2.line_x1,r2.line_y1,r2.line_x2-120*(Math.sin(angle2[i]*Math.PI/180)),r2.line_y2+(120-120*Math.cos(angle2[i]*Math.PI/180)));
+              angle2[i]++;
+            
+            }
+            if(angle2[0]==91){
+              canvas.keyDownCallback = b1.move;
+            }
+            if(i>0){
+              if(angle2[i-1]>36){
+                canvas.drawLine(r2.line_x1,r2.line_y1,r2.line_x2-120*(Math.sin(angle2[i]*Math.PI/180)),r2.line_y2+(120-120*Math.cos(angle2[i]*Math.PI/180)));
+                angle2[i]++;
+              }
+              if(angle2[i]==91){
+                canvas.keyDownCallback=b1.move;
+              }
+            }
+          }
+          //if(ballX+)
+        }
+
+        if(ballX>=680)
+        {
+          free_fall(400); 
+        }
+        else if(ballY>220){
+          free_fall(400);
+        }
+        
+        if((ballX<=400 && ballY==372)||angle[7]>89)
+        {
+          canvas.setColor("black");
+          canvas.drawText(410,500,"Made by-Ctrl Alt Elite", fontSize = 35);
+          
+        } 
+        if(ballX<=30){
+          ballX=30;
+        }
+    }
+        
+
+        
+    
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 30;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
