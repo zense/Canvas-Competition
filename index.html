@@ -21,7 +21,9 @@
       x_axis:499,
       y_axis:700,
       r:30,
-      color:"red"
+      color:"red",
+      speed:20,
+      accelaration:1
       };
 
     function setup() {
@@ -31,10 +33,10 @@
     // Declare custom functions here
     function inc(key)
     {
-      if(key.code== "ArrowUp")
-        x+=5;
-        if(key.code== "ArrowDown")
-        x-=5;
+      if(key.code== "ArrowUp") 
+      x+=circle_1.speed;
+      circle_1.speed-=circle_1.accelaration  
+
     }
 
     function draw_circle(x_axis,y_axis,r,color){
