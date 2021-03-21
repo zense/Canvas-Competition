@@ -1,7 +1,6 @@
 <html>
 
 <body onload="canvas.setup()">
-
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -18,8 +17,18 @@
 <script>
     // Declare all global variables here
     var canv = document.getElementById("canvasArea1");
+    var offscreencanvas = document.getElementById("canvasArea2");
+    var freezeCanvas = document.createElement('canvas');
+    
+    offscreencanvas.width = window.innerWidth;
+    offscreencanvas.height = window.innerHeight*4/5;
+    freezeCanvas.width = window.innerWidth;
+    freezeCanvas.height = window.innerHeight*4/5;
+    
     var c = canv.getContext("2d");
-
+    var oc = offscreencanvas.getContext('2d');    
+    var fc = freezeCanvas.getContext("2d");
+    
     var tex_inp = document.getElementById("text_inp1");
     var tex_inp_show = document.getElementById("text_inp1").style.display;
     document.getElementById("text_inp1").style.display = "none";
@@ -30,8 +39,9 @@
     var blue = 255;
     var alpha = 1;
     var rgba = 'rgba(255,255,255,1)';
+    var rgb = 'rgb(255,255,255)';
 
-    var line_width = 1;
+    var line_width = 0.1;
 
     var init_rect_x;
     var init_rect_y;
@@ -107,8 +117,8 @@
             return((value - offset) / 110);
         }
         else if (ch=='l'){
-            if((((value-offset)/110) * 30) < 1){
-                return 1
+            if((((value-offset)/110) * 30) < 0.1){
+                return 0.1
             }
             else{
                 return ((value-offset)/110) * 30;
@@ -179,6 +189,10 @@
         canvas.clear();
         height = window.innerHeight;
         width = window.innerWidth;
+        
+        fc.fillStyle = "#121212";
+        fc.fillRect(0,0,width,height*4/5);
+
         c.fillStyle = "#121212";
         c.fillRect(0,0,width,height*4/5);
         c.fillStyle = "#212121";
@@ -271,7 +285,7 @@
         
         height = window.innerHeight;
         width = window.innerWidth;
-        
+
         if ((event.clientX > width*15/40 && event.clientX < width*15/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
                 
             if(can_draw==false){
@@ -292,9 +306,11 @@
             drawing = true;
             if ((event.clientX >= 0 && event.clientX <= window.innerWidth)&&(event.clientY >= 0 && event.clientY <= window.innerHeight*4/5 - line_width)){
                 inside_canvas = true;
+                oc.clearRect(0,0,width,height*4/5);
                 c.lineWidth = line_width;
                 c.lineCap = 'round';
-                c.strokeStyle = rgba;  
+                c.strokeStyle = rgb;  
+                c.globalAlpha = alpha;
                 c.beginPath();              
                 c.lineTo(event.clientX,event.clientY);
                 c.stroke();
@@ -322,6 +338,27 @@
 
         if(can_erase==true){
             erase = true;
+    
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 -10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img ,width*10/40 + 110 - 13, height*34/40 + 20 , 20 , 20 );
+            red = 255;
+
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + 110 + 10 -10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , (width*10/40 + 110 + 10 + 110) - 13, height*34/40 + 20 , 20 , 20 );
+            green = 255;
+            
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , (width*10/40 + (110 + 10) + (110 + 10)) + 110 - 13, height*34/40 + 20 , 20 , 20 );
+            blue = 255;
+
+            c.fillStyle = "#212121";
+            c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+            c.drawImage(arrow_up_img , (width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) + 110 - 13, height*34/40 + 20 , 20 , 20 );
+            alpha = 1;
+
             if ((event.clientX >= 0 && event.clientX <= window.innerWidth)&&(event.clientY >= 0 && event.clientY <= window.innerHeight*4/5 - line_width)){
                 inside_canvas = true;
                 c.lineWidth = line_width;
@@ -424,28 +461,36 @@
         }
 
         if ((event.clientX > width*10/40) && (event.clientX < (width*10/40) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
-            c.fillStyle = "#212121";
-            c.fillRect(width*10/40 -10, height*34/40 + 20 , 130 , 20 );
-            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
-            red = col_value(event.clientX,width*10/40,'r');
+            if(can_erase==false){
+                c.fillStyle = "#212121";
+                c.fillRect(width*10/40 -10, height*34/40 + 20 , 130 , 20 );
+                c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+                red = col_value(event.clientX,width*10/40,'r');
+            }
         }
         if ((event.clientX > width*10/40 + 110 + 10) && (event.clientX < (width*10/40 + 110 + 10) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
-            c.fillStyle = "#212121";
-            c.fillRect(width*10/40 + 110 + 10 -10, height*34/40 + 20 , 130 , 20 );
-            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
-            green = col_value(event.clientX,width*10/40 + 110 + 10,'g');
+            if(can_erase == false){
+                c.fillStyle = "#212121";
+                c.fillRect(width*10/40 + 110 + 10 -10, height*34/40 + 20 , 130 , 20 );
+                c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+                green = col_value(event.clientX,width*10/40 + 110 + 10,'g');
+            }
         }
         if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10)) && (event.clientX < (width*10/40 + (110 + 10) + (110 + 10)) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
-            c.fillStyle = "#212121";
-            c.fillRect(width*10/40 + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
-            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
-            blue = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10),'b');
+            if(can_erase==false){
+                c.fillStyle = "#212121";
+                c.fillRect(width*10/40 + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+                c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+                blue = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10),'b');
+            }
         }
         if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) && (event.clientX < (width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)) + 110) && (event.clientY > height*34/40) && (event.clientY) < (height*34/40) + (height/50)){
-            c.fillStyle = "#212121";
-            c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
-            c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
-            alpha = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10),'a');
+            if(can_erase==false){
+                c.fillStyle = "#212121";
+                c.fillRect(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10)-10, height*34/40 + 20 , 130 , 20 );
+                c.drawImage(arrow_up_img , event.clientX -9, height*34/40 + 20 , 20 , 20 );
+                alpha = col_value(event.clientX,width*10/40 + (110 + 10) + (110 + 10) + (110 + 10),'a');
+            }
         }
 
         if ((event.clientX > width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110) && (event.clientX < width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110) && (event.clientY > height*34/40) &&(event.clientY < (height*34/40) + (height/50))){
@@ -494,12 +539,15 @@
         }
 
         rgba = 'rgba('+red+','+green+','+blue+','+alpha+')';
+        rgb = 'rgb('+red+','+green+','+blue+')';
     }
 
     function finish_drawing(event){
         if(can_draw == true){
             drawing = false;
-            c.beginPath();
+            fc.clearRect(0, 0, window.innerWidth, window.innerHeight * 4/5);
+            fc.drawImage(canv, 0, 0, window.innerWidth, window.innerHeight * 4/5, 0, 0, window.innerWidth, window.innerHeight * 4/5);
+            oc.beginPath();
         }
         if(can_erase == true){
             erase = false;
@@ -537,17 +585,26 @@
 
     function draw(event){
         if(drawing == true && can_draw == true && inside_canvas == true){
-            c.lineWidth = line_width;
-            c.lineCap = 'round';
-            c.strokeStyle = rgba;                
+            
+            oc.lineWidth = line_width;
+            oc.lineCap = 'round';
+            oc.strokeStyle = rgb;                
                 
             var x = Math.min(Math.max(event.clientX,line_width/2),window.innerWidth - line_width/2);
             var y = Math.min(Math.max(event.clientY,line_width/2),window.innerHeight * 4/5 - line_width/2 - 1);
             
-            c.lineTo(x,y);
-            c.stroke();
-            c.beginPath();
-            c.moveTo(x,y);
+            oc.lineTo(x,y);
+            oc.stroke();
+            oc.beginPath();
+            oc.moveTo(x,y);
+            
+            c.fillStyle = '#121212';
+            c.fillRect(0, 0, window.innerWidth, window.innerHeight * 4/5);
+            c.globalAlpha = 1;
+            c.drawImage(freezeCanvas, 0, 0, window.innerWidth, window.innerHeight * 4/5, 0, 0, window.innerWidth, window.innerHeight * 4/5);
+            c.globalAlpha = alpha;
+            c.drawImage(offscreencanvas, 0, 0, window.innerWidth, window.innerHeight * 4/5, 0, 0, window.innerWidth, window.innerHeight * 4/5);
+            c.globalAlpha = 1;
         }
         if(erase == true && can_erase == true && inside_canvas == true){
             c.lineWidth = line_width;
