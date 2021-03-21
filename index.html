@@ -10,7 +10,7 @@
 </body>
 
 <div>
-    <input id="text_inp1" type="text" style="position:absolute; left:5%;top:84.5%" placeholder="Type Here ...." />
+    <textarea id="text_inp1" style="position: absolute;left: 5%;top: 84.5%;" placeholder="Type Here ...."></textarea>
 
 </div>
 
@@ -290,7 +290,7 @@
 
         if(can_draw==true){
             drawing = true;
-            if ((event.clientX > line_width && event.clientX < window.innerWidth - line_width)&&(event.clientY > line_width && event.clientY < window.innerHeight*4/5 - line_width)){
+            if ((event.clientX >= 0 && event.clientX <= window.innerWidth)&&(event.clientY >= 0 && event.clientY <= window.innerHeight*4/5 - line_width)){
                 inside_canvas = true;
                 c.lineWidth = line_width;
                 c.lineCap = 'round';
@@ -322,7 +322,18 @@
 
         if(can_erase==true){
             erase = true;
-            draw(event);
+            if ((event.clientX >= 0 && event.clientX <= window.innerWidth)&&(event.clientY >= 0 && event.clientY <= window.innerHeight*4/5 - line_width)){
+                inside_canvas = true;
+                c.lineWidth = line_width;
+                c.lineCap = 'round';
+                c.strokeStyle = '#121212';  
+                c.beginPath();              
+                c.lineTo(event.clientX,event.clientY);
+                c.stroke();
+            }
+            else{
+                inside_canvas = false;
+            }
         }
         
         if ((event.clientX > width*21/40 && event.clientX < width*21/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
@@ -530,25 +541,26 @@
             c.lineCap = 'round';
             c.strokeStyle = rgba;                
                 
-            var x = Math.min(Math.max(event.clientX,line_width),window.innerWidth - line_width);
-            var y = Math.min(Math.max(event.clientY,line_width),window.innerHeight * 4/5 - line_width);
+            var x = Math.min(Math.max(event.clientX,line_width/2),window.innerWidth - line_width/2);
+            var y = Math.min(Math.max(event.clientY,line_width/2),window.innerHeight * 4/5 - line_width/2 - 1);
             
             c.lineTo(x,y);
             c.stroke();
             c.beginPath();
             c.moveTo(x,y);
         }
-        if(erase == true && can_erase == true){
-            if ((event.clientX > 0 && event.clientX < window.innerWidth) && (event.clientY >0 && event.clientY < window.innerHeight * 4/5)){
-                c.lineWidth = line_width;
-                c.lineCap = 'round';
-                c.strokeStyle = "#121212";
+        if(erase == true && can_erase == true && inside_canvas == true){
+            c.lineWidth = line_width;
+            c.lineCap = 'round';
+            c.strokeStyle = '#121212';                
                 
-                c.lineTo(event.clientX,event.clientY);
-                c.stroke();
-                c.beginPath();
-                c.moveTo(event.clientX,event.clientY);
-            }
+            var x = Math.min(Math.max(event.clientX,line_width/2),window.innerWidth - line_width/2);
+            var y = Math.min(Math.max(event.clientY,line_width/2),window.innerHeight * 4/5 - line_width/2 - 1);
+            
+            c.lineTo(x,y);
+            c.stroke();
+            c.beginPath();
+            c.moveTo(x,y);
         }
     
     }
