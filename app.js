@@ -55,7 +55,7 @@ function createGui(data){
     "Arunachal Pradesh":	"ar",
     "Assam":	"as",
     "Bihar":	"br",
-    "Chattisgarh": "cg",
+    "Chhattisgarh": "ct",
     "Delhi": "dl",
     "Goa"	:	"ga",
     "Gujarat":	"gj",
@@ -72,20 +72,20 @@ function createGui(data){
     "Meghalaya":	"ml",
     "Mizoram":	"mz",
     "Nagaland":	"nl",
-    "Odisha":	"od",
+    "Odisha":	"or",
     "Puducherry":	"py",
     "Punjab":	"pb",
     "Rajasthan":	"rj",
     "Sikkim":	"sk",
     "Tamil Nadu":	"tn",
-    "Telangana":	"ts",
+    "Telengana": "tg",
     "Tripura":	"tr",
     "Uttar Pradesh":	"up",
-    "Uttarakhand":	"uk",
+    "Uttarakhand":	"ut",
     "West Bengal":	"wb",
     "Andaman and Nicobar Islands": "an",
     "Chandigarh": "ch",
-    "Dadra and Nagar Haveli and Daman and Diu": "dddn",
+    "Dadra and Nagar Haveli and Daman and Diu": "dn",
     "Ladakh": "la",
   }
   var dataIndex = 0;
@@ -212,7 +212,7 @@ function createGui(data){
       roundRect(canvas.ctx, rightPadding, 305, 92, 75, 10, true, false);
       canvas.setColor(selectedBor);
       roundRect(canvas.ctx, rightPadding, 305, 92, 75, 10, false, true);
-      indianStates();
+      makeStatePage();
     }
     canvas.ctx.font='30px sans-serif';
     canvas.setColor("#BB86FC");
@@ -221,66 +221,46 @@ function createGui(data){
     canvas.drawText(18, 360, "States", 20);
   }
 
-// Page draws graph
-  function drawGraph(obj){
-    var stateName = obj.loc;
-    if(stateName == "Andaman and Nicobar Islands"){
-      stateName = "Andaman & Nicobar";
-    }else if(stateName == "Dadra and Nagar Haveli and Daman and Diu"){
-      stateName = "Dadra and Nag..";
-    } else if(stateName == "Jammu and Kashmir"){
-    stateName = "Jammu & Kashmir";
-    }
-    canvas.setDrawMode("fill");
-    canvas.setColor(obj.color);
-    roundRect(canvas.ctx, 200, 200, 500, 350, 15, true, false);
-    canvas.setColor("#FFFFFF");
-  }
-
 
 // Shows the full page of india and states
-  function showBlock(obj){
-    var stateName = obj.loc;
-    var fontSize = 30
-    if(stateName == "Andaman and Nicobar Islands"){
-      stateName = "Andaman & Nicobar";
-    }else if(stateName == "Dadra and Nagar Haveli and Daman and Diu"){
-      stateName = "Dadra and Nag..";
-    } else if(stateName == "Jammu and Kashmir"){
-      stateName = "Jammu & Kashmir";
-    }
-    canvas.setDrawMode("fill");
-    canvas.setColor(obj.color);
-    roundRect(canvas.ctx, 200, 200, 500, 350, 15, true, false);
-    if(!obj.hasOwnProperty('printText')){
-    canvas.setColor("#FFFFFF");
-    var primary = 280;
-    canvas.drawText(220, primary + 80, "Total Cases: ", fontSize);
-    canvas.drawText(220, primary + 140, "Recovery: ", fontSize);
-    canvas.drawText(220, primary + 200, "Deaths: ", fontSize);
-    canvas.setColor("#3385ff");
-    if(obj.loc != "Cases in India"){
+  function pageTemplate(obj, graph=false){
+    if(!graph){
+      var stateName = obj.loc;
+      var fontSize = 30
+      if(stateName == "Andaman and Nicobar Islands"){
+        stateName = "Andaman & Nicobar";
+      }else if(stateName == "Dadra and Nagar Haveli and Daman and Diu"){
+        stateName = "Dadra and Nagar..";
+      } else if(stateName == "Jammu and Kashmir"){
+        stateName = "Jammu & Kashmir";
+      }
+      canvas.setDrawMode("fill");
+      canvas.setColor(obj.color);
+      roundRect(canvas.ctx, 200, 200, 500, 350, 15, true, false);
+      canvas.setColor("#FFFFFF");
+      var primary = 280;
+      canvas.drawText(220, primary + 80, "Total Cases: ", fontSize);
+      canvas.drawText(220, primary + 140, "Recovery: ", fontSize);
+      canvas.drawText(220, primary + 200, "Deaths: ", fontSize);
+      canvas.setColor("#3385ff");
       canvas.drawText(450, primary + 80, obj.confirmedCasesIndian + obj.confirmedCasesForeign, fontSize);
-    }else {
-      canvas.drawText(450, primary + 80, obj.total, fontSize);
-    }
-    canvas.setColor("#33ff33");
-    canvas.drawText(450, primary + 140, obj.discharged, fontSize);
-    canvas.setColor("#ff3333");
-    canvas.drawText(450, primary + 200, obj.deaths, fontSize);
-    if(obj.color == "#333333"){
-      canvas.setColor("#BB86FC");
-    }else {
+      canvas.setColor("#33ff33");
+      canvas.drawText(450, primary + 140, obj.discharged, fontSize);
+      canvas.setColor("#ff3333");
+      canvas.drawText(450, primary + 200, obj.deaths, fontSize);
       canvas.setColor("#03DAC5");
-    }
-    canvas.drawText(220, primary, stateName, 50);
-    roundRect(canvas.ctx, 675, 530, 75, 40, 10, true, false);
-    canvas.setColor("#000000");
-    canvas.drawText(683, 555, "Graph", 20);
+      canvas.drawText(220, primary, stateName, 50);
+      roundRect(canvas.ctx, 675, 530, 75, 40, 10, true, false);
+      canvas.setColor("#000000");
+      canvas.drawText(683, 555, "Graph", 20);
+    }else{
+      canvas.setDrawMode("fill");
+      canvas.setColor(obj.color);
+      roundRect(canvas.ctx, 150, 50, 600, 500, 15, true, false);
     }
   }
 
-  function blockTest(str, posX, posY) {
+  function textManager(str, posX, posY) {
     canvas.setColor("#FFFFFF");
     var strArr = str.split(' ');
     if(strArr.length == 1){
@@ -315,11 +295,11 @@ function createGui(data){
     canvas.setDrawMode("fill");
     canvas.setColor(color);
     roundRect(canvas.ctx, x + paddingX, y + paddingY, 180, 180, 10, true, false);
-    blockTest(name, x + paddingX , y + paddingY);
+    textManager(name, x + paddingX , y + paddingY);
   }
   var loadedGraph;
 
-  function drawPage() {
+  function makeStatePage() {
     var list = sortedData[dataIndex];
     var paddingX = 150;
     var paddingY = 170;
@@ -336,11 +316,9 @@ function createGui(data){
       paddingY = 15;
       canvas.setColor("#03DAC5");
       if(dataIndex != 0){
-        // roundRect(canvas.ctx, paddingX, paddingY, 45, 30, 10, true, false);
         canvas.drawCircle(150, 30, 20);
       }
       if(dataIndex != 5){
-        // roundRect(canvas.ctx, paddingX + 600, paddingY, 45, 30, 10, true, false);
         canvas.drawCircle(150 + 600, 30, 20);
       }
       canvas.setColor("#000000");
@@ -349,7 +327,8 @@ function createGui(data){
     }else{
       // If graph page is not open
       if(!sortedData[dataIndex][blockSelector].graph){
-        showBlock(sortedData[dataIndex][blockSelector]);
+        pageTemplate
+    (sortedData[dataIndex][blockSelector], false);
         paddingX = 125;
         paddingY = 15;
         canvas.setColor("#03DAC5");
@@ -361,23 +340,19 @@ function createGui(data){
           loadedGraph = mapStateCodes[sortedData[dataIndex][blockSelector].loc];
           states(loadedGraph);
         }
-        showBlock({loc: "aha", color: "#FFFFFF", printText: "No"});
+        pageTemplate({loc: "aha", color: "#FFFFFF"}, true);
         // canvas.ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.setColor("#BB86FC");
         roundRect(canvas.ctx, 675, 530, 75, 40, 10, true, false);
         canvas.setColor("#000000");
         canvas.drawText(683, 555, "Back", 20);
         var ctx2 = document.getElementById("myChart");
-        canvas.ctx.drawImage(ctx2, 250, 250, 400, 300);
+        canvas.ctx.drawImage(ctx2, 175, 100, 550, 400);
         setTimeout(function(){
           main();
         }, 100);
       }
     }
-  }
-
-  function indianStates(){
-    drawPage();
   }
 
   // Hud and the title code
@@ -388,7 +363,7 @@ function createGui(data){
     canvas.setColor("#000000");
     canvas.drawRectangle(100, 0, 700, 600);
     canvas.setColor("#FFFFFF")
-    canvas.drawText(195, 130, "Covid-19 Report", 70);
+    canvas.drawText(170, 130, "Covid-19 Live Statistics", 55);
   }
 
   function startPage(){
@@ -397,14 +372,14 @@ function createGui(data){
         india();
         loadedGraph = "mainGraph";
       }
-      showBlock({loc: "aha", color: "#FFFFFF", printText: "No"});
+      pageTemplate({loc: "aha", color: "#FFFFFF", printText: "No"}, true);
       // canvas.ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas.setColor("#BB86FC");
       roundRect(canvas.ctx, 675, 530, 75, 40, 10, true, false);
       canvas.setColor("#000000");
       canvas.drawText(683, 555, "Back", 20);
       var ctx2 = document.getElementById("myChart");
-      canvas.ctx.drawImage(ctx2, 250, 250, 400, 300);
+      canvas.ctx.drawImage(ctx2, 175, 100, 550, 400);
       setTimeout(function(){
         main()
       }, 100);
@@ -439,18 +414,9 @@ function createGui(data){
     canvas.clear();
     createHud();
     navBar(select);
-    // canvas.draw();
   }
-  // function mainlol(){}
-
-  // Override functions here; 
-  // canvas.mainFunction = mainlol;
-
   canvas.height = window.width;
   canvas.width = window.height;
-  // var timeStep = 50;
-  // canvas.startMain(timeStep);
-  // canvas.setupFunction = setup;
   setup();
   canvas.mouseDownCallback = checkMouse;
 }
