@@ -6,7 +6,7 @@ These rays return pixel data of surfaces it collides with.
 
 # WHAT IT DOES
 The user can add any number of spheres or sources of light (objects) along with their properties while they are being 3D rendered.
-They can look around, move forward using the arrow keys and delete these objects as and when they wish.
+They can look around and move forward using the arrow keys, and delete these objects as and when they wish.
 
 # CONTROLS
 'a' to add objects,
@@ -16,7 +16,8 @@ Right Arrow Key to turn right,
 Up Arrow Key to move forward.
 
 # HOW IT WAS BUILT
-
+We used 'canvas.js,' a framework provided by Zense for controls and writing pixel data.
+We created 'Vector' and 'Ray' classes that allow us to compute 3-dimensional mathematics.
 
 # INSPIRATION
 We drew inspiration from a youtube video (https://www.youtube.com/watch?v=QkETiyYWh2o) where ray-tracing was done on the console using ASCII.

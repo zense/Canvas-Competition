@@ -25,6 +25,7 @@ var settings = {
 
 alert("Press 'a' to add an object, and 'd' to delete");
 alert("Use your left and right arrow keys to look around");
+alert("Use your up arrow key to move forward");
 
 settings.width = 200;
 settings.height = 200;
