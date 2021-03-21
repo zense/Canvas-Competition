@@ -22,6 +22,10 @@
     <label for="clr">Clear</label>
     <input type="button" id="reset" value="Reset" onclick="canvas.clear()">
 
+    <br>
+
+    <p>Each Square is 20*20 sq units</p>
+
       
     
         
@@ -75,7 +79,7 @@
     function main() {
         // canvas.clear();
         if(flag==0){
-            var c = document.getElementById("canvasArea1");
+          var c = document.getElementById("canvasArea1");
             var ctx = c.getContext("2d");
             var gar=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
             gar.addColorStop(0,"#500778");
@@ -146,7 +150,13 @@
               canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
               lineArr.push(canvas.mouseX);
               lineArr.push(canvas.mouseY);
-              canvas.drawLine(lineArr[0],lineArr[1],lineArr[2],lineArr[3])
+              var cx1 = lineArr[0];
+              var cy1 = lineArr[1];
+              var x1 = lineArr[2];
+              var y1 = lineArr[3];
+              var len = Math.sqrt((x1-cx1)*(x1-cx1) + (y1-cy1)*(y1-cy1));
+              canvas.drawLine(cx1,cy1,x1,y1)
+              canvas.drawText((cx1 + x1)/2 - 25, (cy1 + y1)/2, Math.round(len), fontSize = 15)
               
               sel = -1;
                while(lineArr.length!=0) {
@@ -200,6 +210,13 @@
               var cy1=recArr[1];
               var x1=recArr[2];
               var y1=recArr[3];
+
+              var lenX = x1>cx1?x1 - cx1:cx1 - x1;
+              canvas.drawText((cx1 + x1)/2, y1>cy1?cy1:y1, Math.round(lenX), fontSize = 15)
+              
+              var lenY = y1>cy1?y1 - cy1:cy1 - y1;
+              canvas.drawText((x1>cx1?cx1:x1) - 25, (cy1 + y1)/2, Math.round(lenY), fontSize = 15)
+
               canvas.drawRectangle(x1>cx1?cx1:x1, y1>cy1?cy1:y1,x1>cx1?x1-cx1:cx1-x1,y1>cy1?y1-cy1:cy1-y1)
               sel=-1;
               while(recArr.length!=0) {
@@ -272,6 +289,8 @@
               var cy1=clearRec[1];
               var x1=clearRec[2];
               var y1=clearRec[3];
+
+              
               var cvs = document.getElementById("canvasArea1");
               var context = cvs.getContext("2d")//oh lawd so saaxy
               context.clearRect(x1>cx1?cx1:x1, y1>cy1?cy1:y1,x1>cx1?x1-cx1:cx1-x1,y1>cy1?y1-cy1:cy1-y1)
@@ -295,6 +314,5 @@
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
-
 
 </script>
