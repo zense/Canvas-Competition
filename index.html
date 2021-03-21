@@ -60,14 +60,15 @@
 
       function refraction1(a,b,c,d,m2,n,k,x,y){//starting and ending (x,y) of line where refraction takes place. m2 is slope of ray. n is RI.x and y are the coordinates of the point of refraction.
 
-      var m1= Math.tan(Math.PI/2 + Math.atan((d-b)/(c-a)));
+      var m1= Math.tan(Math.PI/2 + Math.atan((d-b)/(c-a)));//slope of normal
 
       var i = Math.atan(((m1-m2)/(1+m1*m2)));
       var sin_i = Math.sin(i);
-      if (sin_i/n >= 1){
-            reflection(x_1,m3*(x_1-x)+y, m3, Math.tan(Math.PI/2 - Math.atan(5/4) ))
-          }
+      // if (sin_i/n >= 1){
+      //       reflection(x_1,m3*(x_1-x)+y, m3, Math.tan(Math.PI/2 - Math.atan(5/4) ));
+      //     }
       var r = Math.asin(sin_i/n);
+      // console.log(r);
       var m_3 = Math.tan(Math.atan(m1) - r);
       var m_4 = 5/12;
       if (k == 1){            // for first refraction
@@ -77,26 +78,31 @@
         if (Math.atan(((m3-m4)/(1+m3*m4))) < 0){      // for right edge
           var x_1 = intersection(m3,y - m3*x, 5/4, 50 - 5*350/4);
           canvas.drawLine(x,y,x_1,m3*(x_1-x)+y);
-          if (sin_i/n >= 1){                          // for reflection
-            reflection(x_1,m3*(x_1-x)+y, m3, Math.tan(Math.PI/2 - Math.atan(5/4) ))
-          }
+          
+          
           return x_1;
-        }else{                                        // for bottom edge
+
+        }
+        else{                                        // for bottom edge
           var x_2 = intersection(m3,y - m3*x, 0, 300);
           canvas.drawLine(x,y,x_2,m3*(x_2-x)+y);
           // console.log(x_2);
-          if (sin_i/n >= 1){                          // for reflection
-            reflection(x_2,m3*(x_2-x)+y, m3, Math.tan(Math.PI/2));
-          }
+          
           return x_2;
         }
         
       }
-      else{                 //
-        // console.log(x);
+      else{                 // for second surface
+        // console.log(sin_i/n);
+        if (Math.abs(sin_i/n) >= 1){        
+          // console.log(x, y, m3, m1);                  // for total internal reflection
+            reflection(x,y, m3, m1);
+          }
         canvas.drawLine(x,y,1000,m_3*(1000-x)+y);
       }
       }
+
+
 
       function reflection(x,y,m,m_nor){
 
@@ -107,10 +113,18 @@
         
         var i = Math.atan(((m_nor-m)/(1+m_nor*m)));
         var m_3 = Math.tan(Math.atan(m_nor) + i);
-        canvas.drawLine(x,y,600,m_3*(600-x)+y);
-        console.log(m_3);
+        if (m_nor == (Math.tan(Math.PI/2))){   // bottom edge
+          canvas.drawLine(x, y, 700, (m_3*(700-x)+y));
+        }else{
+          if(m_3 < 0){
+            canvas.drawLine(x, y, 0, (m_3*(0-x)+y));
+          }else{
+            canvas.drawLine(x, y, 700, (m_3*(700-x)+y));
+          }
+        }
+        // console.log(m_3);
         // canvas.drawLine(200,400,200,600);
-        canvas.drawLine(150, 300, 550, 20);
+        // canvas.drawLine(150, 300, 550, 20);
 
         
       }
@@ -130,8 +144,10 @@
         var x_new = refraction1(150, 300, 350, 50,m_ray,1.5, 1, 250, 175);
         // console.log(x_new);
         if (Math.atan(((m3-m4)/(1+m3*m4))) < 0){
+          // console.log(x_new);
           refraction1(350, 50, 550, 300,m3,1/1.5,0,x_new,m3*(x_new-250)+175);
         }else{
+          // console.log(x_new);
           refraction1(150, 300, 550, 300,m3,1/1.5,0,x_new,m3*(x_new-250)+175);
         }
     }
