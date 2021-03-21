@@ -1,12 +1,14 @@
 <html>
 
 <body style="background-color: #c5c5c5;" onload="canvas.setup()">
-  <p class="heading"><button style="height:30px;width:200px; font-size:18;">Simulators</button></span></p>
   <div style="float: right;"class="art-maker" id="art-maker">
     <p id="axes"></p><span id="thickness"></span>
+    <p>PRESS B TO CHANGE TO BLACK MODE</p>
     <p>(Press Left/Right Arrow keys to set Axes)</p>
     <p>(Press Up/Down Arrow keys to set Thickness)</p>
     </div>
+
+    <p class="heading"><button style="height:30px;width:200px; font-size:18;">Simulators</button></span></p>
 
   <p id="yesno" style="font-size:25;"></p>
 
@@ -35,7 +37,7 @@
     var alpha;
     var no_axes;
     var thickness;
-    var color;
+    var color1;
     
     
     function setup() 
@@ -52,7 +54,7 @@
         no_axes = 24;
         alpha = Math.PI/(no_axes/2);
         thickness = 1;
-        color = 1;
+        color1 = 'c';
     }
 
     // Declare custom functions here
@@ -82,11 +84,14 @@
         if (key.code == "ArrowLeft")
           no_axes--;
         
-        if(key.code == "KeyB")
-          color = 1;
+        if(key.code == "KeyB"){
+          color1 = 'b';
+          console.log(color1);
+        }
     
         if(key.code == "ArrowUp")
           thickness++;
+
         if(key.code == "ArrowDown" && thickness > 1)
           thickness--;
     }
@@ -100,12 +105,16 @@
         }
 
         theta = Math.atan((centerY - dotY)/(dotX - centerX));
-        var r = Math.random() * (225 - 0) + 0;
-        var g = Math.random() * (225 - 0) + 0;
-        var b = Math.random() * (225 - 0) + 0;
+        
       
-        canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
-      
+        if(color1 == 'c') 
+        {
+          var r = Math.random() * (225 - 0) + 0;
+          var g = Math.random() * (225 - 0) + 0;
+          var b = Math.random() * (225 - 0) + 0;
+          canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
+        }
+
         canvas.setDrawMode(mode = "fill");
         for(var i = alpha; i <= 2*Math.PI; i += alpha/2)
         {
