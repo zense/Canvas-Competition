@@ -1,6 +1,6 @@
 # Double Pendulum
 
-## Developed by team **nibblebits**
+## Developed by team **NIBBLEBITS**
     1.Vansh vardhan singh - IMT2020010
     2.Shivankar Pilligundla - IMT2020016 
 
