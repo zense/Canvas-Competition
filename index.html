@@ -21,6 +21,13 @@
     var coordinates = {
         xs : [],   ys : []   //ARRAYS TO STORE FINAL COORDINATES OF BOB 
     }
+    var a1,a2,p1,p2,q1,q2,r1,r2, c1_x, c1_y;
+    var a1_v, a2_v, a1_a, a2_a;
+    var m1, m2, g;
+    var num11, num12, num13,num14, den1;
+    var coordinates1 = {
+        ps : [],   qs : []   //ARRAqs TO STORE FINAL COORDINATES OF BOB 
+    }
 
     function setup() {
         // Initialize variables here
@@ -34,6 +41,20 @@
         t1_a = 0;
         t2_v = 0;
         t2_a = 0;
+        m1 = 10;
+        m2 = 10;
+        g = 1;
+
+        r1 = 125;
+        r2 = 100;
+        a1 = 1.49*Math.PI;
+        a2 = 1.49*Math.PI;
+        c1_x = canvas.width/2;
+        c1_y = canvas.width/4;
+        a1_v = 0;
+        a1_a = 0;
+        a2_v = 0;
+        a2_a = 0;
         m1 = 10;
         m2 = 10;
         g = 1;
@@ -90,6 +111,49 @@
           canvas.drawLine(coordinates.xs[i] , coordinates.ys[i] ,coordinates.xs[i-1] , coordinates.ys[i-1]  ) ; //PATH TRACING
         }
         
+
+        num11 = -g * (2 * m1 + m2) * Math.sin(a1);
+        num12 = -m2 * g * Math.sin(a1 - 2 * a2);
+        num13 = -2 * Math.sin(a1 - a2) * m2;
+        num14 = a2_v * a2_v * r2 + a1_v * a1_v * r1 * Math.cos(a1 - a2);
+        den1 = r1 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));   
+        a1_a = (num11 + num12 + num13 * num14) / den1;
+                                                          //CALCULATING ANGULAR ACCELERATION
+        num11 = 2 * Math.sin(a1 - a2);
+        num12 = (a1_v * a1_v * r1 * (m1 + m2));
+        num13 = g * (m1 + m2) * Math.cos(a1);
+        num14 = a2_v * a2_v * r2 * m2 * Math.cos(a1 - a2);
+        den1 = r2 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));
+        a2_a = (num11 * (num12 + num13 + num14)) / den1;
+
+
+  
+
+        p1 = c1_x + r1*Math.sin(a1);
+        q1 = c1_y + r1*Math.cos(a1);
+        p2 = p1 + r2*Math.sin(a2);
+        q2 = q1 + r2*Math.cos(a2);
+
+        canvas.drawLine(c1_x, c1_y, p1, q1);
+        canvas.drawCircle(p1, q1, 10);
+        canvas.drawLine(p1, q1, p2, q2);
+        canvas.drawCircle(p2, q2, 10);
+
+
+        a1_v += a1_a;
+        a2_v += a2_a;
+
+        a1 += a1_v;
+        a2 += a2_v;
+
+        coordinates1.ps.push(p2) ;
+        coordinates1.qs.push(q2) ;
+
+        for(var i=1 ; i<10000; i++)
+        {
+          canvas.setDrawMode("stroke");
+          canvas.drawLine(coordinates1.ps[i] , coordinates1.qs[i] ,coordinates1.ps[i-1] , coordinates1.qs[i-1]  ) ; //PATH TRACING
+        }
         
 
     }
