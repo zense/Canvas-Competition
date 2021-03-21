@@ -270,7 +270,7 @@
         
         height = window.innerHeight;
         width = window.innerWidth;
-
+        
         if ((event.clientX > width*15/40 && event.clientX < width*15/40 + width/36) && (event.clientY > height*37/40 && event.clientY < height*37/40 + height/20)){
                 
             if(can_draw==false){
@@ -595,11 +595,6 @@
         }
     
     }
-
-    window.addEventListener('resize',function(){
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-    })
 
     window.addEventListener('mousedown',select);
 
