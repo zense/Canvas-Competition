@@ -73,7 +73,7 @@
         circle_orbit_radius = 450;
         circle_orbit_x = canvas.width/2;
         circle_orbit_y = canvas.height/2;
-        ellipse_major = 350;
+        ellipse_major = 370;
         ellipse_minor = 290;
         square_side = 330;
         square_left_x = (canvas.width - square_side)/2;
@@ -96,8 +96,44 @@
         Te4 = 0;
         score = [0,0,0,0];
         h = 0;
-        time = 10000;
+        time = 6500;
     }
+    /*  ""Tried Creating laser beam animation to destroy planet""
+            if(time <= 0)
+            {
+                if(beam_animation == 0)
+                {
+                    if(beam_shooter_coordinates[0] - canvas.width/2 >= 0)
+                    {
+                        var beam_theta = Math.asin((beam_shooter_coordinates[0] - canvas.width/2) / beam_radius) * (180 / Math.PI);
+                    }
+                    else
+                    {
+                        var beam_theta = 180 - Math.asin((beam_shooter_coordinates[0] - canvas.width/2) / beam_radius) * (180 / Math.PI);
+                    }
+                    console.log(beam_theta);
+                    var beam_start_left = [beam_shooter_coordinates[0] - beam_radius * Math.sin(beam_theta * (Math.PI / 180)), beam_shooter_coordinates[1] + beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_start_right = [beam_shooter_coordinates[0] + beam_radius * Math.sin(beam_theta * (Math.PI / 180)), beam_shooter_coordinates[1] - beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_end_left = [canvas.width/2 - beam_radius * Math.sin(beam_theta * (Math.PI / 180)), canvas.height/2 + beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_end_right = [canvas.width/2 + beam_radius * Math.sin(beam_theta * (Math.PI / 180)), canvas.height/2 - beam_radius * Math.cos(beam_theta * (Math.PI / 180))]
+                    canvas.drawLine(beam_start_left[0], beam_start_left[1], beam_start_right[0], beam_start_right[1]);
+                    var beam_inter_left = beam_start_left;
+                    var beam_inter_right = beam_start_right;
+                    while(beam_inter_left != beam_end_left && beam_inter_right != beam_end_right)
+                    {
+                        beam_inter_left[0] += Math.cos(beam_theta * (Math.PI / 180));
+                        console.log(beam_inter_left[0]);
+                        beam_inter_left[1] += Math.sin(beam_theta * (Math.PI / 180));
+                        beam_inter_right[0] += Math.cos(beam_theta * (Math.PI / 180));
+                        beam_inter_right[1] += Math.sin(beam_theta * (Math.PI / 180));
+                        canvas.drawLine(beam_start_left[0], beam_start_left[1], beam_inter_left[0], beam_inter_left[1]);
+                        canvas.drawLine(beam_start_right[0], beam_start_right[1], beam_inter_right[0], beam_inter_right[1]);
+                    }
+                    canvas.drawLine(beam_end_left[0], beam_end_left[1], beam_end_right[0], beam_end_right[1]);
+                    h = 2;
+                }
+            }
+            */
 
     var end = function(){
         if ((defence_x - 20) <=0 || (defence_x + 20) >= canvas.width ||(defence_y - 20) <=0 || (defence_y + 20) >= canvas.height){
@@ -536,8 +572,13 @@ particle.style.background = blastArray[Math.floor(Math.random() * blastArray.len
         centreX = orbitR * Math.cos(time * (Math.PI / 180));
         centreY = orbitR * Math.sin(time * (Math.PI / 180));
 
+        if (orbitR == 500){
+            createGradient(canvas.width/2 + centreX, canvas.height/2 + centreY,1,selfR*2,200,'#c6535d', 'transparent');
 
-        createGradient(canvas.width/2 + centreX, canvas.height/2 + centreY,1,selfR*2,80,'#c6535d', 'transparent');
+        }
+        else{
+        createGradient(canvas.width/2 + centreX, canvas.height/2 + centreY,1,selfR*4,200,'#c6535d', 'transparent');
+    }
         return [canvas.width/2 + centreX, canvas.height/2 + centreY];
     }
     function createbackground()
@@ -612,13 +653,17 @@ particle.style.background = blastArray[Math.floor(Math.random() * blastArray.len
         if(time > 0)
         {
             time -= 1;
+            canvas.setColor('brown')
+            canvas.drawText(canvas.width - 200, 100, "Time Left: " + Math.floor((time * 3) / 650), 30);
         }
         else
-        {
-            h = 2;
+        {   pushEffect(canvas.width/2,canvas.height/2)
+            canvas.setColor('brown')
+            canvas.drawText(canvas.width/2 - 250, 200, "TIME UP", 100);
+            canvas.drawText(canvas.width/2 - 500, 300, "PLANET DESTROYED", 100);
+            setTimeout(() => {  h = 2; }, 600);
         }
-        canvas.setColor('brown')
-        canvas.drawText(canvas.width - 200, 100, "Time Left: " + Math.floor((time * 3) / 650), 30);
+
 
 
         if (score[0]!=10) {
@@ -657,7 +702,5 @@ particle.style.background = blastArray[Math.floor(Math.random() * blastArray.len
 
     var timeStep = 1;
     canvas.startMain(timeStep);
-
-</script>
 
 </script>
