@@ -7,7 +7,7 @@
   </style>
   <div class="title">
     <span class="heading"><button style="height:30px;width:200px">Convex Lens Simulator</button></span>
-    <span class="instruction"><button style="height:30px;width:500px">Press Left Arrow / Right Arrow key to set Focal Point</button></span>
+    <span class="instruction"><button style="height:30px;width:350px">Press Left Arrow / Right Arrow key to set Focal Point</button></span>
   </div>
   
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
@@ -32,12 +32,14 @@
         
     }
 
+    // Declare custom functions here
+
     function redeclare()
     {
       width = canvas.width;
       height = canvas.height;
     }
-    
+
     function drawDottedLine (x1, y1, x2, y2) 
     {
       canvas.ctx.beginPath();
@@ -47,8 +49,6 @@
       canvas.draw();
       canvas.ctx.setLineDash([0,0]);
     }
-
-    // Declare custom functions here
 
     function draw_focus()
     {
@@ -65,12 +65,12 @@
     {
       if (key.code == "ArrowRight" && focus_X <= width/2)
       {
-        focus_X += 5;
+        focus_X += 1;
       }
 
       if(key.code == "ArrowLeft")
       {
-        focus_X -= 5;
+        focus_X -= 1;
       }
     }
 
@@ -202,15 +202,16 @@
 
     function image()
     {
+      var x, y;
       var f = focus;
-      var u = width/2 - canvas.mouseX;
+      u = width/2 - canvas.mouseX;
       if ( u <= 0) u *= -1;
 
-      var v = (f*u)/(u - f);
+      v = (f*u)/(u - f);
 
-      var m = -1*(v/u);
+      m = -1*(v/u);
 
-      var height_object = height/2 - canvas.mouseY;
+      height_object = height/2 - canvas.mouseY;
 
       canvas.setLineThickness(2);
       if (canvas.mouseX < width/2)
@@ -259,6 +260,14 @@
       }
       canvas.setLineThickness(1);
     }
+    
+    function display_properties()
+    {
+      var x = canvas.mouseX - width/2;
+      var y = height/2 - canvas.mouseY;
+      canvas.drawText(width - 250, 65, "Focal length = " + focus, fontSize = 18);
+      canvas.drawText(width -250, 95, "Object position = (" + x + ", " + y + ")", fontSize = 18);
+    }
 
     // Function while will be called repeatedly 
     function main() 
@@ -272,6 +281,7 @@
         canvas.mouseMoveCallback = ray_through_origin();
         canvas.mouseMoveCallback = ray_through_focus();
         canvas.mouseMoveCallback = image();
+        display_properties();
     }
 
     // Override functions here; 
