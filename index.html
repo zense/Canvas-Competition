@@ -522,10 +522,20 @@
         }
         
         if(text_box_on == true){
-            if ((event.clientX > 0 && event.clientX < window.innerWidth)&&(event.clientY > 0 && event.clientY < window.innerHeight*4/5 - line_width*1.75)){
+            var textArray = document.getElementById("text_inp1").value.split("\n");
+            if ((event.clientX > 0 && event.clientX < window.innerWidth)&&(event.clientY > 0 && event.clientY < window.innerHeight*4/5 - (textArray.length-1)*line_width*8 - line_width*1.75)){
                 c.fillStyle = rgba;
                 c.font = line_width*8 + "px Georgia";
-                c.fillText(document.getElementById("text_inp1").value, event.clientX, event.clientY);
+                var textArray = document.getElementById("text_inp1").value.split("\n");
+                var line_space = 0;
+                for(var i = 0;i<textArray.length;i++)
+                {
+                    if(i != textArray.length - 1){
+                        textArray[i] = textArray[i].substring(0,textArray[i].length - 2);
+                    }
+                    c.fillText(textArray[i], event.clientX, event.clientY + line_space);
+                    line_space += line_width*8;
+                }         
             }
         }
 
