@@ -10,10 +10,9 @@ It includes 2 different simulators:-
 * Mouse position = position of object
 * Press Left Arrow / Right Arrow Key to set the focal length of the lens
 
-![Screenshot (86)](https://user-images.githubusercontent.com/63835433/111912381-50791100-8a8f-11eb-983a-5f100102b385.png)
+![Screenshot (98)](https://user-images.githubusercontent.com/63835433/111919201-c2148780-8aae-11eb-8225-36b1ffc20b96.png)
 
-![Screenshot (87)](https://user-images.githubusercontent.com/63835433/111912384-5242d480-8a8f-11eb-8d10-6118fd265ca1.png)
-
+![Screenshot (99)](https://user-images.githubusercontent.com/63835433/111919207-c9d42c00-8aae-11eb-9333-c0854ee3bb98.png)
 
 ## 2 - A OddlySatisfying Pattern Simulator
 
@@ -23,11 +22,11 @@ It includes 2 different simulators:-
 * Press Up Arrow / Down Arrow Key to set the thickness of lines
 * Press B to change to Black Mode (details are more clearly visible on black mode)
       
-![Screenshot (88)](https://user-images.githubusercontent.com/63835433/111912385-52db6b00-8a8f-11eb-922d-2915e84e741f.png)
+![Screenshot (100)](https://user-images.githubusercontent.com/63835433/111919216-ce98e000-8aae-11eb-9cbc-91be9a341b6c.png)
 
-![Screenshot (89)](https://user-images.githubusercontent.com/63835433/111912387-540c9800-8a8f-11eb-9c29-4d18be5ea3f3.png)
+![Screenshot (101)](https://user-images.githubusercontent.com/63835433/111919217-d062a380-8aae-11eb-82a2-581f93a57b2c.png)
 
-![Screenshot (92)](https://user-images.githubusercontent.com/63835433/111912389-553dc500-8a8f-11eb-9ee8-f816f68b2944.png)     
+![Screenshot (102)](https://user-images.githubusercontent.com/63835433/111919218-d0fb3a00-8aae-11eb-90e7-337028973eb2.png)     
       
 ## What I learned?
 
