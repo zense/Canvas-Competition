@@ -1,4 +1,4 @@
-# Double Pendulum
+# Chaos Theory with Double Pendulums
 
 ## Developed by team **NIBBLEBITS**
     1.Vansh vardhan singh - IMT2020010
