@@ -46,7 +46,7 @@
         hand_4 = canvas.height * 0.18;
         i=0;
         j=0;
-        // canvas.drawImg("linear-purple-grey-gradient-1920x1080-c2-dda0dd-708090-a-90-f-14.png",0,0,1000,1000)
+        alert("Press Space to jump!");
     }
 
     function jump()
@@ -197,22 +197,15 @@
 
     function check()
     {
-        // if(x>1)
-        // alert(x)
       if ((max_height+600)%900-100<5 && (max_height+600)%900-100>0)
       {
-        // alert(circle_1.color);
-        // alert(curr_colour);
         if(circle_1.color == curr_colour || circle_1.color == 'null' )
         {
           score++;
           max_height+=5;
-        //   x+=circle_1.speed;
         }
         else{
             alert("Game over");
-            x=0;
-            y=0;
         }
       }
 
@@ -266,9 +259,15 @@
       rotating_obstacle(350,(x)%900);
       jump();
       check();
-      canvas.drawText(1000, 100, score, fontSize = 30)
       keyDownCallback=inc
       y+=0.5
+      canvas.setDrawMode("fill");
+      canvas.setColor("black");
+      canvas.drawRectangle(1200,100,100,100);
+      canvas.setColor("white");
+      canvas.drawText(1240, 160, score, fontSize = 30)
+      if(x<0)
+      x=0;
 }
     // Override functions here; 
     canvas.mainFunction = main;
