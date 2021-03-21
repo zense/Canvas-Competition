@@ -1,12 +1,14 @@
 <html>
 
 <body style="background-color: #c5c5c5;" onload="canvas.setup()">
-  <p class="heading"><button style="height:30px;width:200px; font-size:18;">Simulators</button></span>
-  <p id="yesno" style="font-size:25;"></p>
-
+  <p class="heading"><button style="height:30px;width:200px; font-size:18;">Simulators</button></span></p>
   <div style="float: right;"class="art-maker" id="art-maker">
-  <p id="axes"></p> <span id="thickness"></span>
-  </div>
+    <p id="axes"></p><span id="thickness"></span>
+    <p>(Press Left/Right Arrow keys to set Axes)</p>
+    <p>(Press Up/Down Arrow keys to set Thickness)</p>
+    </div>
+
+  <p id="yesno" style="font-size:25;"></p>
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
     </canvas>
@@ -50,7 +52,6 @@
         no_axes = 24;
         alpha = Math.PI/(no_axes/2);
         thickness = 1;
-        color = 1;
     }
 
     // Declare custom functions here
@@ -68,6 +69,7 @@
 
     function display_variables()
     {
+        color = 0;
         alpha = Math.PI/(no_axes/2);
         document.getElementById("axes").innerHTML = "Axes = " + no_axes;
         document.getElementById("thickness").innerHTML = "Thickness of lines = " + thickness;
@@ -81,10 +83,8 @@
           no_axes--;
         
         if(key.code == "KeyB")
-          color = 0;
-        
-        console.log(color);
-        
+          color = 1;
+    
         if(key.code == "ArrowUp")
           thickness++;
         if(key.code == "ArrowDown" && thickness > 1)
@@ -104,8 +104,8 @@
         var g = Math.random() * (225 - 0) + 0;
         var b = Math.random() * (225 - 0) + 0;
       
-        
-          //canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
+        if(color == 0)
+          canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
       
         canvas.setDrawMode(mode = "fill");
         for(var i = alpha; i <= 2*Math.PI; i += alpha/2)
