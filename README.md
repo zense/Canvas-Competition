@@ -1,4 +1,4 @@
 # Zense-HacKnight2k21 - FlameRiders
 
-Ray-tracing\
+Ray-tracing.\
 By Sriram and Amar.
