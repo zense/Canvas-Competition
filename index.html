@@ -1,26 +1,31 @@
 <html>
 
 <body style="background-color: #c5c5c5;" onload="canvas.setup()">
+
   <div style="float: right;"class="art-maker" id="art-maker">
+
     <button style="font-size:20;"><span id="axes"></span></button >
     <button style="font-size:20;"><span id="thickness"></span></button> <br><br>
     <button style="font-size:18;"><span>PRESS B TO CHANGE TO BLACK MODE</span></button>
     <p>(Press Left/Right Arrow keys to set Axes)</p>
     <p>(Press Up/Down Arrow keys to set Thickness)</p>
+
     </div>
+
   <p class="heading"><button  style="font-size:20; background-color: aquamarine;">Interactive Simulators</button></span></p>
 
   <button><span id="yesno" style="font-size:20;"></span></button>
 
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
-    </canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+  <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100% ">
+  </canvas>
+  <canvas id="canvasArea2"
+      style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
-    <script src="./canvas.js"></script>
+  <script src="./canvas.js"></script>
+
 </body> 
-
 </html>
+
 <script>
 
     // Declare all global variables here
@@ -43,26 +48,30 @@
     function setup() 
     {
         // Initialize variables here
-        centerX = canvas.width/2;
-        centerY = canvas.height/2;
-        width = canvas.width;
-        height = canvas.height;
-        theta = Math.PI / 16;
-        radius = 300;
-        dotX = centerX + radius*Math.cos(theta);
-        dotY = centerY - radius*Math.sin(theta);
-        no_axes = 24;
-        alpha = Math.PI/(no_axes/2);
-        thickness = 1;
-        color1 = 'c';
+      centerX = canvas.width/2;
+      centerY = canvas.height/2;
+      width = canvas.width;
+      height = canvas.height;
+      theta = Math.PI / 16;
+      radius = 300;
+      dotX = centerX + radius*Math.cos(theta);
+      dotY = centerY - radius*Math.sin(theta);
+      no_axes = 24;
+      alpha = Math.PI/(no_axes/2);
+      thickness = 1;
+      color1 = 'c';
     }
 
+    
     // Declare custom functions here
+
+    // Functions for Pattern-simulator
     function axes()
     {
         canvas.drawLine(0, height/2, width, height/2);
         canvas.drawLine(width/2, 0, width/2, height);
         canvas.drawCircle(centerX, centerY, radius);
+
         for(var i = 0; i <= Math.PI; i += alpha)
         {
             canvas.drawLine(centerX, centerY, centerX + radius*Math.cos(alpha/2 + i), centerY - radius*Math.sin(alpha/2 + i)); 
@@ -80,20 +89,30 @@
     function set_variables(key)
     {
         if (key.code == "ArrowRight")
+        {
           no_axes++;
+        }
+
         if (key.code == "ArrowLeft")
+        {
           no_axes--;
+        }
         
-        if(key.code == "KeyB"){
+        if(key.code == "KeyB")
+        {
           color1 = 'b';
           console.log(color1);
         }
     
         if(key.code == "ArrowUp")
+        {
           thickness++;
+        }
 
         if(key.code == "ArrowDown" && thickness > 1)
-          thickness--;
+        {
+        thickness--;
+        }
     }
     
     function pattern()
@@ -104,9 +123,6 @@
             dotY = canvas.mouseY;
         }
 
-        theta = Math.atan((centerY - dotY)/(dotX - centerX));
-        
-      
         if(color1 == 'c') 
         {
           var r = Math.random() * (225 - 0) + 0;
@@ -115,7 +131,10 @@
           canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
         }
 
+        theta = Math.atan((centerY - dotY)/(dotX - centerX));
+        
         canvas.setDrawMode(mode = "fill");
+
         for(var i = alpha; i <= 2*Math.PI; i += alpha/2)
         {
             var mirrorSlope = (( centerY - radius*Math.sin(alpha/2 + i) - centerY) / (radius*Math.cos(alpha/2 + i)));
@@ -123,6 +142,7 @@
 
             var mirrorDotX = (2*(mirrorSlope)*(dotY - mirrorSlope*dotX - mirrorIntercept))/(1 + mirrorSlope*mirrorSlope) + dotX;
             var mirrorDotY = (-2*(dotY - mirrorSlope*dotX - mirrorIntercept))/(1 + mirrorSlope*mirrorSlope) + dotY;
+
             canvas.setDrawMode(mode = "fill");
             canvas.drawCircle(mirrorDotX, mirrorDotY, thickness);
             canvas.setDrawMode(mode = "stroke");
@@ -130,16 +150,18 @@
 
         radius = Math.sqrt(Math.pow(dotX - centerX, 2) + Math.pow(dotY - centerY, 2));
 
-
-        
         for(var i = alpha, j = 0; i <= 3*Math.PI; i += alpha, j++)
         {
             canvas.setDrawMode(mode = "fill");
             canvas.drawCircle(centerX + radius*Math.cos(theta + (alpha)*j), centerY - radius*Math.sin(theta + (alpha)*j), thickness);
             canvas.setDrawMode(mode = "stroke");
         }
+
         canvas.setColor(color = "rgb(0,0,0)");
     }
+
+    //Functions for Pattern-Simulator ends.
+    //Functions for Convex Lens Simulator starts.
 
     function redeclare()
     {
@@ -160,6 +182,7 @@
     function draw_focus()
     {
       focus = width/2 - focus_X;
+
       canvas.setDrawMode(mode = "fill");
       canvas.drawCircle(focus_X, height/2, 4);
       canvas.drawCircle(width/2 + focus, height/2, 4);
@@ -191,6 +214,7 @@
     {
       canvas.drawLine(0, height/2, width, height/2);
       canvas.drawLine(width/2, 0, width/2, height);
+
       for(var i = 0, j = 0; i < width; i+=40, j++)
       {
         canvas.drawLine(width/2 + i, height/2 + 5, width/2 + i, height/2 - 5);
@@ -208,7 +232,6 @@
       canvas.drawEllipse(width/2, height/2, 25, 200, Math.PI/2, 0, 2*Math.PI);
       canvas.setColor(color = "#000000");
       canvas.setDrawMode(mode = "stroke");
-      
     }
 
     
@@ -217,6 +240,7 @@
       canvas.setLineThickness(2);
       canvas.drawLine(canvas.mouseX , height/2, canvas.mouseX, canvas.mouseY);
       canvas.drawText(canvas.mouseX - 55, height/2 - 9, "Object", fontSize = 16);
+
       if (canvas.mouseY < height/2)
       {
         canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX + 10, canvas.mouseY + 10);
@@ -227,6 +251,7 @@
         canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX + 10, canvas.mouseY - 10);
         canvas.drawLine(canvas.mouseX, canvas.mouseY, canvas.mouseX - 10, canvas.mouseY - 10);        
       }
+
       canvas.setLineThickness(1);
     }
 
@@ -238,7 +263,9 @@
       {
         var slope = (height/2 - canvas.mouseY) / (width/2 - canvas.mouseX);
         var intercept = (height/2 - slope*width/2);
+
         canvas.drawLine(width/2, height/2, width, slope*width + intercept);
+
         if(canvas.mouseX > (width/2 - focus))
         {
           drawDottedLine(canvas.mouseX, canvas.mouseY, 0, slope*0 + intercept);
@@ -248,7 +275,9 @@
       {
         var slope = (height/2 - canvas.mouseY) / (width/2 - canvas.mouseX);
         var intercept = (height/2 - slope*width/2);
+
         canvas.drawLine(width/2, height/2, 0, slope*0 + intercept);
+        
         if(canvas.mouseX < (width/2 + focus))
         {
           drawDottedLine(canvas.mouseX, canvas.mouseY, width, slope*width + intercept);
@@ -272,8 +301,10 @@
           drawDottedLine(width/2, canvas.mouseY, 0, slope*0 + intercept);
 
           canvas.drawLine(width/2, canvas.mouseY, width/2 + focus, height/2 )
+
           var slope = (height/2 - canvas.mouseY) / (focus_X - canvas.mouseX);
           var intercept = (height/2 - slope*(focus_X));
+          
           canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
           canvas.drawLine(width/2, slope*width/2 + intercept, width, slope*width/2 + intercept);
 
@@ -282,15 +313,18 @@
 
         var slope = (height/2 - canvas.mouseY) / (focus_X - canvas.mouseX);
         var intercept = (height/2 - slope*(focus_X));
+
         canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
         canvas.drawLine(width/2, slope*width/2 + intercept, width, slope*width/2 + intercept);
       }
 
       else 
       {
-        canvas.drawLine(width/2, canvas.mouseY, width/2 - focus, height/2 )
+        canvas.drawLine(width/2, canvas.mouseY, width/2 - focus, height/2 );
+
         var slope = (height/2 - canvas.mouseY) / (width/2 - focus - width/2);
         var intercept = (height/2 - slope*(width/2 - focus));
+
         canvas.drawLine(width/2 - focus, height/2, 0, slope*0 + intercept);
 
         if(canvas.mouseX < (width/2 + focus))
@@ -299,6 +333,7 @@
 
           var slope = (height/2 - canvas.mouseY) / (width/2 + focus - canvas.mouseX);
           var intercept = (height/2 - slope*(width/2 + focus));
+
           canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
           canvas.drawLine(width/2, slope*width/2 + intercept, 0, slope*width/2 + intercept);
 
@@ -307,6 +342,7 @@
 
         var slope = (height/2 - canvas.mouseY) / (width/2 + focus - canvas.mouseX);
         var intercept = (height/2 - slope*(width/2 + focus));
+
         canvas.drawLine(canvas.mouseX, canvas.mouseY, width/2, slope*width/2 + intercept);
         canvas.drawLine(width/2, slope*width/2 + intercept, 0, slope*width/2 + intercept);
       }
@@ -316,7 +352,9 @@
     {
       var x, y;
       var f = focus;
+
       u = width/2 - canvas.mouseX;
+
       if ( u <= 0) u *= -1;
 
       v = (f*u)/(u - f);
@@ -326,19 +364,30 @@
       height_object = height/2 - canvas.mouseY;
 
       canvas.setLineThickness(2);
+
       if (canvas.mouseX < width/2)
       {
-        if(canvas.mouseX < (width/2 - focus)) canvas.drawLine(v + width/2, height/2 , v + width/2, height/2 - height_object*m);
-         
-        else drawDottedLine(width/2 + v, height/2 ,width/2 + v, height/2 - height_object*m);
+        if(canvas.mouseX < (width/2 - focus)) 
+        {
+          canvas.drawLine(v + width/2, height/2 , v + width/2, height/2 - height_object*m);
+        }
+        else 
+        {
+          drawDottedLine(width/2 + v, height/2 ,width/2 + v, height/2 - height_object*m);
+        }
 
         canvas.drawText(width/2 + v - 55, height/2 - 9, "Image", fontSize = 16);
       }
       else 
       {
-        if(canvas.mouseX < width/2 + focus) drawDottedLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m); 
-
-        else canvas.drawLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m);
+        if(canvas.mouseX < width/2 + focus) 
+        {
+          drawDottedLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m); 
+        }
+        else 
+        {  
+          canvas.drawLine(width/2 - v, height/2, width/2 - v, height/2 - height_object*m);
+        }
 
         canvas.drawText(width/2 - v - 55, height/2 - 9, "Image", fontSize = 16);
       }
@@ -370,6 +419,7 @@
           canvas.drawLine(width/2 - v, height/2 - height_object*m, width/2 - v - 10, height/2 - height_object*m - 10);        
         }
       }
+
       canvas.setLineThickness(1);
     }
     
@@ -377,6 +427,7 @@
     {
       var x = canvas.mouseX - width/2;
       var y = height/2 - canvas.mouseY;
+
       canvas.drawText(width - 530, 30, "Press Left Arrow / Right Arrow Keys to adjust Focal Point", fontSize = 20);
       canvas.drawText(width - 250, 65, "Focal length = " + focus, fontSize = 18);
       canvas.drawText(width - 250, 95, "Object position = (" + x + ", " + y + ")", fontSize = 18);
@@ -387,9 +438,13 @@
     function select_simulation(key)
     {
       if(key.code == "Digit1")
+      {
         select = 0;
+      }
       else if(key.code == "Digit2")
+      {
         select = 1;
+      }
     }
 
     // Function while will be called repeatedly 
