@@ -1,10 +1,8 @@
 <html>
-
 <body onload="canvas.setup()">
 
 	<canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 	<canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
 	<script src="./canvas.js">
 
 	</script>
@@ -40,6 +38,7 @@
         hand_4 = canvas.height * 0.18;
         i=0;
         j=0;
+        // canvas.drawImg("linear-purple-grey-gradient-1920x1080-c2-dda0dd-708090-a-90-f-14.png",0,0,1000,1000)
     }
 
     function jump()
@@ -188,7 +187,7 @@
     {
         // if(x>1)
         // alert(x)
-      if ((max_height+300)%900-100<0.05)
+      if ((max_height+600)%900-100<0.0005)
       {
         // alert(circle_1.color);
         // alert(curr_colour);
@@ -204,7 +203,7 @@
         }
       }
 
-      else if((max_height+600)%900-100<0.05)
+      else if((max_height+300)%900-100<0.0005)
       {
         if(circle_1.color == curr_colour || circle_1.color == prev_colour)
         {
@@ -218,19 +217,41 @@
       }
     }
 
+    function change_colour(circle){
+    if (circle.color=="red"){
+         circle.color="blue";
+        }
+      else if (circle.color=="blue"){
+          circle.color="orange";
+        }
+      else if(circle.color=="orange"){
+          circle.color="green";
+        }
+      else{
+        circle.color="red"
+      }
+    
+}
+
     // Function while will be called repeatedly 
     function main() {
       canvas.clear();
-      draw_circle(circle_1.x_axis,circle_1.y_axis,circle_1.r,circle_1.color);
-      // if(x%200==0)
-      // {
-      //   change_colour(circle_1);
-      //   x+=5;
-      // }
       canvas.setDrawMode("stroke")
-      canvas.setLineThickness(10)
-      line_obstacle(x%900-100,y);
-      rotating_obstacle(350,(300+x)%900);
+      canvas.setLineThickness(20)
+      draw_circle(499,(x+600)%900+100,40,"red")
+      draw_circle(499,(x+600)%900+100,30,"blue");
+      draw_circle(499,(x+600)%900+100,20,"orange");
+      draw_circle(499,(x+600)%900+100,10,"green");
+      if((max_height)%900-100<=0.05)
+      {
+      change_colour(circle_1);
+      }
+
+      
+      draw_circle(circle_1.x_axis,circle_1.y_axis,circle_1.r,circle_1.color);
+      
+      line_obstacle((x+300)%900-100,y);
+      rotating_obstacle(350,(x)%900);
     //   line_obstacle((x+600)%900-100,y);
       jump();
       check();
