@@ -1,0 +1,25 @@
+
+# DESCRIPTION
+Our project uses a technique known as 'ray-tracing,' to render 3-dimensional video games.
+Rays that imitiate light (can be thought of as reversed light rays) are shot from a point (behaviour of an eye) to a window that represents the screen.
+These rays return pixel data of surfaces it collides with.
+
+# WHAT IT DOES
+The user can add any number of spheres or sources of light (objects) along with their properties while they are being 3D rendered.
+They can look around, move forward using the arrow keys and delete these objects as and when they wish.
+
+# CONTROLS
+'a' to add objects,
+'d' to delete objects,
+Left Arrow Key to turn left,
+Right Arrow Key to turn right,
+Up Arrow Key to move forward.
+
+# HOW IT WAS BUILT
+
+
+# INSPIRATION
+We drew inspiration from a youtube video (https://www.youtube.com/watch?v=QkETiyYWh2o) where ray-tracing was done on the console using ASCII.
+
+
+

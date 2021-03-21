@@ -70,7 +70,7 @@ canvas.keyDownCallback = function (e) {
 
     if(e.key == 'ArrowUp'){
 
-        //yet to code
+        cam.moveForward();
     }
 
     if(e.key == 'ArrowDown'){

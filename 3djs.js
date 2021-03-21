@@ -294,6 +294,14 @@ class Camera{
         }
     }
 
+    moveForward(){
+
+        let m = this.V.mag();
+        let dV = this.V.scalarDivide(m * 10);
+
+        this.C = this.C.transform(translate(dV.i, dV.j, dV.k));
+    }
+
 }
 
 class Light{
