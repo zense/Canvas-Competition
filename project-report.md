@@ -9,10 +9,10 @@ The user can add any number of spheres or sources of light (objects) along with 
 They can look around and move forward using the arrow keys, and delete these objects as and when they wish.
 
 # CONTROLS
-'a' to add objects,
-'d' to delete objects,
-Left Arrow Key to turn left,
-Right Arrow Key to turn right,
+'a' to add objects\
+'d' to delete objects\
+Left Arrow Key to turn left\
+Right Arrow Key to turn right\
 Up Arrow Key to move forward.
 
 # HOW IT WAS BUILT
