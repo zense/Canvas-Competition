@@ -1,3 +1,4 @@
-# zense_hack2021
+# Zense-HacKnight2k21 submission by FlameRiders
 
-raytracing
+Ray-tracing.
+By Sriram and Amar.
