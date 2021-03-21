@@ -163,11 +163,11 @@ canvas.drawRectangle = function(x, y, width, height) {
 //Draws Ellipse 
 canvas.drawEllipse = function(x, y, radiusX, radiusY, angle, startAngle, endAngle){
     var temp = 0;
-    if(radiusY > radiusX){
-        temp = radiusX;
-        radiusX = radiusY;
-        radiusY = temp;
-    }
+    //if(radiusY > radiusX){
+    //    temp = radiusX;
+    //    radiusX = radiusY;
+    //    radiusY = temp;
+    //}
     
     endAngle = (endAngle/180.0)*Math.PI;
     this.ctx.beginPath();

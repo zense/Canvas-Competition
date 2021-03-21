@@ -30,6 +30,7 @@
         balls: [],
         ropes: [],
         block: [],
+        eggs: []
     }
 
     class Ball{
@@ -55,7 +56,7 @@
 
         }
 
-        resetForces() {
+        resetForces(){
             this.fx = 0;
             this.fy = constants.gravity * this.mass;
         }
@@ -82,7 +83,7 @@
             }
         }
 
-        render() {
+        render(){
             var x = constants.metre * this.x;
             var y = constants.metre * this.y;
             var volume = this.mass / this.density;
@@ -187,7 +188,7 @@
 
     }
 
-    class Block2(){
+    class Block2 {
         constructor(x, y, width, height, mass = 10.0){
             this.x = x;
             this.y = y;
@@ -226,6 +227,47 @@
 
         }
     }
+
+    class Egg{
+        constructor(x, y, width, height, mass = 10.0){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height=height;
+            this.vx = 0;
+            this.vy = 0;
+            this.fx = 0;
+            this.mass = mass;
+            this.fy = this.mass * constants.gravity;
+            globalList.eggs.push(this);
+        }
+
+        render(){
+            canvas.setDrawMode("fill");
+            canvas.setColor("white");
+            canvas.drawEllipse(constants.metre * this.x, constants.metre * this.y, constants.metre * this.width, constants.metre* this.height, 0, 0, 2*Math.PI-6);
+            canvas.setDrawMode("stroke");
+        }
+
+        move(t){
+            t/=1000;
+            
+            this.vx += this.fx * t / this.mass;
+            this.vy += this.fy * t / this.mass;
+            
+            this.x += constants.velocityConstant * this.vx * t;
+            this.y += constants.velocityConstant * this.vy * t;
+            
+            this.vy *= 1 - constants.friction * t;
+            this.vx *= 1 - constants.friction * t;
+            canvas.setColor("white");
+            canvas.setDrawMode("fill");
+            canvas.drawEllipse(constants.metre * this.x, constants.metre * this.y, constants.metre * this.width, constants.metre* this.height, 0, 0, 2*Math.PI-6);
+            canvas.setDrawMode("stroke");
+        }
+
+    }
+
     
     function intersect(a, b) {
             if(a.x + a.radius> b.x && a.y+a.radius > b.y && a.y-a.radius < b.y + b.length && a.x - a.radius < b.x + b.length)
@@ -234,16 +276,13 @@
                 return 0;
     }
     
-    function intersect2(c, d) {
 
-        if(c.x + c.radius> d.x && c.y + c.radius > d.y && c.y -c.radius < d.y + d.length && c.x - c.radius < d.x + d.length)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+    function basic() {
+        var ball1 = new Ball(width / 5, 4*height / 5);
+        var ball2 = new Ball(width / 2, 4*height / 2);
+        ball1.connect(ball2);
+        ball1.type = ballType.FIXED;
+        ball2.type = ballType.FOLLOW;
     }
 
     function setup() {
@@ -261,13 +300,43 @@
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-        canvas.drawImg("background.png", 0, 0, 1600, 900);
-        canvas.drawImg("red2.png", x1, y1, ballwidth, ballheight);
+        
+        for (var i = 0; i < globalList.balls.length; i++){
+            globalList.balls[i].resetForces();
+        }
+
+        for (var i = 0; i < globalList.ropes.length; i++){
+            globalList.ropes[i].exertForces();
+        }
+
+        for (var i = 0; i < globalList.balls.length; i++){
+            globalList.balls[i].move(constants.timeStep);
+        }
+
+        for (var i = 0; i < globalList.ropes.length; i++){
+            globalList.ropes[i].render();
+        }
+
+        for (var i = 0; i < globalList.balls.length; i++){
+            globalList.balls[i].render();
+        }
+        
+        if(canvas.mouseDown)
+        {
+            globalList.balls[1].type = ballType.NORMAL;
+            setTimeout(function(){globalList.ropes[0].elasticity = 0, 10})
+        }
+
+
+
+
+        
+
 
 
     }
 
-    // Override functions here; 
+    // Override functions here
     canvas.mainFunction = main;
 
     canvas.startMain(constants.timeStep);
