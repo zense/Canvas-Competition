@@ -1,0 +1,254 @@
+<html>
+
+<body onload="canvas.setup()">
+
+	<canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+	<canvas id="canvasArea2" style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+	<script src="./canvas.js">
+
+	</script>
+</body>
+
+</html>
+<script>
+
+	// Declare all global variables here
+    x=0;
+    y=0;
+    max_height=0;
+    score=0;
+    jump_state="FALSE";
+
+     circle_1 ={
+      x_axis:499,
+      y_axis:700,
+      r:30,
+      color:"red",
+      speed:1.25,
+      accelaration:0.01
+      };
+
+    function setup() {
+        // Initialize variables here
+        center_x = canvas.width/6;
+        center_y = canvas.height/3;
+        radius = canvas.height * 0.02;
+        hand_1 = canvas.height * 0.18;
+        hand_2 = canvas.height * 0.18;
+        hand_3 = canvas.height * 0.18;
+        hand_4 = canvas.height * 0.18;
+        i=0;
+        j=0;
+    }
+
+    function jump()
+    {
+        if (jump_state=="TRUE"){
+            x+=circle_1.speed;
+            circle_1.speed-=circle_1.accelaration;
+            if(circle_1.speed>=0 && x>=max_height)
+            max_height+=circle_1.speed;
+        }
+    }
+
+    // Declare custom functions here
+    function inc(key)
+    {
+        if(key.code== "Space"){
+            jump_state="TRUE"
+            circle_1.speed=1.25
+           }
+    }
+
+      function drawHand(x, y, l, angle) {
+        var x2 = x + l * Math.cos(angle);
+        var y2 = y + l * Math.sin(angle);
+        canvas.drawLine(x, y, x2, y2);
+    }
+
+    function draw_circle(x_axis,y_axis,r,color){
+      canvas.setColor(color);
+      canvas.setDrawMode("fill")
+      canvas.drawCircle(x_axis,y_axis,r);
+      
+      canvas.keyDownCallback=inc;
+    }
+    
+     function change_colour(circle){
+      
+    // if (circle.x_axis== 499 && circle.y_axis==(x+600)%900)
+       
+    if (circle.color=="red"){
+         circle.color="blue";
+        }
+      else if (circle.color=="blue"){
+          circle.color="orange";
+        }
+      else if(circle.color=="orange"){
+          circle.color="green";
+        }
+      else{
+        circle.color="red"
+      }
+    }
+    function line_obstacle(x,y,curr_color)
+    {
+      canvas.setDrawMode("stroke")
+
+      canvas.setColor("red")
+      if((100+y)%800+100>700)
+      {
+        canvas.drawLine((100+y)%800+100,100+x,900,100+x)
+        canvas.drawLine(100,100+x,(300+y)%800+100,100+x)
+      }
+      else
+      canvas.drawLine((100+y)%800+100,100+x,(100+y)%800+100+200,100+x)
+
+      canvas.setColor("green")
+      if((300+y)%800+100>700)
+      {
+        canvas.drawLine((300+y)%800+100,100+x,900,100+x)
+        canvas.drawLine(100,100+x,(500+y)%800+100,100+x)
+      }
+
+      else
+      canvas.drawLine((300+y)%800+100,100+x,(300+y)%800+100+200,100+x)
+
+      canvas.setColor("blue")
+      if((500+y)%800+100>700)
+      {
+        canvas.drawLine((500+y)%800+100,100+x,900,100+x)
+        canvas.drawLine(100,100+x,(700+y)%800+100,100+x)
+      }
+      else
+      canvas.drawLine((500+y)%800+100,100+x,(500+y)%800+100+200,100+x)
+
+      canvas.setColor("orange")
+      if((700+y)%800+100>700)
+      {
+        canvas.drawLine((700+y)%800+100,100+x,900,100+x)
+        canvas.drawLine(100,100+x,(100+y)%800+100,100+x)
+      }
+      else
+      canvas.drawLine((700+y)%800+100,100+x,(700+y)%800+100+200,100+x)
+
+      if((100+y)%800+100<500 && (100+y)%800+100 >300)
+        {
+          curr_colour = "red";
+          prev_colour = "orange";
+        }
+      else if((300+y)%800+100<500 && (300+y)%800+100 >300)
+        {
+          curr_colour = "green"
+          prev_colour = "red"
+        }
+      else if((500+y)%800+100<500 && (500+y)%800+100 >300)
+        {
+          curr_colour = "blue"
+          prev_colour = "green"
+        }
+      else if((700+y)%800+100<500 && (700+y)%800+100 >300)
+        {
+          curr_colour = "orange"  
+          curr_colour = "blue"
+        }
+    }
+    
+    function rotating_obstacle(center_x,center_y)
+    {
+        var hand_1_ang = (i) + Math.PI/4;
+        var hand_2_ang = hand_1_ang - Math.PI/2;
+        var hand_3_ang = hand_2_ang - Math.PI/2;
+        var hand_4_ang = hand_3_ang - Math.PI/2;
+        canvas.setColor("red")
+        drawHand(center_x+50, center_y, hand_1, hand_1_ang);
+        canvas.setColor("green")
+        drawHand(center_x+50, center_y, hand_2, hand_2_ang);
+        canvas.setColor("blue")
+        drawHand(center_x+50, center_y, hand_3, hand_3_ang);
+        canvas.setColor("orange")
+        drawHand(center_x+50, center_y, hand_4, hand_4_ang);
+        var hand_1_ang = (j)+ 3*Math.PI/4;
+        var hand_2_ang = hand_1_ang + Math.PI/2;
+        var hand_3_ang = hand_2_ang + Math.PI/2;
+        var hand_4_ang = hand_3_ang + Math.PI/2;
+        canvas.setColor("red")
+        drawHand(center_x+250, center_y, hand_1, hand_1_ang);
+        canvas.setColor("green")
+        drawHand(center_x+250, center_y, hand_2, hand_2_ang);
+        canvas.setColor("blue")
+        drawHand(center_x+250, center_y, hand_3, hand_3_ang);
+        canvas.setColor("orange")
+        drawHand(center_x+250, center_y, hand_4, hand_4_ang);
+        j+=(Math.PI/800);
+        i-=Math.PI/800;
+    }
+
+
+    function check()
+    {
+        // if(x>1)
+        // alert(x)
+      if ((max_height+300)%900-100<0.05)
+      {
+        // alert(circle_1.color);
+        // alert(curr_colour);
+        if(circle_1.color == curr_colour )
+        {
+          score++;
+          max_height+=1;
+        //   x+=circle_1.speed;
+        }
+        else{
+            // alert(circle_1.color);
+          score = 0;
+        }
+      }
+
+      else if((max_height+600)%900-100<0.05)
+      {
+        if(circle_1.color == curr_colour || circle_1.color == prev_colour)
+        {
+          score++;
+          max_height+=1;
+        }
+        else
+        {
+          score =0;
+        }
+      }
+    }
+
+    // Function while will be called repeatedly 
+    function main() {
+      canvas.clear();
+      draw_circle(circle_1.x_axis,circle_1.y_axis,circle_1.r,circle_1.color);
+      // if(x%200==0)
+      // {
+      //   change_colour(circle_1);
+      //   x+=5;
+      // }
+      canvas.setDrawMode("stroke")
+      canvas.setLineThickness(10)
+      line_obstacle(x%900-100,y);
+      rotating_obstacle(350,(300+x)%900);
+      draw_circle(499,(x+600)%900,40,"red")
+      draw_circle(499,(x+600)%900,30,"blue");
+      draw_circle(499,(x+600)%900,20,"orange");
+      draw_circle(499,(x+600)%900,10,"green");
+      //change_colour(circle_1);
+      jump();
+      check();
+      canvas.drawText(1000, 100, score, fontSize = 30)
+      keyDownCallback=inc
+      y+=0.5
+}
+    // Override functions here; 
+    canvas.mainFunction = main;
+
+    var timeStep = 0.05;
+    canvas.startMain(timeStep);
+    canvas.setupFunction = setup;
+
+</script>
