@@ -1,36 +1,161 @@
 <html>
-
 <body onload="canvas.setup()">
-
+    <div>
+  <h1 class="text-center" style="font-family:'Lucida Handwriting'">Simple Fractal patterns</h1>
+  <h2 style="font-family:'Lucida Handwriting'font-size:14px">choose fractal type out of ("tree","triangle","rectangle","circle")</h2>
+  <p> press tab after entering value in each input box </p>
+  <p>1)in tree the attribute decides the length of the first branch(the stem).</p>
+   <p>  2)in triangle,rectangle and circle the attribute decides the depth of the pattern-repetition.</p>
+   <p>3) In "tree" fractal type we wanted to implement change in angle between the branches but were'nt able to do so in time. To change the angle between the branches go to line 54,56 in source code and replace '15' with any value of your choice"</p>
+    </div>
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
+    <body>
+    Fractal Type: <input id="ftype" name="name" type="text" size="20">
+    Attribute:  <input id="fatr3" name="name3" type="number" min="0" max="120">
     <script src="./canvas.js"></script>
-</body>
-
-</html>
-<script>
-
+    <script>
+      var ctx;
+    var count=0;
+    var check=0;
+    var measure=0;
     // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+    function setup(){
+      ctx = document.getElementById("canvasArea1").getContext('2d');
     }
-
+    
     // Declare custom functions here
-
-
     // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
+    function main()
+    {
+      var x=document.getElementById("ftype");
+      var y=x.value;
+      var t=document.getElementById("fatr3");
+      var atr3=t.value;
+      if (y=="tree"){
+        canvas.clear()
+        function draw(startX, startY, len, angle,branchWidth) 
+      {
+          
+          ctx.lineWidth  = branchWidth;
+          ctx.beginPath();
+          ctx.save();
 
+          ctx.translate(startX, startY);
+          ctx.rotate(angle * Math.PI/180);
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, -len);
+          ctx.stroke();
+
+          if(len < 10) {
+              ctx.restore();
+              return;
+          }
+            //console.log(angle);
+
+          draw(0, -len, len*0.7, angle-15,branchWidth*0.8);
+          draw(0, -len, len*0.7, angle,branchWidth*0.8);
+          draw(0, -len, len*0.7, angle+15,branchWidth*0.8);
+          // console.log(angle-atr2);
+          ctx.restore();
+      }
+          draw(800, 750, atr3,0,1)
+        
+      }
+      else if(y=="triangle"){
+        if(count!=atr3)
+        {canvas.clear()}
+          function drawFract(x1, y1, x2, y2, x3, y3, n, m,limit){
+            function drawTriangle(x1,y1,x2,y2,x3,y3){
+                canvas.drawLine(x1,y1,x2,y2);
+                canvas.drawLine(x2,y2,x3,y3);
+                canvas.drawLine(x3,y3,x1,y1);
+        }
+                    if(limit > 0 ){
+                            const xA=(n*x1+m*x2)/(n+m);
+                            const yA= (n*y1 + m*y2)/(m+n);
+    
+                            const xB= (n*x3 + m*x2)/(m+n);
+                          const yB= (m*y2 + n*y3)/(m+n);
+                        
+            
+                          const xC= (n*x3 + m*x1)/(m+n);
+                        const   yC= (m*y1 + n*y3)/(m+n);
+
+                        drawFract(x1,y1, xA,yA, xC,yC,n, m,limit-1);
+                        drawFract(xC,yC, xB,yB, x3,y3,n, m,limit-1);
+                      drawFract(xA,yA, x2,y2, xB,yB,n, m,limit-1);
+               console.log(n);
+               
+                }
+                    else{
+                        drawTriangle(x1,y1,x2,y2,x3,y3);
+                    }
+            }
+      if(count<atr3)
+      {
+            drawFract(600,750,800,400,1000,750,2,2,count)
+      count +=1 
+      }
+      } 
+      else if (y=="rectangle"){
+        if(check!=atr3)
+        {canvas.clear();}
+      function drawRectFract(x,y,width,height, limit){
+        canvas.drawRectangle(x,y,width,height);
+        if(limit>0){
+          drawRectFract(x-width/2,y-height/2,width/2,  height/2,limit-1);
+          drawRectFract(x-width/2,y+height,  width/2,  height/2,limit-1);
+          drawRectFract(x+width,y-height/2,  width/2,  height/2,limit-1);
+          drawRectFract(x+width,y+height,    width/2,  height/2,limit-1);
+
+        }
+        else{
+          canvas.drawRectangle(x,y,width,height);
+        }
+      }
+      if(check<atr3)
+      {drawRectFract(800,500,150,150,check);
+       check += 1 ;
+      }
+      }
+      else if (y=="circle"){
+        if(measure!=atr3)
+        {canvas.clear();}
+      function drawCirc(x,y,r,n,limit)
+      {
+        canvas.drawCircle(x,y,r)
+        if(limit>0)
+        {
+          drawCirc(x-r/n,y,r/n,n,limit-1);
+          drawCirc(x+r/n,y,r/n,n,limit-1);
+          drawCirc(x,y+r/n,r/n,n,limit-1);
+          drawCirc(x,y-r/n,r/n,n,limit-1);
+        }
+        else
+        {
+          canvas.drawCircle(x,y,r);
+        }
+
+      }
+    
+    if(measure<atr3)
+    {
+      drawCirc(800,500,200,2,measure);
+      measure+=1;
     }
+    }
+  }
 
     // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
+    var timeStep = 2000;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
-</script>
+    </script>
+    </body>
+</body>
+
+</html>
