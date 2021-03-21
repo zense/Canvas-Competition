@@ -12,151 +12,102 @@
 </html>
 <script>
 
-    // Declare all global variables here
-    // var x;var y;
-    var m3; var m4;
+    var m3; var m4;var r_i;
     function setup() {
-      // var x1 = 20;
-      // var y1 = 40;
-      // var x2 = 40;
-      // var y2 = 40;
-      // x = 225; // for source of light
-      // y = 206.25;
-      // x = 250;
-      // y = 175;
-      
-        // Initialize variables here
+      r_i = prompt("Enter refractive index of the prism");       
     }
 
     function ray(x,y){
       return canvas.drawLine(canvas.mouseX, canvas.mouseY,x,y);
-
-
     }
       
     function intersection(m1, c1, m2, c2){
       return ((c2-c1)/(m1-m2))
     }
 
-    // // Declare custom functions here
-    //   function refraction(a,b,c,d,m2,n){//starting and ending (x,y) of line where refraction takes place. m2 is slope of ray. n is RI
-
-    //   var m1= (d-b)/(c-a);
-
-    //   var i = (Math.PI)/2-Math.atan(Math.abs((m1-m2)/(1+m1*m2)));
-    //   var sin_i = Math.sin(i);
-    //   var r = Math.asin(sin_i/n);
-    //   var m3 = Math.tan(Math.atan(m1)+r-(Math.PI)/2);//to get slope of line. Most prolly wrong.Although i=0 works.
-    //   // var m3 = Math.tan(r);
-    //   var x_otherside = (2375+225*m3)/(5-m3);
-    //   canvas.drawLine(x,y,600,m3*(600-x)-y);
-    //   canvas.drawLine(x,y,x_otherside,50 +1.25*(x_otherside-350));
-    //   //something is wrong with refracted ray
-
-
-
-      // }
-      // trying to change the function 
-
-      function refraction1(a,b,c,d,m2,n,k,x,y){//starting and ending (x,y) of line where refraction takes place. m2 is slope of ray. n is RI.x and y are the coordinates of the point of refraction.
+      function refraction(a,b,c,d,m2,n,k,x,y){//starting and ending (x,y) of line where refraction takes place. m2 is slope of ray. n is RI.x and y are the coordinates of the point of refraction.
 
       var m1= Math.tan(Math.PI/2 + Math.atan((d-b)/(c-a)));//slope of normal
 
       var i = Math.atan(((m1-m2)/(1+m1*m2)));
       var sin_i = Math.sin(i);
-      // if (sin_i/n >= 1){
-      //       reflection(x_1,m3*(x_1-x)+y, m3, Math.tan(Math.PI/2 - Math.atan(5/4) ));
-      //     }
-      var r = Math.asin(sin_i/n);
-      // console.log(r);
+      var r = Math.asin(sin_i/n);       // refracted angle
+      
+
       var m_3 = Math.tan(Math.atan(m1) - r);
       var m_4 = 5/12;
+      
       if (k == 1){            // for first refraction
         m3 = m_3;
         m4 = m_4;
-        // console.log(x);
+        
         if (Math.atan(((m3-m4)/(1+m3*m4))) < 0){      // for right edge
           var x_1 = intersection(m3,y - m3*x, 5/4, 50 - 5*350/4);
-          canvas.drawLine(x,y,x_1,m3*(x_1-x)+y);
-          
-          
+          canvas.drawLine(x,y,x_1,m3*(x_1-x)+y);      // refracted ray
           return x_1;
-
         }
+
         else{                                        // for bottom edge
           var x_2 = intersection(m3,y - m3*x, 0, 300);
           canvas.drawLine(x,y,x_2,m3*(x_2-x)+y);
-          // console.log(x_2);
-          
+
           return x_2;
         }
         
       }
       else{                 // for second surface
-        // console.log(sin_i/n);
-        if (Math.abs(sin_i/n) >= 1){        
-          // console.log(x, y, m3, m1);                  // for total internal reflection
+        
+        if (Math.abs(sin_i/n) >= 1){       // for total internal reflection         
             reflection(x,y, m3, m1);
           }
+
         canvas.drawLine(x,y,1000,m_3*(1000-x)+y);
       }
       }
-
-
+      
 
       function reflection(x,y,m,m_nor){
-
-        // var i = Math.atan((m_nor-m)/(1+m*m_nor))
-        // var m_reflect= Math.tan(Math.atan(m_nor)+i);//i = r
-        // console.log(m_reflect);
-        // canvas.drawLine(x,y,3000,m_reflect*(3000-x)+y);
-        
         var i = Math.atan(((m_nor-m)/(1+m_nor*m)));
         var m_3 = Math.tan(Math.atan(m_nor) + i);
+
+ 
         if (m_nor == (Math.tan(Math.PI/2))){   // bottom edge
           canvas.drawLine(x, y, 700, (m_3*(700-x)+y));
-        }else{
+        }
+        
+        else{
           if(m_3 < 0){
             canvas.drawLine(x, y, 0, (m_3*(0-x)+y));
-          }else{
+          }
+          else{
             canvas.drawLine(x, y, 700, (m_3*(700-x)+y));
           }
         }
-        // console.log(m_3);
-        // canvas.drawLine(200,400,200,600);
-        // canvas.drawLine(150, 300, 550, 20);
-
-        
       }
-
-      
-
-    // Function while will be called repeatedly 
-    function main() {
+     
+      function main() {
         canvas.clear();
 
         canvas.drawLine(150, 300, 350, 50);
         canvas.drawLine(350, 50, 550, 300);
         canvas.drawLine(150, 300, 550, 300);
+        
         ray(250, 175);
         var m_ray = (175-canvas.mouseY)/(250-canvas.mouseX);
         
-        var x_new = refraction1(150, 300, 350, 50,m_ray,1.5, 1, 250, 175);
-        // console.log(x_new);
+        var x_new = refraction(150, 300, 350, 50,m_ray,r_i, 1, 250, 175);
+        
         if (Math.atan(((m3-m4)/(1+m3*m4))) < 0){
-          // console.log(x_new);
-          refraction1(350, 50, 550, 300,m3,1/1.5,0,x_new,m3*(x_new-250)+175);
+          refraction(350, 50, 550, 300,m3,1/r_i,0,x_new,m3*(x_new-250)+175);
         }else{
-          // console.log(x_new);
-          refraction1(150, 300, 550, 300,m3,1/1.5,0,x_new,m3*(x_new-250)+175);
-        }
-    }
+          refraction(150, 300, 550, 300,m3,1/r_i,0,x_new,m3*(x_new-250)+175);
 
-    // Override functions here; 
+        }
+      }
+ 
     canvas.mainFunction = main;
 
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
-
 </script>
