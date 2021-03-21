@@ -9,7 +9,7 @@
 </body>
 
 <div>
-    <textarea id="text_inp1" style="position: absolute;left: 5%;top: 84.5%;" placeholder="Type Here ...."></textarea>
+    <textarea id="text_inp1" style="position: absolute;left: 5%;top: 84.5%;white-space: pre;" placeholder="Type Here .... (enter \n at the end of each line for a new line)"></textarea>
 
 </div>
 
@@ -170,15 +170,6 @@
 
         c.drawImage(minus_img , width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 , height*34/40 ,height/50 , height/50 );
         c.drawImage(plus_img , width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 - (height/50) , height*34/40 ,height/50 , height/50 );
-        
-        // c.beginPath();
-        // c.arc(width*10/40 + (110 + 10) + (110 + 10) + (110 + 10) + 200 +110 + 110 + 20 , height*34/40 + 10 ,  line_width/2 , 0 , 2 * Math.PI , false);
-        // c.fillStyle = rgba;
-        // c.fill();
-        // c.stroke();
-        // c.beginPath();
-        
-        
 
         c.fillStyle = rgba;//color to be changed later
         c.fillRect(width*8/40 , height*34/40 , height/50 , height/50);
@@ -533,7 +524,7 @@
         if(text_box_on == true){
             if ((event.clientX > 0 && event.clientX < window.innerWidth)&&(event.clientY > 0 && event.clientY < window.innerHeight*4/5 - line_width*1.75)){
                 c.fillStyle = rgba;
-                c.font = line_width*8 + "px Georgia"
+                c.font = line_width*8 + "px Georgia";
                 c.fillText(document.getElementById("text_inp1").value, event.clientX, event.clientY);
             }
         }
