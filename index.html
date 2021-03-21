@@ -33,6 +33,7 @@
     var alpha;
     var no_axes;
     var thickness;
+    var color;
     
     
     function setup() 
@@ -46,10 +47,10 @@
         radius = 300;
         dotX = centerX + radius*Math.cos(theta);
         dotY = centerY - radius*Math.sin(theta);
-        no_axes = 32;
+        no_axes = 24;
         alpha = Math.PI/(no_axes/2);
         thickness = 1;
-        
+        color = 1;
     }
 
     // Declare custom functions here
@@ -75,14 +76,19 @@
     function set_variables(key)
     {
         if (key.code == "ArrowRight")
-            {no_axes++;}
+          no_axes++;
         if (key.code == "ArrowLeft")
-            {no_axes--;}
+          no_axes--;
+        
+        if(key.code == "KeyB")
+          color = 0;
+        
+        console.log(color);
         
         if(key.code == "ArrowUp")
-            {thickness++;}
+          thickness++;
         if(key.code == "ArrowDown" && thickness > 1)
-            {thickness--;}
+          thickness--;
     }
     
     function pattern()
@@ -94,11 +100,14 @@
         }
 
         theta = Math.atan((centerY - dotY)/(dotX - centerX));
-        var r = Math.random() * (255 - 0) + 0;
-        var g = Math.random() * (255 - 0) + 0;
-        var b = Math.random() * (255 - 0) + 0;
-        canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
-        //Equation of mirror 
+        var r = Math.random() * (225 - 0) + 0;
+        var g = Math.random() * (225 - 0) + 0;
+        var b = Math.random() * (225 - 0) + 0;
+      
+        
+          //canvas.setColor(color = `rgb(${r}, ${g}, ${b})`);
+      
+        canvas.setDrawMode(mode = "fill");
         for(var i = alpha; i <= 2*Math.PI; i += alpha/2)
         {
             var mirrorSlope = (( centerY - radius*Math.sin(alpha/2 + i) - centerY) / (radius*Math.cos(alpha/2 + i)));
@@ -106,7 +115,9 @@
 
             var mirrorDotX = (2*(mirrorSlope)*(dotY - mirrorSlope*dotX - mirrorIntercept))/(1 + mirrorSlope*mirrorSlope) + dotX;
             var mirrorDotY = (-2*(dotY - mirrorSlope*dotX - mirrorIntercept))/(1 + mirrorSlope*mirrorSlope) + dotY;
+            canvas.setDrawMode(mode = "fill");
             canvas.drawCircle(mirrorDotX, mirrorDotY, thickness);
+            canvas.setDrawMode(mode = "stroke");
         }
 
         radius = Math.sqrt(Math.pow(dotX - centerX, 2) + Math.pow(dotY - centerY, 2));
@@ -379,7 +390,7 @@
 
       canvas.keyDownCallback = select_simulation;
 
-      var text = select ? "Press 1 to open Convex Lens Simulator" : "Press 2 to open Art-Maker Simulator";
+      var text = select ? "Press 1 to open Convex Lens Simulator" : "Press 2 to open Pattern Simulator";
       document.getElementById("yesno").innerHTML = text;
 
       var hide = select ? "block" : "none";
