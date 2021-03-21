@@ -142,6 +142,7 @@ canvas.keyDownCallback = function (e) {
                 wz_ = parseFloat(prompt("Enter its angular velocity about the z-axis (~0.5)", '0'));
 
                 let light_ = new Light(new Vector(Ci_, Cj_, Ck_), new Vector(vx_, vy_, vz_), new Vector(wx_, wy_, wz_));
+                global.lights = [];
                 global.lights.push(light_);
 
                 break;
