@@ -16,6 +16,7 @@
 	// Declare all global variables here
     x=0;
     y=0;
+    max_height=0;
     score=0;
     jump_state="FALSE";
 
@@ -24,7 +25,7 @@
       y_axis:700,
       r:30,
       color:"red",
-      speed:1,
+      speed:1.25,
       accelaration:0.01
       };
 
@@ -45,7 +46,10 @@
     {
         if (jump_state=="TRUE"){
             x+=circle_1.speed;
-            circle_1.speed-=circle_1.accelaration}
+            circle_1.speed-=circle_1.accelaration;
+            if(circle_1.speed>=0 && x>=max_height)
+            max_height+=circle_1.speed;
+        }
     }
 
     // Declare custom functions here
@@ -62,15 +66,6 @@
         var y2 = y + l * Math.sin(angle);
         canvas.drawLine(x, y, x2, y2);
     }
-
-    function area0(x1,y1,x2,y2,x3,y3)
-    {
-      var area=x1(y2-y3)+ x2(y3-y1) + x3(y1-y2);
-      if (area==0)
-      return 1;
-      else return 0;
-    }
-
 
     function draw_circle(x_axis,y_axis,r,color){
       canvas.setColor(color);
@@ -188,27 +183,33 @@
         i-=Math.PI/800;
     }
 
+
     function check()
     {
-      if ((x)%900-100==0 || (x+300)%900-100==0)
+        // if(x>1)
+        // alert(x)
+      if ((max_height+300)%900-100<0.05)
       {
         // alert(circle_1.color);
         // alert(curr_colour);
         if(circle_1.color == curr_colour )
         {
           score++;
-          x+=5;
+          max_height+=1;
+        //   x+=circle_1.speed;
         }
         else{
-          score =0;
+            // alert(circle_1.color);
+          score = 0;
         }
       }
-      else if((x+600)%900-100==0)
+
+      else if((max_height+600)%900-100<0.05)
       {
         if(circle_1.color == curr_colour || circle_1.color == prev_colour)
         {
           score++;
-          x+=5;
+          max_height+=1;
         }
         else
         {
@@ -230,9 +231,9 @@
       canvas.setLineThickness(10)
       line_obstacle(x%900-100,y);
       rotating_obstacle(350,(300+x)%900);
-      line_obstacle((x+600)%900-100,y);
-      check();
+    //   line_obstacle((x+600)%900-100,y);
       jump();
+      check();
       canvas.drawText(1000, 100, score, fontSize = 30)
       keyDownCallback=inc
       y+=0.5
@@ -240,7 +241,7 @@
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 0.005;
+    var timeStep = 0.05;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
