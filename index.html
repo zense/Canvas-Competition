@@ -2,6 +2,21 @@
 
 <body onload="canvas.setup()">
 
+    <style>
+     body {
+           background-image: url('2.jpg');
+           background-repeat: no-repeat;
+           background-attachment: fixed;
+           background-size: cover;
+           }
+     </style>	
+
+     <audio controls autoplay>
+        <source src = "music.mp3" type="audio/mp3" />
+        your browser does not support the audio element 
+     </audio>
+
+  
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
@@ -9,27 +24,169 @@
     <script src="./canvas.js"></script>
 </body>
 
+
+
 </html>
 <script>
 
     // Declare all global variables here
+    var centreX;
+    var centreY;
+
+    var l1obs_1X;
+    var l1obs_1Y;
+    var l1obs_2X;
+    var l1obs_2Y;
+    var l1obs_3X;
+    var l1obs_3Y;
+    var l1obs_B;
+    var l1obs_L;
+
+    var p;
+    var t;
+    var score;
+    var start = 0;
+
+    
     function setup() {
         // Initialize variables here
+        p = 0.005;
+        t = 0;
+        score=0;
+        lvl_1_obstacles_setup();
     }
 
-    // Declare custom functions here
+    //function to move the Duet object
+
+    var Move = function move(bR, r, time)
+    {
+        rad = bR; 
+        centreX = rad * Math.cos(time * (Math.PI / 180));
+        centreY = rad * Math.sin(time * (Math.PI / 180));
+        canvas.setDrawMode("fill");
+        canvas.setColor("rgb(255,105,180)"); 
+        canvas.drawCircle(canvas.width/2 + centreX, canvas.height*0.7 + centreY, r);
+        canvas.setColor("rgb(0,255,255)");
+        canvas.drawCircle(canvas.width/2 - centreX, canvas.height*0.7 - centreY, r);
+        canvas.setDrawMode("stroke");
+        canvas.setColor("rgb(160,160,160)");
+        canvas.drawCircle(canvas.width/2,canvas.height*0.7,bR);
+    } 
+
+    //level 1
+    
+    function lvl_1_obstacles_setup(){
+      l1obs_1X=0.33*canvas.width;
+      l1obs_2X=0.48*canvas.width;
+      l1obs_3X=0.55*canvas.width;
+      l1obs_1Y=canvas.height*0.75;
+      l1obs_2Y=0;
+      l1obs_3Y=canvas.height*0.4;
+      l1obs_B=0.070*canvas.height;
+      l1obs_L=0.100*canvas.width;
+    }
+    
+    function lvl_1_draw_obstacles(){
+      canvas.setDrawMode("fill");
+      canvas.setColor("rgb(255, 255, 255)");
+      canvas.drawRectangle(l1obs_1X,l1obs_1Y,1.2*l1obs_L,l1obs_B);
+      canvas.drawRectangle(l1obs_2X,l1obs_2Y,l1obs_B,1.2*l1obs_L);
+      canvas.drawRectangle(l1obs_3X,l1obs_3Y,l1obs_L,l1obs_B); 
+    }
+    
+    function move_obstacles(){
+        l1obs_1Y+=canvas.height*p;
+        l1obs_2Y+=canvas.height*p;
+        l1obs_3Y+=canvas.height*p;
+        
+        if(l1obs_1Y>=canvas.height){
+          l1obs_1Y=0;
+          score+=1;
+          p += 0.0005;
+        }
+        if(l1obs_2Y>=canvas.height){
+          l1obs_2Y=0;
+        }
+        if(l1obs_3Y>=canvas.height)
+          l1obs_3Y=0;  
+      }
+
+
+    function check_collision_R(obs_1X,obs_2X,obs_3X,obs_1Y,obs_2Y,obs_3Y,obs1L,obs1B,obs2L,obs2B,obs3L,obs3B)
+    {
+      
+      if(((canvas.width/2 + centreX)>= obs_1X) && ((canvas.width/2 + centreX)<= (obs_1X+obs1L)) && ((canvas.height*0.7 + centreY)>=obs_1Y) && ((canvas.height*0.7 + centreY)<= obs_1Y+obs1B)||((canvas.width/2 + centreX)>= obs_2X) && ((canvas.width/2 + centreX)<= (obs_2X+obs2L)) && ((canvas.height*0.7 + centreY)>=obs_2Y) && ((canvas.height*0.7 + centreY)<= obs_2Y+obs2B)||((canvas.width/2 + centreX)>= obs_3X) && ((canvas.width/2 + centreX)<= (obs_3X+obs3L)) && ((canvas.height*0.7 + centreY)>=obs_3Y) && ((canvas.height*0.7 + centreY)<= obs_3Y+obs3B))
+        
+        return 1;
+       
+      else return 0;   
+    }
+
+    function check_collision_L(obs_1X,obs_2X,obs_3X,obs_1Y,obs_2Y,obs_3Y,obs1L,obs1B,obs2L,obs2B,obs3L,obs3B)
+    {
+      
+      if(((canvas.width/2 - centreX)>= obs_1X) && ((canvas.width/2 - centreX)<= (obs_1X+obs1L)) && ((canvas.height*0.7 - centreY)>=obs_1Y) && ((canvas.height*0.7 - centreY)<= obs_1Y+obs1B)||((canvas.width/2 - centreX)>= obs_2X) && ((canvas.width/2 - centreX)<= (obs_2X+obs2L)) && ((canvas.height*0.7 - centreY)>=obs_2Y) && ((canvas.height*0.7 - centreY)<= obs_2Y+obs2B)||((canvas.width/2 - centreX)>= obs_3X) && ((canvas.width/2 - centreX)<= (obs_3X+obs3L)) && ((canvas.height*0.7 - centreY)>=obs_3Y) && ((canvas.height*0.7 - centreY)<= obs_3Y+obs3B))
+        
+        return 1;
+       
+      else return 0;  
+    }
 
 
     // Function while will be called repeatedly 
     function main() {
-        canvas.clear();
+        if(start==1){ 
+          canvas.clear(); 
+          canvas.setDrawMode("fill");
+          canvas.setColor("rgb(0, 0, 0)"); 
+          canvas.drawRectangle(0.3*canvas.width,0,0.4*canvas.width,canvas.height)
+          canvas.setDrawMode("stroke");
+          canvas.setColor("rgb(255, 0, 0)"); 
+          canvas.drawRectangle(0.3*canvas.width,0,0.4*canvas.width,canvas.height)
+          canvas.setColor("rgb(0, 0, 0)");
+          canvas.drawText(0.825*canvas.width, 0.1*canvas.height, "Score");
+          canvas.drawText(0.85*canvas.width, 0.2*canvas.height, score);
+          
+          m = Move(100, 20, t);
+        
+          if(canvas.isKeyDown("KeyD")) t += 5;
+          if(canvas.isKeyDown("KeyA")) t -= 5;
+          
+          lvl_1_draw_obstacles();
+          move_obstacles();
+            
+          if(check_collision_L(l1obs_1X,l1obs_2X,l1obs_3X,l1obs_1Y,l1obs_2Y,l1obs_3Y,1.2*l1obs_L,l1obs_B,l1obs_B,1.2*l1obs_L,l1obs_L,l1obs_B) || check_collision_R(l1obs_1X,l1obs_2X,l1obs_3X,l1obs_1Y,l1obs_2Y,l1obs_3Y,1.2*l1obs_L,l1obs_B,l1obs_B,1.2*l1obs_L,l1obs_L,l1obs_B)) setup();  
+          
+        }
+        else if(start==0){
+          canvas.clear();
+          canvas.setDrawMode("fill");
+          canvas.setColor("rgb(0, 0, 0)"); 
+          canvas.drawRectangle(0.3*canvas.width,0,0.4*canvas.width,canvas.height)
+          canvas.setDrawMode("stroke");
+          canvas.setColor("rgb(255, 0, 0)"); 
+          canvas.drawRectangle(0.3*canvas.width,0,0.4*canvas.width,canvas.height)
+          canvas.setColor("rgb(255, 255, 255)");
+          canvas.drawText(0.425*canvas.width, 0.3*canvas.height, "Press Enter to Play",fontSize=25);
+          canvas.drawText(0.39*canvas.width, 0.4*canvas.height, "Use 'A' and 'D' keys to rotate ",fontSize=25);
+          m = Move(100, 20, t);
 
+          canvas.setColor("yellow");
+          canvas.drawText(0.445*canvas.width, 0.73*canvas.height, "DUET",fontSize=55);
+
+        }
     }
+    
+  
 
     // Override functions here; 
     canvas.mainFunction = main;
+    canvas.keyDownCallback = function(e){
+      if(e.keyCode===13)
+        start=1;
+    }
 
-    var timeStep = 50;
+    var timeStep = 16.6;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
