@@ -1,31 +1,313 @@
 <html>
 
 <body onload="canvas.setup()">
-
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+    <canvas id="canvasArea1" style="position: relative; left: 0%; top: 0; z-index: 0;
+    width:90%;height:90%; border: 1px solid #d3d3d3;"></canvas>
     <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+        style="visibility: hidden; position: absolute; left: 0%; top: 0; z-index: 0;
+        width:90%;height:90%; border: 1px solid #d3d3d3;"></canvas>
 
     <script src="./canvas.js"></script>
+
+    <br>
+    <input type="radio" id="line" name="shape" value="line">
+    <label for="line">Line</label>
+    <input type="radio" id="circle" name="shape" value="circle">
+    <label for="circle">Circle</label>
+    <input type="radio" id="rect" name="shape" value="rect">
+    <label for="rect">Rectangle</label>
+    <input type="radio" id="quarter" name="shape" value="quarter">
+    <label for="quarter">Quarter</label>
+    <input type="radio" id="clr" name="shape" value="clr">
+    <label for="clr">Clear</label>
+    <input type="button" id="reset" value="Reset" onclick="canvas.clear()">
+
+    <br>
+
+    <p>Each Square is 20*20 sq units</p>
+
+      
+    
+        
 </body>
-
 </html>
-<script>
 
+<script>
+    var first_time_onli=0;
+    var flag=0;
+    var pad=20;
+    var r;
+    var lineArr = [];
+    var cirArr = [];
+    var recArr = [];
+    var clearRec = [];
+    var quartArr=[];
+    var b1 = document.getElementById("line");
+    var b2 = document.getElementById("circle");
+    var b3 = document.getElementById("rect");
+    var b5 = document.getElementById("clr");
+    var b4=document.getElementById("quarter");
+    var sel = -1
+    var int_pntx=[];
+    var int_pnty=[];
+    for(var i=0;i<window.innerWidth;i+=pad){
+      int_pntx.push(i);
+    }
+     for(var i=0;i<window.innerHeight;i+=pad){
+      int_pnty.push(i);
+    }
     // Declare all global variables here
     function setup() {
         // Initialize variables here
+        
     }
 
     // Declare custom functions here
+    function draw_pnts(){
+        canvas.setColor("black");
 
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
+      for(var i=0;i<int_pntx.length;i++){
+        for(var j=0;j<int_pnty.length;j++){
+          //canvas.setDrawMode("fill");
+          canvas.drawCircle(int_pntx[i],int_pnty[j],1);
+          //canvas.setDrawMode("stroke");
+        }
+      }
     }
+    // Function while will be called repeatedly 
+            
+    function main() {
+        // canvas.clear();
+        if(flag==0){
+          var c = document.getElementById("canvasArea1");
+            var ctx = c.getContext("2d");
+            var gar=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+            gar.addColorStop(0,"#500778");
+            gar.addColorStop(1,"#AC145A");
+            ctx.fillStyle=gar;
+            ctx.fillRect(0,0,canvas.width,canvas.height);
 
+            canvas.setColor("WHITE");
+            canvas.drawText(500, 70, "AutoCHAD", fontSize=80)
+            
+		    //canvas.drawText(60, 60 ,"Press Enter to begin kranti", fontSize = 50)
+            canvas.drawText(20,90,"Instructions:",fontSize=40)
+            canvas.drawText(25,130,"1)For a line choose the line option & choose any 2 points on the given grid",fontSize=25)
+            canvas.drawText(25,170,"2)For a circle choose the circle option and choose a center and a point on its",fontSize=25)
+            canvas.drawText(35,210," circumference.",fontSize=25)
+            canvas.drawText(25,250,"3)For a rectangle choose the rectangle option and choose 2 points which will ",fontSize=25)
+            canvas.drawText(35,290," be the end points of its diagonal.",fontSize=25)
+            canvas.drawText(25,330,"4)for a quarter choose the quarter option and choose a center and a point",fontSize=25)
+            canvas.drawText(35,370," on the horizontal or vertical axes which will be the point on the circumference.",fontSize=25)
+            canvas.drawText(25,410,"5)to erase the drawn figures choose the clear option and choose 2 points",fontSize=25)
+            canvas.drawText(35,450," which will represent the  the end points of the diagonal of a rectangle inside which",fontSize=25)
+            canvas.drawText(35,490," everything is to be erased.",fontSize=25)
+            canvas.drawText(25,530,"6) to empty the grid click on the reset button ",fontSize=25)
+            canvas.drawText(300, 600 ,"Press Enter to begin kranti", fontSize = 80)
+            canvas.drawText(270,650,"(SELECT THE TWO POINTS FROM THE GRID BY PRESSING 'A' AND 'D') ",fontSize=30)
+            canvas.drawText(800,690,"BY: Prakhar Rastogi and Sarthak Harne ",fontSize=40)
+
+            if(canvas.isKeyDown("Enter")){
+                flag=1;
+            }
+
+        }
+        if(flag!=0){
+            if(first_time_onli==0){
+                canvas.clear();
+                first_time_onli=1;
+            }
+            draw_pnts();
+        if(b1.checked == true)
+        {
+          sel = 0;
+        }
+        if(b2.checked == true)
+        {
+          sel = 1;
+        }
+        if(b3.checked == true)
+        {
+          sel = 2;
+        }
+        if(b4.checked == true)
+        {
+          sel = 3;
+        }
+        if(b5.checked== true){
+            sel=4;
+        }
+        switch(sel){
+          case 0 : 
+            if(canvas.isKeyDown("KeyA") && lineArr.length == 0){
+              canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              lineArr.push(canvas.mouseX);
+              lineArr.push(canvas.mouseY);
+            }
+            if(canvas.isKeyDown("KeyD")){
+              canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              lineArr.push(canvas.mouseX);
+              lineArr.push(canvas.mouseY);
+              var cx1 = lineArr[0];
+              var cy1 = lineArr[1];
+              var x1 = lineArr[2];
+              var y1 = lineArr[3];
+              var len = Math.sqrt((x1-cx1)*(x1-cx1) + (y1-cy1)*(y1-cy1));
+              canvas.drawLine(cx1,cy1,x1,y1)
+              canvas.drawText((cx1 + x1)/2 - 25, (cy1 + y1)/2, Math.round(len), fontSize = 15)
+              
+              sel = -1;
+               while(lineArr.length!=0) {
+                lineArr.shift();
+              }
+            }
+           
+          break;
+
+          case 1 :
+           if(canvas.isKeyDown("KeyA") && cirArr.length == 0){
+              canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              cirArr.push(canvas.mouseX);
+              cirArr.push(canvas.mouseY);
+            }
+            if(canvas.isKeyDown("KeyD")){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              cirArr.push(canvas.mouseX);
+              cirArr.push(canvas.mouseY);
+              var cx1 = cirArr[0];
+              var cy1 = cirArr[1];
+              var x1 = cirArr[2];
+              var y1 = cirArr[3];
+              var r = Math.sqrt((x1-cx1)*(x1-cx1) + (y1-cy1)*(y1-cy1));
+            
+              canvas.drawCircle(cx1,cy1,r);
+              sel=-1;
+              while(cirArr.length!=0) {
+              cirArr.shift();
+             }
+            }
+            
+          break;
+
+          case 2 :
+            if(canvas.isKeyDown("KeyA") && recArr.length == 0){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              recArr.push(canvas.mouseX);
+              recArr.push(canvas.mouseY);
+            }
+            if(canvas.isKeyDown("KeyD")){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              recArr.push(canvas.mouseX);
+              recArr.push(canvas.mouseY);
+              
+              var cx1=recArr[0];
+              var cy1=recArr[1];
+              var x1=recArr[2];
+              var y1=recArr[3];
+
+              var lenX = x1>cx1?x1 - cx1:cx1 - x1;
+              canvas.drawText((cx1 + x1)/2, y1>cy1?cy1:y1, Math.round(lenX), fontSize = 15)
+              
+              var lenY = y1>cy1?y1 - cy1:cy1 - y1;
+              canvas.drawText((x1>cx1?cx1:x1) - 25, (cy1 + y1)/2, Math.round(lenY), fontSize = 15)
+
+              canvas.drawRectangle(x1>cx1?cx1:x1, y1>cy1?cy1:y1,x1>cx1?x1-cx1:cx1-x1,y1>cy1?y1-cy1:cy1-y1)
+              sel=-1;
+              while(recArr.length!=0) {
+              recArr.shift();
+             }
+            }
+            
+          break;
+          case 3:
+            var a;
+            var endAngle;
+            var startAngle;
+            if(canvas.isKeyDown("KeyA") && quartArr.length == 0){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              quartArr.push(canvas.mouseX);
+              quartArr.push(canvas.mouseY);
+            }
+            if(canvas.isKeyDown("KeyD")){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              quartArr.push(canvas.mouseX);
+              quartArr.push(canvas.mouseY);
+              var cx1=quartArr[0];
+              var cy1=quartArr[1];
+              var x1=quartArr[2];
+              var y1=quartArr[3];
+              var cvs = document.getElementById("canvasArea1");
+              var context = cvs.getContext("2d")
+              if(y1==cy1){
+                    startAngle=x1>cx1?0:Math.PI;
+                    endAngle=startAngle+(Math.PI/2);
+              }
+              else if(x1==cx1){
+                    startAngle=y1>cy1?Math.PI/2 : Math.PI*3/2;
+                    endAngle=startAngle+(Math.PI/2);
+              }
+              else{
+                startAngle=0;
+                endAngle=2*Math.PI;
+              }
+              
+              a= Math.sqrt((x1-cx1)*(x1-cx1) + (y1-cy1)*(y1-cy1));
+              context.beginPath();
+              context.arc(cx1,cy1,a,startAngle,endAngle);
+              context.stroke();
+              
+              sel=-1
+              while(quartArr.length!=0) {
+              quartArr.shift();
+              }
+            }
+            break;
+          // Yeh waala add kiya abhi
+          // input mei thodi gadbad ho rahi hai
+          case 4 :
+            if(canvas.isKeyDown("KeyA") && clearRec.length == 0){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              clearRec.push(canvas.mouseX);
+              clearRec.push(canvas.mouseY);
+            }
+            if(canvas.isKeyDown("KeyD")){
+                canvas.mouseX = canvas.mouseX % pad < pad/2 ? canvas.mouseX - canvas.mouseX % pad : canvas.mouseX + pad - canvas.mouseX % pad;
+              canvas.mouseY = canvas.mouseY % pad < pad/2 ? canvas.mouseY - canvas.mouseY % pad : canvas.mouseY + pad - canvas.mouseY % pad;
+              clearRec.push(canvas.mouseX);
+              clearRec.push(canvas.mouseY);
+              
+              var cx1=clearRec[0];
+              var cy1=clearRec[1];
+              var x1=clearRec[2];
+              var y1=clearRec[3];
+
+              
+              var cvs = document.getElementById("canvasArea1");
+              var context = cvs.getContext("2d")//oh lawd so saaxy
+              context.clearRect(x1>cx1?cx1:x1, y1>cy1?cy1:y1,x1>cx1?x1-cx1:cx1-x1,y1>cy1?y1-cy1:cy1-y1)
+              sel=-1;
+              while(clearRec.length!=0) {
+              clearRec.shift();
+             }
+            }
+            
+          break;
+          default:
+          break;
+          }
+
+        }
+        
+}
     // Override functions here; 
     canvas.mainFunction = main;
 
