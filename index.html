@@ -1,6 +1,7 @@
+
 <html>
 
-<body onload="canvas.setup()">
+<body onload="canvas.setup()" background = "bg_project.png">
 
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
@@ -11,18 +12,146 @@
 
 </html>
 <script>
-
+    
     // Declare all global variables here
+            
+    //small circle
+    var smallX, smallY, smallR;
+    //Big circle
+    var bigX, bigY, bigR;
+        
     function setup() {
-        // Initialize variables here
+      smallX=720;
+      smallY=250;
+      smallR=55;
+      bigX=550;
+      bigY=250;
+      bigR=80;
     }
 
     // Declare custom functions here
+    
 
+    //Font style and colour
+    
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
+        canvas.drawCircle(smallX, smallY, smallR);
+        canvas.drawCircle(bigX, bigY, bigR);
+          //canvas.setDrawMode("fill")
+          //canvas.setColor("red(161,102,94)")
+        canvas.drawCircle(bigX, bigY, 65);
+        canvas.drawCircle(bigX+10, bigY-10, 30);
+            //canvas.setDrawMode('fill');
+            
+        //canvas.setDrawMode("fill")
+        //canvas.setColor("rgb(197,140,133)")
+        canvas.drawCircle(smallX, smallY, 42);
+        canvas.drawCircle(smallX, smallY, 17);
+
+      
+      //For colour fill
+      var c = document.getElementById("canvasArea1");
+      var ctx = c.getContext("2d");
+      
+      ctx.fillStyle = "#DEB887";
+      ctx.beginPath();
+      ctx.arc(smallX, smallY, smallR, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#DEB887";
+      ctx.beginPath();
+      ctx.arc(bigX, bigY, bigR, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.fillStyle = "#FFF8DC";
+      ctx.beginPath();
+      ctx.arc(bigX, bigY, 65, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.fillStyle = "#FFF8DC";
+      ctx.beginPath();
+      ctx.arc(smallX, smallY, 42, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#404040";
+      ctx.beginPath();
+      ctx.arc(smallX, smallY, 17, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.fillStyle = "#4d4d4d";
+      ctx.beginPath();
+      ctx.arc(bigX+10, bigY-10, 30, 0 ,2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      
+      
+      //For Font
+      var canvas1 = document.getElementById("canvasArea1");
+      var ctx1 = canvas1.getContext("2d");
+      ctx1.font = "50px Cooper Black";
+      ctx1.fillStyle = "yellow";
+      
+      //Title
+      ctx1.fillText("Tabla Simulator", 430, 75);
+
+      canvas.drawText(670, 350, "Dahina", fontSize = 30);
+      canvas.drawText(505, 375, "Bahiya", fontSize = 30);
+
+        //Dahina
+        canvas.drawLine(695, 250, 695, 150);
+        canvas.drawLine(695, 150, 785, 150);
+        canvas.drawText(790, 155, "(K) Na", fontSize=15);
+
+        canvas.drawLine(720, 243, 720, 225);
+        canvas.drawLine(720, 225, 785, 225);
+        canvas.drawText(790, 230, "(I) Ti", fontSize=15);
+
+        canvas.drawLine(720, 250, 785, 250);
+        canvas.drawText(790, 255, "(O) Ra", fontSize=15);
+
+        canvas.drawLine(720, 257, 720, 275);
+        canvas.drawLine(720, 275, 785, 275);
+        canvas.drawText(790, 280, "(P) Tun", fontSize=15);
+
+        canvas.drawLine(672, 250, 672, 130);
+        canvas.drawLine(672, 130, 785, 130);
+        canvas.drawText(790, 135, "(L) Ta", fontSize=15);
+
+        
+        //Bahiya
+        canvas.drawLine(560, 240, 560, 150);
+        canvas.drawLine(560, 150, 450, 150);
+        canvas.drawText(390, 155, "(Q) Ke", fontSize=15);
+
+        canvas.drawLine(595, 220, 595, 130);
+        canvas.drawLine(595, 130, 450, 130);
+        canvas.drawText(380, 135, "(W) Ghe", fontSize=15);
+
+        canvas.drawLine(540, 275, 540, 175);
+        canvas.drawLine(540, 175, 450, 175);
+        canvas.drawText(374, 175, "(D) Style", fontSize=15);
+        canvas.drawText(400, 195, "Ghe2", fontSize=15);
+
+        canvas.drawLine(530, 285, 460, 285);
+        canvas.drawLine(460, 285, 460, 230);
+        canvas.drawLine(460, 230, 453, 230)
+        canvas.drawText(380, 230, "(S) Style", fontSize=15);
+        canvas.drawText(400, 250, "Ghe1", fontSize=15);
+        
+        canvas.drawLine(520, 295, 450, 295);
+        canvas.drawText(380, 295, "(A) Open", fontSize=15);
+        canvas.drawText(400, 315, "Ghe", fontSize=15);
+
+
+        
 
     }
 
@@ -32,5 +161,74 @@
     var timeStep = 50;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+
+
+    /*Bahiya*/
+
+
+    //Bol - 'Ke'
+    canvas.keyDownCallback = function (e){
+      if(e.code == "KeyQ"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/ke.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    } 
+
+    //Bol - 'Ghe'
+      if(e.code == "KeyW"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/ghe.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+      }
+      
+    //Bol - 'Open Ghe'
+      if(e.code == "KeyA"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/open_ghe.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    }
+
+    //Bol - 'StyleGhe1'
+      if(e.code == "KeyS"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/sty_ghe.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+      } 
+
+    //Bol - 'StyleGhe2'
+      if(e.code == "KeyD"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/sty_ghe1.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    }
+
+    /*Dahina*/
+
+    //Bol - 'Ti'
+      if(e.code == "KeyI"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/ti.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    }
+
+    //Bol - 'Ra'
+      if(e.code == "KeyO"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/ra.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    } 
+
+    //Bol - 'Tun'
+      if(e.code == "KeyP"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/tun.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    }
+
+    //Bol - 'Na'
+      if(e.code == "KeyK"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/na.ogg\">Your browser does not support the <code> audio </code> element. </audio>/"
+    } 
+
+    //Bol - 'Ta'
+      if(e.code == "KeyL"){
+      console.log("in")
+      var elem = document.getElementById("canvasArea2");elem.innerHTML = "<audio controls autoplay preload = \"auto\" src = \"./Tabla_Bols/ta.ogg\">Your browser does not support the <code> audio </code> element. </audio>/" 
+      
+    } }
+
 
 </script>
