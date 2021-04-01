@@ -1,36 +1,706 @@
 <html>
+<head>
+    <style>
+        particle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+    </style>
+</head>
+    <body onload="canvas.setup()">
+        <canvas id="canvasArea"
+        style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
 
-<body onload="canvas.setup()">
-
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
-    <script src="./canvas.js"></script>
-</body>
-
+        <script src="./canvas1.js"></script>
+    </body>
 </html>
+
 <script>
 
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
+    var sunR;
+    var cur_state;
+    var prev_state;
+    var circle_orbit_radius;
+    var circle_orbit_x;
+    var circle_orbit_y;
+    var ellipse_major;
+    var ellipse_minor;
+    var square_left_x;
+    var square_up_y;
+    var square_side;
+    var square_defence_speed;
+    var triangle_top_x;
+    var triangle_top_y;
+    var triangle_halfside;
+    var triangle_height;
+    var triangle_speed;
+    var t_y;
+    var defence_x;
+    var defence_y;
+    var defence_theta;
+    var defence_radius;
+    var Te1, Te2, Te3, Te4;
+    var shiftArray = [
+        '#912e54',
+        '#d1788f',
+        '#dd7c86',
+        '#dmc341',
+        '#ffffff',
+        '#red'
+      ]
+    var blastArray = [
+        '#801100',
+        '#b62203',
+        '#d73502',
+        '#ff7500',
+        '#fc6400',
+        '#fac000'
+      ]
+    var score;
+    var h;
+    var time;
+    ctx = document.getElementById("canvasArea").getContext("2d");
+    var circlesCount = 10;
+
+
+    function setup()
+    {
+        sunR = 17;
+        circle_orbit_radius = 450;
+        circle_orbit_x = canvas.width/2;
+        circle_orbit_y = canvas.height/2;
+        ellipse_major = 370;
+        ellipse_minor = 290;
+        square_side = 330;
+        square_left_x = (canvas.width - square_side)/2;
+        square_up_y = (canvas.height - square_side)/2;
+        square_defence_speed = 5;
+        t_y = 200;
+        triangle_top_x = canvas.width/2;
+        triangle_top_y = (canvas.height - t_y)/2;
+        triangle_halfside = 100;
+        triangle_height = Math.sqrt(3) * triangle_halfside;
+        triangle_speed = 5;
+        cur_state = "triangle";
+        defence_x = triangle_top_x;
+        defence_y = triangle_top_y;
+        defence_theta = 60;
+        defence_radius = 15;
+        Te1 = 0;
+        Te2 = 0;
+        Te3 = 0;
+        Te4 = 0;
+        score = [0,0,0,0];
+        h = 0;
+        time = 6500;
+    }
+    /*  ""Tried Creating laser beam animation to destroy planet""
+            if(time <= 0)
+            {
+                if(beam_animation == 0)
+                {
+                    if(beam_shooter_coordinates[0] - canvas.width/2 >= 0)
+                    {
+                        var beam_theta = Math.asin((beam_shooter_coordinates[0] - canvas.width/2) / beam_radius) * (180 / Math.PI);
+                    }
+                    else
+                    {
+                        var beam_theta = 180 - Math.asin((beam_shooter_coordinates[0] - canvas.width/2) / beam_radius) * (180 / Math.PI);
+                    }
+                    console.log(beam_theta);
+                    var beam_start_left = [beam_shooter_coordinates[0] - beam_radius * Math.sin(beam_theta * (Math.PI / 180)), beam_shooter_coordinates[1] + beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_start_right = [beam_shooter_coordinates[0] + beam_radius * Math.sin(beam_theta * (Math.PI / 180)), beam_shooter_coordinates[1] - beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_end_left = [canvas.width/2 - beam_radius * Math.sin(beam_theta * (Math.PI / 180)), canvas.height/2 + beam_radius * Math.cos(beam_theta * (Math.PI / 180))];
+                    var beam_end_right = [canvas.width/2 + beam_radius * Math.sin(beam_theta * (Math.PI / 180)), canvas.height/2 - beam_radius * Math.cos(beam_theta * (Math.PI / 180))]
+                    canvas.drawLine(beam_start_left[0], beam_start_left[1], beam_start_right[0], beam_start_right[1]);
+                    var beam_inter_left = beam_start_left;
+                    var beam_inter_right = beam_start_right;
+                    while(beam_inter_left != beam_end_left && beam_inter_right != beam_end_right)
+                    {
+                        beam_inter_left[0] += Math.cos(beam_theta * (Math.PI / 180));
+                        console.log(beam_inter_left[0]);
+                        beam_inter_left[1] += Math.sin(beam_theta * (Math.PI / 180));
+                        beam_inter_right[0] += Math.cos(beam_theta * (Math.PI / 180));
+                        beam_inter_right[1] += Math.sin(beam_theta * (Math.PI / 180));
+                        canvas.drawLine(beam_start_left[0], beam_start_left[1], beam_inter_left[0], beam_inter_left[1]);
+                        canvas.drawLine(beam_start_right[0], beam_start_right[1], beam_inter_right[0], beam_inter_right[1]);
+                    }
+                    canvas.drawLine(beam_end_left[0], beam_end_left[1], beam_end_right[0], beam_end_right[1]);
+                    h = 2;
+                }
+            }
+            */
+
+    var end = function(){
+        if ((defence_x - 20) <=0 || (defence_x + 20) >= canvas.width ||(defence_y - 20) <=0 || (defence_y + 20) >= canvas.height){
+            return true;
+        }
+        return false;
+
+    }
+    drawTriangle = function(X,Y,a) {
+        var height = 2*a * (Math.sqrt(3)/2);
+        ctx.beginPath();
+        ctx.moveTo(X, Y);
+        ctx.lineTo(X+a, Y+height);
+        ctx.lineTo(X-a, Y+height);
+        ctx.lineTo(X, Y);
+        canvas.draw();
+        ctx.closePath();
+
+    }
+    hello = function(){
+
+      for (let i = 0; i < circlesCount; i++) {
+        const radius = Math.random() * 4 + 1
+        const x = Math.random() * (canvas.width - radius  * 2) + radius
+        const y = Math.random() * (canvas.height - radius  * 2) + radius
+        const dx = (Math.random() - 0.5) * 2
+        const dy = (Math.random() - 0.5) * 2
+
+
+        drawcircle(x,y,radius,shiftArray[Math.floor(Math.random() * shiftArray.length)]);
+
+      }
+    }
+    createGradient = function(x,y,ir, or, r, ic,oc){
+
+
+        // Radii of the white glow.
+        var innerRadius = ir,
+        outerRadius = or,
+        // Radius of the entire circle.
+        radius = r;
+
+    var gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+    gradient.addColorStop(0, ic);
+    gradient.addColorStop(1, oc);
+
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
     }
 
-    // Declare custom functions here
+    drawcircle = function(x,y,r,c) {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2, false);
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+        ctx.fillStyle = c;
+        ctx.fill();
+    }
+
+    var sum = function(){
+        let sum = 0;
+        for (let i = 0; i < 4;i++){
+            sum += score[i];
+
+        }
+        return sum;
+    }
+
+    var collision = function(centreX, centreY){
+        if(cur_state == 'transition' && (Math.abs(centreX - defence_x) <= defence_radius && Math.abs(centreY - defence_y) <= defence_radius))
+        {
+            // hide the ball
+            return 10;
+
+        }
+        //dont hide;
+        return 0;
+    }
+
+    var COrbit = function(radius, color = '#ffffff')
+    {
+        r = radius;
+
+        canvas.setDrawMode("stroke");
+        canvas.setColor(color);
+        canvas.drawCircle(circle_orbit_x, circle_orbit_y, radius);
+        return r;
+    }
+    var EOrbit = function(major, minor)
+    {
+        a = major;
+        b = minor;
+
+        canvas.setDrawMode("stroke");
+        canvas.setColor('#ffffff');
+        canvas.drawEllipse(canvas.width/2, canvas.height/2, a,b,0,0,360);
+        return [a,b];
+    }
+    var ROrbit = function(side)
+    {
+        a = side;
+
+        canvas.setDrawMode("stroke");
+        canvas.setColor('#ffffff');
+        canvas.drawRectangle(square_left_x,square_up_y,side,side);
+        return a;
+    }
+    var TOrbit = function(y,a)
+    {
+        canvas.setDrawMode("stroke");
+        canvas.setColor('#ffffff');
+        drawTriangle(triangle_top_x,triangle_top_y,a);
+
+    }
+
+    var Defence = function()
+    {
+
+        canvas.setDrawMode("fill");
+        canvas.setColor('#AF593E');
+        canvas.drawCircle(defence_x, defence_y, defence_radius);
+
+    }
+
+    function move(key)
+    {
+      if(key.code == "ArrowUp" && cur_state == "circle")
+      {
+        defence_theta += 1;
+        defence_x = canvas.width/2 + circle_orbit_radius * Math.cos(defence_theta * (Math.PI / 180));
+        defence_y = canvas.height/2 + circle_orbit_radius * Math.sin(defence_theta * (Math.PI / 180));
+      }
+
+      else if(key.code == "ArrowUp" && cur_state == "ellipse")
+      {
+        defence_theta += 1;
+        defence_x = canvas.width/2 + (ellipse_major) * Math.cos(defence_theta * (Math.PI / 180));
+        defence_y = canvas.height/2 + (ellipse_minor) * Math.sin(defence_theta * (Math.PI / 180));
+      }
+
+      else if(key.code == "ArrowUp" && cur_state == "square")
+      {
+        if(defence_theta == 270)
+        {
+            if((defence_y + square_defence_speed * Math.sin(defence_theta * (Math.PI / 180)) <= square_up_y))
+            {
+                defence_y = square_up_y;
+                defence_theta = 0;
+            }
+            else
+            {
+                defence_y += square_defence_speed * Math.sin(defence_theta * (Math.PI / 180));
+            }
+        }
+        else if(defence_theta == 90)
+        {
+            if((defence_y + square_defence_speed * Math.sin(defence_theta * (Math.PI / 180)) >= square_up_y + square_side))
+            {
+                defence_y = square_up_y + square_side;
+                defence_theta = 180
+            }
+            else
+            {
+                defence_y += square_defence_speed * Math.sin(defence_theta * (Math.PI / 180));
+            }
+        }
+        else if(defence_theta == 0)
+        {
+            if(defence_x + square_defence_speed * Math.cos(defence_theta * (Math.PI / 180)) >= square_left_x + square_side)
+            {
+                defence_x = square_left_x + square_side;
+                defence_theta = 90;
+            }
+            else
+            {
+                defence_x += square_defence_speed * Math.cos(defence_theta * (Math.PI / 180));
+            }
+        }
+        else if(defence_theta == 180)
+        {
+            if((defence_x - square_defence_speed * Math.cos(defence_theta * (Math.PI / 180)) <= square_left_x))
+            {
+                defence_x = square_left_x;
+                defence_theta = 270;
+            }
+            else
+            {
+                defence_x += square_defence_speed * Math.cos(defence_theta * (Math.PI / 180));
+            }
+        }
+      }
+
+      else if(key.code == "ArrowUp" && cur_state == "triangle")
+      {
+        if(defence_theta == 60)
+        {
+            if(defence_x + triangle_speed * Math.cos(defence_theta * (Math.PI / 180)) >= triangle_top_x + triangle_halfside)
+            {
+                defence_x = triangle_top_x + triangle_halfside;
+                defence_y = triangle_top_y + triangle_height;
+                defence_theta = 180;
+            }
+            else
+            {
+                defence_x += triangle_speed * Math.cos(defence_theta * (Math.PI / 180));
+                defence_y += triangle_speed * Math.sin(defence_theta * (Math.PI / 180));
+            }
+        }
+        else if(defence_theta == 180)
+        {
+            if(defence_x + triangle_speed * Math.cos(defence_theta * (Math.PI / 180)) <= triangle_top_x - triangle_halfside)
+            {
+                defence_x = triangle_top_x - triangle_halfside;
+                defence_theta = 300;
+            }
+            else
+            {
+                defence_x += triangle_speed * Math.cos(defence_theta * (Math.PI / 180));
+                defence_y += triangle_speed * Math.sin(defence_theta * (Math.PI / 180));
+            }
+        }
+        else if(defence_theta == 300)
+        {
+            if(defence_x + triangle_speed * Math.cos(defence_theta * (Math.PI / 180)) >= triangle_top_x)
+            {
+                defence_x = triangle_top_x;
+                defence_y = triangle_top_y;
+                defence_theta = 60;
+            }
+            else
+            {
+                defence_x += triangle_speed * Math.cos(defence_theta * (Math.PI / 180));
+                defence_y += triangle_speed * Math.sin(defence_theta * (Math.PI / 180));
+            }
+        }
+      }
+      else if(key.code == "KeyZ")
+      {
+
+        if (cur_state == 'transition'){
+            return;
+        }
+        prev_state = cur_state;
+        cur_state = "transition";
+        pushEffect(defence_x,defence_y);
+
+      }
+     else if(key.code == "Enter")
+     {
+         if (h == 0)
+         {
+             h = 1;
+         }
+         else if (h == 2)
+         {
+             h = 0;
+             canvas.setup();
+         }
+         else
+         {
+             return;
+         }
+     }
+    }
+
+    function destinationCircle(x,y){
+         return Math.pow((x - circle_orbit_x),2) + Math.pow((y - circle_orbit_y),2) >= Math.pow(circle_orbit_radius,2);
+    }
 
 
-    // Function while will be called repeatedly 
+    function incCordinates(speed)
+    {
+            defence_x += (speed) * Math.cos(defence_theta * (Math.PI / 180));
+            defence_y += (speed) * Math.sin(defence_theta * (Math.PI / 180));
+            return;
+    }
+
+    function createParticle (x, y) {
+    const particle = document.createElement('particle');
+    document.body.appendChild(particle);
+const size = Math.floor(Math.random() * 20 + 5);
+particle.style.width = `${size}px`;
+particle.style.height = `${size}px`;
+
+particle.style.background = blastArray[Math.floor(Math.random() * blastArray.length)];
+
+
+
+
+  const destinationX = x - (Math.random() - 0.5) * 2 * 75;
+  const destinationY = y - (Math.random() - 0.5) * 2 * 75;
+
+
+  const animation = particle.animate([
+    {
+
+      transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
+      opacity: 1
+    },
+    {
+
+      transform: `translate(${destinationX}px, ${destinationY}px)`,
+      opacity: 0
+    }
+  ], {
+
+    duration: Math.random() * 1000 + 500,
+    easing: 'cubic-bezier(0, .9, .57, 1)',
+
+    delay: Math.random() * 200
+  });
+
+
+  animation.onfinish = () => {
+    particle.remove();
+  };
+}
+
+    function pushEffect(x,y){
+        for (let i = 0; i < 30; i++) {
+
+          createParticle(x,y);
+    }
+    }
+
+    var Transition = function()
+    {
+
+        if(cur_state == "transition")
+        {
+            if(prev_state == "triangle")
+            {
+                if(defence_theta == 60)
+                {
+                incCordinates(triangle_speed);
+                    if(defence_y >= square_up_y + square_side)
+                    {
+                        defence_y = square_up_y + square_side;
+                        defence_x -= 15;
+                        cur_state = "square";
+                        defence_theta = 180;
+                    }
+                }
+                else if(defence_theta == 180)
+                {
+                    incCordinates(triangle_speed);
+                    if(defence_x <= square_left_x)
+                    {
+                        defence_x = square_left_x;
+                        defence_y -= 15;
+                        cur_state = "square";
+                        defence_theta = 270;
+                    }
+                }
+                else if(defence_theta == 300)
+                {
+                    incCordinates(triangle_speed);
+                    if(defence_y <= square_up_y)
+                    {
+                        defence_y = square_up_y;
+                        defence_x += 15;
+                        cur_state = "square";
+                        defence_theta = 0;
+                    }
+                }
+            }
+            else if(prev_state == "square")
+            {
+                var s1 = Math.pow((defence_x - canvas.width/2) / ellipse_major, 2) + Math.pow((defence_y - canvas.height/2) / ellipse_minor, 2) - 1;
+                if(s1 >= 0)
+                {
+                    cur_state = "ellipse";
+                    if(defence_theta == 0)
+                    {
+                        defence_x = canvas.width / 2 + ellipse_major * Math.sqrt(1 - Math.pow((defence_y - canvas.height/2) / ellipse_minor, 2));
+                        defence_theta = -Math.acos((defence_x - canvas.width/2) / ellipse_major) * (180 / Math.PI);
+                    }
+                    else if(defence_theta == 90)
+                    {
+                        defence_y = canvas.height / 2 + ellipse_minor * Math.sqrt(1 - Math.pow((defence_x - canvas.width/2) / ellipse_major, 2));
+                        defence_theta = Math.acos((defence_x - canvas.width/2) / ellipse_major) * (180 / Math.PI);
+                    }
+                    else if(defence_theta == 180)
+                    {
+                        defence_x = canvas.width / 2 - ellipse_major * Math.sqrt(1 - Math.pow((defence_y - canvas.height/2) / ellipse_minor, 2));
+                        defence_theta = Math.acos((defence_x - canvas.width/2) / ellipse_major) * (180 / Math.PI);
+                    }
+                    else if(defence_theta == 270)
+                    {
+                        defence_y = canvas.height / 2 - ellipse_minor * Math.sqrt(1 - Math.pow((defence_x - canvas.width/2) / ellipse_major, 2));
+                        defence_theta = -Math.acos((defence_x - canvas.width/2) / ellipse_major) * (180 / Math.PI);
+                    }
+                }
+                else
+                {
+                    incCordinates(triangle_speed);
+                }
+            }
+            else if(prev_state == "ellipse"){
+
+
+                defence_x += (triangle_speed) * Math.cos((defence_theta + 90) * (Math.PI / 180));
+                defence_y += (triangle_speed) * Math.sin((defence_theta + 90) * (Math.PI / 180));
+
+                if(destinationCircle(defence_x, defence_y)){
+                    cur_state = "circle";
+                    if(defence_x - canvas.width/2 >= 0)
+                    {
+                        defence_theta = Math.asin((defence_y - canvas.height/2) / circle_orbit_radius) * (180 / Math.PI);
+                    }
+                    else
+                    {
+                        defence_theta = 180 - Math.asin((defence_y - canvas.height/2) / circle_orbit_radius) * (180 / Math.PI);
+                    }
+                }
+            }
+            else if (prev_state == "circle"){
+                defence_x += (triangle_speed) * Math.cos((defence_theta + 90) * (Math.PI / 180));
+                defence_y += (triangle_speed) * Math.sin((defence_theta + 90) * (Math.PI / 180));
+
+                if (end()){
+                    h = 2;
+
+
+                }
+            }
+        }
+    }
+
+    var enemy = function(orbitR, selfR, time, color)
+    {
+
+        centreX = orbitR * Math.cos(time * (Math.PI / 180));
+        centreY = orbitR * Math.sin(time * (Math.PI / 180));
+
+        if (orbitR == 500){
+            createGradient(canvas.width/2 + centreX, canvas.height/2 + centreY,1,selfR*2,200,'#c6535d', 'transparent');
+
+        }
+        else{
+        createGradient(canvas.width/2 + centreX, canvas.height/2 + centreY,1,selfR*4,200,'#c6535d', 'transparent');
+    }
+        return [canvas.width/2 + centreX, canvas.height/2 + centreY];
+    }
+    function createbackground()
+    {
+        for (let i = 0; i < 60; i++)
+        {
+          for (let j = 0; j < 60; j++)
+          {
+                canvas.setDrawMode("fill");
+                canvas.setColor(`rgb(${i * 2}, ${j * 0.6}, ${(i+j) * 0.9})`);
+                canvas.drawRectangle(j * 20, i * 20, canvas.width,canvas.height);
+          }
+        }
+    }
+
     function main() {
         canvas.clear();
+        canvas.keyDownCallback = move;
+        if (h == 0)
+        {
+            createbackground();
+            canvas.setDrawMode("fill");
+            canvas.setColor('white');
+            canvas.drawText(200,260, 'NEWGALAXY', fontSize = 120)
+            canvas.drawText(100,450, 'Instructions:', 40)
+            canvas.drawText(100,500, 'Press Up arrow to move planet', 40)
+            canvas.drawText(100,550, 'Press Z to shift orbits', 40)
+            canvas.drawText(400,650, 'Press Enter to play', 40)
+        }
 
+        else if (h == 2)
+        {
+            createbackground();
+            canvas.setColor('white');
+            canvas.drawText(150,400, 'SCORE', fontSize = 150)
+            canvas.setDrawMode("stroke");
+            canvas.setLineThickness(5);
+            canvas.drawRectangle(130,260, 600,200 )
+            canvas.setDrawMode("fill");
+            canvas.setColor('white');
+            canvas.drawText(850,400, sum(), fontSize = 150)
+            canvas.drawText(400,650, 'Press Enter to play again', 40)
+        }
+
+        else if (h == 1){
+
+        canvas.setDrawMode("fill");
+        canvas.setColor("black");
+        canvas.drawRectangle(0, 0, canvas.width, canvas.height)
+
+
+        canvas.setDrawMode("fill");
+        canvas.setColor("#FDB813");
+        canvas.drawCircle(canvas.width/2, canvas.height/2, sunR);
+        createGradient(canvas.width/2, canvas.height/2,100,600,800,'transparent', '#d1788f');
+        createGradient(canvas.width/4, canvas.height/2,100,600,800,'transparent', '#422d53');
+
+        createGradient(canvas.width/2, canvas.height/2,400,600,800,'transparent', '#201f41');
+        createGradient(canvas.width/2, canvas.height/2,1,80,100,'#fdcdbd', 'transparent');
+
+
+
+        Orb1 = COrbit(circle_orbit_radius);
+        Orb2 = EOrbit(ellipse_major,ellipse_minor);
+        Orb3 = ROrbit(square_side);
+        Orb4 = TOrbit(t_y,triangle_halfside);
+
+
+        Transition();
+        Defence();
+        hello();
+        if(time > 0)
+        {
+            time -= 1;
+            canvas.setColor('brown')
+            canvas.drawText(canvas.width - 200, 100, "Time Left: " + Math.floor((time * 3) / 650), 30);
+        }
+        else
+        {   pushEffect(canvas.width/2,canvas.height/2)
+            canvas.setColor('brown')
+            canvas.drawText(canvas.width/2 - 250, 200, "TIME UP", 100);
+            canvas.drawText(canvas.width/2 - 500, 300, "PLANET DESTROYED", 100);
+            setTimeout(() => {  h = 2; }, 600);
+        }
+
+
+
+        if (score[0]!=10) {
+            e1O = COrbit(150, 'transparent');
+            Te1 += 0.2;
+            e1P = enemy(e1O, 5, Te1, "#d7b95e");
+            score[0] = collision(e1P[0], e1P[1]);
+
+        }
+        if (score[1]!=10){
+            e2O = COrbit(257,'transparent');
+            Te2 += 0.3;
+            e2P = enemy(e2O, 5, Te2, "#d7b95e");
+            score[1] = collision(e2P[0], e2P[1]);
+
+        }
+        if (score[2]!=10){
+            e3O = COrbit(400,'transparent');
+            Te3 += 0.5;
+            e3P = enemy(e3O, 5, Te3, "#d7b95e");
+            score[2] = collision(e3P[0], e3P[1]);
+
+        }
+        if (score[3]!=10){
+            e4O = COrbit(500,'transparent');
+            Te4 += 0.7;
+            e4P = enemy(e4O, 20, Te4, "blue");
+            score[3] = collision(e4P[0], e4P[1]);
+
+        }
     }
+}
 
-    // Override functions here; 
     canvas.mainFunction = main;
-
-    var timeStep = 50;
-    canvas.startMain(timeStep);
     canvas.setupFunction = setup;
+
+    var timeStep = 1;
+    canvas.startMain(timeStep);
 
 </script>
