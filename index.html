@@ -1,36 +1,17 @@
 <html>
 
 <body onload="canvas.setup()">
-
     <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
     <canvas id="canvasArea2"
         style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
     <script src="./canvas.js"></script>
+    <div style="visibility:hidden; position: absolute; left: 0; top: 0; width:900px;height:700px">
+    <canvas id="myChart"> </canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="stateGraph.js"></script>
+    <script src="script.js"></script>
+    <script src="./app.js"></script>
 </body>
 
 </html>
-<script>
-
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
-
-    // Declare custom functions here
-
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
-    }
-
-    // Override functions here; 
-    canvas.mainFunction = main;
-
-    var timeStep = 50;
-    canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
-
-</script>
