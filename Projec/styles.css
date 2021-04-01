@@ -1,0 +1,36 @@
+html, body{
+    background-color:black;
+}
+h1{
+    background-color: rgb(16, 238, 16);
+    font-family: 'Fredoka One', cursive;
+    color: rgb(255, 255, 255);
+    border-radius: 0.2cm;
+}
+
+input{
+    font-size: 180%;
+    font-family: 'Titillium Web', sans-serif ;
+    color: rgb(255, 0, 0);
+    width: 16.5%;
+    padding: 0.5cm;
+    left:80.2%;
+    bottom: 53%;
+    margin: 20px 5px 20px 5px;
+    border-color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
+    background-color: rgb(0, 0, 0);
+}
+
+::placeholder { 
+    color: red;
+  }
+
+#inc_a{
+    bottom: 33%;
+}
+
+#prs_a{
+    bottom:43%;
+}
+

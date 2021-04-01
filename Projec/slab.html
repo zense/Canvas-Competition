@@ -1,0 +1,41 @@
+<html>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Oleo+Script&display=swap" rel="stylesheet">
+  <body onload="canvas.setup()">
+    <h1 style="font-size: 80; padding-left: 0.5cm;">GLASS SLAB REFRACTOR</h1>
+    <canvas
+      id="canvasArea1"
+      style="
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+      "
+    ></canvas>
+    <canvas
+      id="canvasArea2"
+      style="
+        visibility: hidden;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+      "
+    ></canvas>
+
+    <script src="./canvas.js"></script>
+  </body>
+  <div>
+    <input style="position:absolute" type="integer" id="ref_ind" name="ref_ind" required="" placeholder="Refrective Index">
+  </div>
+</html>
+
+<script src="slab.js">
+</script>

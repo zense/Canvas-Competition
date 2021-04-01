@@ -1,36 +1,23 @@
-<html>
-
-<body onload="canvas.setup()">
-
-    <canvas id="canvasArea1" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-    <canvas id="canvasArea2"
-        style="visibility: hidden; position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-
-    <script src="./canvas.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refractor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="split left">
+          <h1>Prism Refractore</h1>
+          <a href="./Projec/prism.html" class="button">Show Project</a>
+        </div>
+        <div class="split right">
+          <h1>Glass Slab Refractor</h1>
+          <a href="./Projec/slab.html" class="button">Show Project</a>
+        </div>
+      </div>
+      <script src="myscripts.js"></script>
 </body>
-
 </html>
-<script>
-
-    // Declare all global variables here
-    function setup() {
-        // Initialize variables here
-    }
-
-    // Declare custom functions here
-
-
-    // Function while will be called repeatedly 
-    function main() {
-        canvas.clear();
-
-    }
-
-    // Override functions here; 
-    canvas.mainFunction = main;
-
-    var timeStep = 50;
-    canvas.startMain(timeStep);
-    canvas.setupFunction = setup;
-
-</script>
