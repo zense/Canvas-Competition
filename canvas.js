@@ -1,5 +1,4 @@
-/*
-    Developed for Zense Hackathon
+/*    Developed for Zense Hackathon
     Author - Satvik Ramaprasad,
              Shubhayu Das,
              Rohit Katlaa,
