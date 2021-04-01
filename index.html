@@ -13,23 +13,149 @@
 <script>
 
     // Declare all global variables here
+    class block{
+      constructor(){
+        this.x=(Math.random()*(screen.width/2 + 60 - (screen.width/2 - 190))/100 + (screen.width/2 - 190)/100)*100;
+        this.y=0;
+        this.length=180;
+        this.breadth=30;
+      }
+      create(){
+        canvas.setDrawMode("fill");
+        canvas.setColor("#000000");
+        canvas.drawRectangle(this.x, this.y, this.length, this.breadth);
+      }
+      move(){
+        this.y+=8;
+      }
+    }
+    class beads{
+      constructor(){
+        this.radius=16;
+        this.rx=screen.width/2 - 100;
+        this.ry=screen.height*0.625;
+        this.bx=screen.width/2 + 100;
+        this.by=screen.height*0.625;
+        this.r_theta = Math.PI;
+        this.b_theta = 0;
+      }
+      create(){
+        canvas.setDrawMode("fill");
+        canvas.setColor("#FF0000");
+        canvas.drawCircle(this.rx, this.ry, 10);
+        canvas.setColor("#0000FF");
+        canvas.drawCircle(this.bx, this.by, 10);
+      }
+      move(d){
+        this.r_theta += (d*0.2);
+        this.b_theta += (d*0.2);
+        this.rx=screen.width/2 + 100*Math.cos(this.r_theta);
+        this.ry=screen.height*0.625 - 100*Math.sin(this.r_theta);
+        this.bx=screen.width/2 + 100*Math.cos(this.b_theta);
+        this.by=screen.height*0.625 - 100*Math.sin(this.b_theta);
+        this.create();
+      }
+    }
+    var b_count, t=0, blocks=[], score=0, over=0;
     function setup() {
+      console.log(screen.width);
+      console.log(screen.height);
+      b_count=0;
+      rb = new beads();
+      canvas.activateDoubleBuffer();
         // Initialize variables here
     }
 
-    // Declare custom functions here
+    function name(){
+      canvas.setColor("#FF0000");
+      canvas.drawText(50, 100, "DU",fontSize=50);
+      canvas.setColor("#0000FF");
+      canvas.drawText(120, 100, "ET",fontSize=50);
+      canvas.setColor("#000000");
+      canvas.drawText(200, 100, "DODGE",fontSize=50);
+    }
 
+    function rules(){
+      a = 30*(screen.height/720);
+      canvas.setColor("#000000");
+      canvas.drawText(10, 200, "* Red and blue beads can move only on the ring",fontSize=18);
+      canvas.drawText(10, 200+a, "* Avoid to hit the beads with th incoming blocks",fontSize=18);
+      canvas.drawText(10, 200+2*a, "* Use Right Arrow and Left Arrow keys to move the",fontSize=18);
+      canvas.drawText(15, 200+3*a, "beads clockwise and anticlockwise respectively.",fontSize=18);
+    }
+    
+    function show_score(){
+      canvas.setColor("#000000");
+      canvas.drawText(1000*screen.width/1280, 150, "Score", fontSize=50);
+      canvas.drawText(1050*screen.width/1280, 200, score, fontSize=50);
+    }
+
+    function play(key){
+      if(key.code=="ArrowRight"){
+       rb.move(-1);
+      }
+      if(key.code=="ArrowLeft"){
+       rb.move(1);
+      }
+    }
+
+    // Declare custom functions here
+    function collide(p){
+      var redc = rb.ry-p.y<=30 && rb.ry-p.y>=0 && rb.rx-p.x<=180 && rb.rx-p.x>=0;
+      var bluec = rb.by-p.y<=30 && rb.by-p.y>=0 && rb.bx-p.x<=180 && rb.bx-p.x>=0;
+      if(redc || bluec){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    }
 
     // Function while will be called repeatedly 
     function main() {
         canvas.clear();
-
+        name();
+        rules();
+        canvas.setColor("#000000");
+        canvas.setDrawMode("stroke");
+        canvas.drawLine(screen.width/2 - 200, 0, screen.width/2 - 200, screen.height);
+        canvas.drawLine(screen.width/2 + 200, 0, screen.width/2 + 200, screen.height);
+        canvas.drawLine(screen.width/2 - 200, 1, screen.width/2 + 200, 1);
+        canvas.drawLine(screen.width/2 - 200, screen.height - 10, screen.width/2 + 200, screen.height - 10);
+        canvas.drawCircle(screen.width/2, 0.625*screen.height, 100);
+        rb.create();
+        if(t>=30){
+          blocks[b_count] = new block();
+          t=0;
+          b_count+=1;
+        }
+      canvas.keyDownCallback = play;
+      for(var i=0;i<b_count;i++){
+        if (collide(blocks[i])){
+          alert("Game Over!!\nScore: " + score);
+          over=1;
+          break;
+        }
+      }
+      if (over==1){
+        return;
+      }
+      for(var i=0;i<b_count;i++){
+        blocks[i].move();
+        blocks[i].create();
+        if(blocks[i].y-8>=565 && blocks[i].y-8<=570){
+          score+=1;
+        }
+      }
+      show_score();
+      t+=1;
+      canvas.update();
     }
 
     // Override functions here; 
     canvas.mainFunction = main;
 
-    var timeStep = 50;
+    var timeStep = 100;
     canvas.startMain(timeStep);
     canvas.setupFunction = setup;
 
