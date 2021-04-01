@@ -1,0 +1,8 @@
+Project Report
+Team Name:Ctrl Alt Elite
+Team Members:BTV Sumanth and Chinmay Parekh
+Idea:We decided to make a domino simuation which can further be scaled to implement the famous "bounce-game".
+
+We tried a lot of methods to implement this simulation and since we were beginners we struggled a lot initially while using OOPS but after a while,we became comfortable and were able to convert our ideas into a code.We tried a lot of ways to implement our logic of making the dominoes fall one after each other and then with the help and guidance of our seniors,we realized we could give each domino its own attribute so we created an array to keep a track of the angles of our dominoes and made the next one fall only if the first one touched it.
+
+We learnt a lot of stuff from this hackathon,it not only taught us about javascript but it was a good platform for us to come close and interact with each other and our seniors as well.We are really looking forward to take part in more hackathons and learn,create new stuff and come up with interesting ideas which could solve everyday problems.
